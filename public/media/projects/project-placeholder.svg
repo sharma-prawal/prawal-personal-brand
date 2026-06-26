@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="title desc">
+  <title id="title">Project screenshot pending</title>
+  <desc id="desc">Premium placeholder for a project screenshot that will be added later.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#151411"/>
+      <stop offset="0.58" stop-color="#083d35"/>
+      <stop offset="1" stop-color="#762639"/>
+    </linearGradient>
+    <linearGradient id="line" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#c9972f" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0.18"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <g opacity="0.18">
+    <path d="M120 160H1080M120 280H1080M120 400H1080M120 520H1080M120 640H1080" stroke="#fff"/>
+    <path d="M220 110V690M420 110V690M620 110V690M820 110V690M1020 110V690" stroke="#fff"/>
+  </g>
+  <rect x="130" y="120" width="940" height="560" rx="18" fill="#fff" opacity="0.08" stroke="#fff" stroke-opacity="0.18"/>
+  <path d="M220 520C330 420 410 460 510 340C620 208 762 294 890 180" fill="none" stroke="url(#line)" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="890" cy="180" r="16" fill="#c9972f"/>
+  <text x="160" y="605" fill="#fff" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="800" letter-spacing="8">PERSONAL BRANDING SITE</text>
+  <text x="160" y="655" fill="#fff" fill-opacity="0.72" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700">Screenshot pending</text>
+</svg>

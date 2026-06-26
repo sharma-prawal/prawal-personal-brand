@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Prawal Sharma favicon">
+  <rect width="64" height="64" rx="18" fill="#171614" />
+  <circle cx="50" cy="14" r="5" fill="#d8a83f" />
+  <path d="M45 48h4V36h-4v12Zm7 0h4V28h-4v20Zm-14 0h4v-8h-4v8Z" fill="#0f5a4c" />
+  <text
+    x="31"
+    y="39"
+    fill="#fbfaf7"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="26"
+    font-weight="700"
+    letter-spacing="-2"
+    text-anchor="middle"
+  >PS</text>
+</svg>
