@@ -581,6 +581,7 @@ export const profile = {
       role: "Manager – Technology | AI & GenAI Solutions | Solution Architecture",
       date: "August 18, 2026",
       linkedinUrl: "https://www.linkedin.com/in/preet-saxena/",
+      photo: "/media/recommendations/preet_saxena.jpeg",
       quote:
         "Strong technical expertise, ownership, and leadership. Dependable during critical deliveries and production challenges — I would strongly recommend Prawal for senior technical leadership and solution architecture roles."
     },
@@ -589,6 +590,7 @@ export const profile = {
       role: "Full Stack Developer | AI-Focused Systems | MERN Stack | GraphQL",
       date: "August 19, 2026",
       linkedinUrl: "https://www.linkedin.com/in/pranjhi-singh/",
+      photo: "/media/recommendations/pranjhi_singh.jpeg",
       quote:
         "He brings clarity to diverse challenges, keeps the team aligned, and encourages collaboration, ownership, and continuous learning. His guidance has contributed significantly to my professional growth."
     },
@@ -597,6 +599,7 @@ export const profile = {
       role: "Associate Engineer | Python & Backend Developer",
       date: "August 18, 2026",
       linkedinUrl: "https://www.linkedin.com/in/himanshu-gola-8083381a6/",
+      photo: "/media/recommendations/himanshu_gola.jpeg",
       quote:
         "Strong technical expertise and a good understanding of scalable systems and cloud technologies. Always approachable, and encourages us to take ownership of our work."
     },
