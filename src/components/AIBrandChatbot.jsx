@@ -373,7 +373,7 @@ function getSandboxResponse(inputText) {
   if (intents.includes('recommendation')) {
     const featured = profile.recommendations.slice(0, 2);
     return {
-      text: `**12 LinkedIn recommendations** from managers, senior peers, and engineers who've worked alongside him. What's interesting is the overlap — the same things come up regardless of who's writing: calm under pressure, technical depth, and the ability to give teams clarity without micromanaging.\n\nDirect quotes:\n\n${featured.map(r => `*"${r.quote}"*\n— **${r.name}**, ${r.role}`).join('\n\n')}`,
+      text: `**${profile.recommendations.length} LinkedIn recommendations** from managers, senior peers, and engineers who've worked alongside him. What's interesting is the overlap — the same things come up regardless of who's writing: calm under pressure, technical depth, and the ability to give teams clarity without micromanaging.\n\nDirect quotes:\n\n${featured.map(r => `*"${r.quote}"*\n— **${r.name}**, ${r.role}`).join('\n\n')}`,
       actions: [
         { label: "Read all recommendations", url: "/recommendations" },
         { label: "His leadership approach", query: "What is his leadership philosophy?" }
@@ -450,7 +450,7 @@ function getSandboxResponse(inputText) {
   // ── Identity / Summary / Bio ──────────────────────────────────────────────
   if (intents.includes('identity') || /\b(summary|summarize|bio|profile|about|prawal|who is|background|headline|recruiter)\b/.test(query)) {
     return {
-      text: "**Prawal Sharma** — Technology Manager, 10 years at Successive Digital, five role promotions. The short version for a recruiter:\n\n- **Scale:** 160K+ daily banking transactions at 99.9% uptime through systems he architected\n- **Leadership:** 20+ engineers across India, UK, South Africa — zero formal escalations in 10 years\n- **AI adoption:** 20–30% team productivity lift from structured AI tooling — measurable, not claimed\n- **Credentials:** AWS, Azure, and GCP certified — 93+ total\n- **Recognition:** 10 awards, 12 LinkedIn recommendations, B1/B2 visa with US onsite delivery experience\n- **Current focus:** LLM integrations, intelligent automation, and AI-enabled delivery at enterprise scale",
+      text: `**Prawal Sharma** — Technology Manager, 10 years at Successive Digital, five role promotions. The short version for a recruiter:\n\n- **Scale:** 160K+ daily banking transactions at 99.9% uptime through systems he architected\n- **Leadership:** 20+ engineers across India, UK, South Africa — zero formal escalations in 10 years\n- **AI adoption:** 20–30% team productivity lift from structured AI tooling — measurable, not claimed\n- **Credentials:** Claude Certified Architect, plus AWS, Azure, and GCP certified — 93+ total\n- **Recognition:** 10 awards, ${profile.recommendations.length} LinkedIn recommendations, B1/B2 visa with US onsite delivery experience\n- **Current focus:** LLM integrations, intelligent automation, and AI-enabled delivery at enterprise scale`,
       actions: [
         { label: "Full experience", query: "What is his career experience?" },
         { label: "Major projects", query: "What are his major engineering projects?" },

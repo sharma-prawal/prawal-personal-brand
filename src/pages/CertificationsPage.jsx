@@ -9,6 +9,7 @@ import { itemReveal, premiumEase } from "../lib/motion.js";
 const certificationBatchSize = 9;
 
 const credentialSignals = {
+  "Claude Certified Architect – Foundations": { signal: "AI solution architecture", text: "Proctored Anthropic exam for building production-grade systems on Claude, MCP, and the Agent SDK." },
   "AWS Certified Solutions Architect – Associate": { signal: "Cloud architecture", text: "Validated architecture judgment for resilient, scalable AWS system design." },
   "AWS Certified AI Practitioner": { signal: "AI adoption fluency", text: "Current AI credential signal tied to practical enterprise adoption awareness." },
   "Microsoft Certified: Azure AI Fundamentals": { signal: "AI platform grounding", text: "Microsoft AI fundamentals proof across workloads, responsible AI, and Azure services." },
@@ -177,10 +178,10 @@ export default function CertificationsPage() {
   const [visibleLimit, setVisibleLimit] = useState(certificationBatchSize);
 
   const flagshipCredentialTitles = useMemo(() => new Set([
+    "Claude Certified Architect – Foundations",
     "AWS Certified Solutions Architect – Associate",
     "AWS Certified AI Practitioner",
-    "Microsoft Certified: Azure AI Fundamentals",
-    "Google Cloud Certified – Cloud Digital Leader"
+    "Microsoft Certified: Azure AI Fundamentals"
   ]), []);
 
   const flagshipCredentials = useMemo(() => featuredCertificationAssets.filter((cert) => flagshipCredentialTitles.has(cert.title)), [flagshipCredentialTitles]);
@@ -248,7 +249,7 @@ export default function CertificationsPage() {
           <span className="eyebrow">Flagship credentials</span>
           <div>
             <h2>Official credentials.</h2>
-            <p>Four credentials carry the strongest executive signal: AI awareness, cloud architecture, Azure AI, and multi-cloud business fluency.</p>
+            <p>Four credentials carry the strongest executive signal: AI solution architecture, cloud architecture, AI adoption fluency, and Azure AI.</p>
           </div>
           <small>{flagshipCredentialCards.length} primary signals</small>
         </Reveal>

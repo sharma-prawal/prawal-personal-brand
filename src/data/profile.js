@@ -18,7 +18,7 @@ export const profile = {
     { value: "0", label: "Escalations in global delivery" },
     { value: "20–30%", label: "Productivity lift via AI-assisted code, debugging & delivery" },
     { value: "5K", label: "LinkedIn followers" },
-    { value: "12", label: "Recommendations received" }
+    { value: "15", label: "Recommendations received" }
   ],
   executiveSnapshot: [
     { value: "10", label: "Years", detail: "Engineering leadership, architecture, and global delivery ownership." },
@@ -421,6 +421,7 @@ export const profile = {
     {
       provider: "AI, Cloud, and Leadership",
       items: [
+        "Claude Certified Architect – Foundations - Anthropic",
         "Artificial Intelligence and Machine Learning Program - ICTRD Kaushalarth",
         "AWS Certified AI Practitioner - Amazon Web Services",
         "Microsoft Certified: Azure AI Fundamentals - Microsoft",
@@ -575,6 +576,30 @@ export const profile = {
     }
   ],
   recommendations: [
+    {
+      name: "Preet Saxena",
+      role: "Manager – Technology | AI & GenAI Solutions | Solution Architecture",
+      date: "August 18, 2026",
+      linkedinUrl: "https://www.linkedin.com/in/preet-saxena/",
+      quote:
+        "Strong technical expertise, ownership, and leadership. Dependable during critical deliveries and production challenges — I would strongly recommend Prawal for senior technical leadership and solution architecture roles."
+    },
+    {
+      name: "Pranjhi Singh",
+      role: "Full Stack Developer | AI-Focused Systems | MERN Stack | GraphQL",
+      date: "August 19, 2026",
+      linkedinUrl: "https://www.linkedin.com/in/pranjhi-singh/",
+      quote:
+        "He brings clarity to diverse challenges, keeps the team aligned, and encourages collaboration, ownership, and continuous learning. His guidance has contributed significantly to my professional growth."
+    },
+    {
+      name: "Himanshu Gola",
+      role: "Associate Engineer | Python & Backend Developer",
+      date: "August 18, 2026",
+      linkedinUrl: "https://www.linkedin.com/in/himanshu-gola-8083381a6/",
+      quote:
+        "Strong technical expertise and a good understanding of scalable systems and cloud technologies. Always approachable, and encourages us to take ownership of our work."
+    },
     {
       name: "Amit Bora",
       role: "Specialist Engineer",

@@ -1,4 +1,5 @@
 export const certificationFiles = [
+  "media/certifications/Anthropic/Claude Certified Architect - Foundations.png",
   "media/certifications/[NEW] Ultimate AWS Certified AI Practitioner AIF-C01.jpg",
   "media/certifications/AI-900:AI-901 Azure AI Fundamentals Exam Prep In One Day.jpg",
   "media/certifications/AWS Certified Solutions Architect - Associate 2020.jpg",
@@ -94,6 +95,12 @@ export const certificationFiles = [
 ];
 
 const eliteFiles = new Map([
+  ["media/certifications/Anthropic/Claude Certified Architect - Foundations.png", {
+    title: "Claude Certified Architect – Foundations",
+    provider: "Anthropic",
+    category: "AI",
+    proctored: true
+  }],
   ["media/certifications/AWS/AWS Certified Solutions Architect - Associate.png.png", {
     title: "AWS Certified Solutions Architect – Associate",
     provider: "AWS",

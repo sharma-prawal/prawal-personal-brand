@@ -65,13 +65,13 @@ export default function RecommendationsPage() {
     { title: "Adaptability and learning speed", text: "Multiple recommendations point to fast learning, change readiness, and the ability to operate across unfamiliar contexts." }
   ];
   const referenceSignals = [
-    { value: "12", label: "recommendations", text: "A broad recommendation base across managers, peers, leads, and specialists." },
-    { value: "4 yrs", label: "time span", text: "Recommendations span multiple roles and operating contexts over four years." },
+    { value: String(profile.recommendations.length), label: "recommendations", text: "A broad recommendation base across managers, peers, leads, and specialists." },
+    { value: "5 yrs", label: "time span", text: "Recommendations span multiple roles and operating contexts over five years." },
     { value: "5", label: "leadership patterns", text: "Ownership, composure, mentoring, adaptability, and technical breadth repeat." }
   ];
   const referenceLedger = [
-    { value: "12", label: "LinkedIn recommendations" },
-    { value: "4 yrs", label: "Consistent over" },
+    { value: String(profile.recommendations.length), label: "LinkedIn recommendations" },
+    { value: "5 yrs", label: "Consistent over" },
     { value: "5", label: "Repeated signals" }
   ];
   const referenceVoices = [
