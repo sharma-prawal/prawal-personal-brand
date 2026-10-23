@@ -79,7 +79,7 @@ GROUNDING RULES:
 1. Answer ONLY from the WEBSITE KNOWLEDGE BASE below. Never use general internet knowledge.
 2. If information is missing: say "That detail isn't on the site — reach Prawal directly via LinkedIn." (use the action button, don't write a URL).
 3. NEVER invent metrics, dates, company names, or credentials not in the knowledge base.
-4. For resume requests: mention the Executive Profile and ATS Resume (both downloadable in this chat).
+4. For resume requests: mention the Executive Profile and the Resume PDF (both downloadable in this chat).
 5. For contact requests: write one warm sentence, then stop — the action buttons handle LinkedIn and the contact form. Do NOT paste any URL in your text.
 6. For image/proof requests: embed ONLY exact paths from VISUAL ASSETS using ![Caption](URL).
 
@@ -292,10 +292,10 @@ function getSandboxResponse(inputText) {
   // ── Resume / CV ────────────────────────────────────────────────────────────
   if (intents.includes('resume') || /\b(resume|cv|pdf|download|ats)\b/.test(query)) {
     return {
-      text: "Two formats available depending on what you need:\n\n- **Executive Profile:** Built for senior leadership conversations — leads with outcomes, platform breadth, and delivery scale. Good for C-suite or committee review.\n- **ATS Resume:** Parser-optimized, structured for recruiting systems. Same data, recruiter-system format.\n\nBoth pull from live portfolio data — no static file, always current.",
+      text: "Two formats available depending on what you need:\n\n- **Executive Profile:** Built for senior leadership conversations — leads with outcomes, platform breadth, and delivery scale. Good for C-suite or committee review.\n- **Resume (PDF):** His current 2-page resume — ATS-friendly, the same version he uses for job applications.",
       actions: [
         { label: "Download Executive Profile", type: "download_exec" },
-        { label: "Generate ATS Resume", type: "download_ats" }
+        { label: "Download Resume (PDF)", type: "download_ats" }
       ]
     };
   }
@@ -314,7 +314,7 @@ function getSandboxResponse(inputText) {
   // ── Experience / Career ────────────────────────────────────────────────────
   if (intents.includes('experience')) {
     return {
-      text: "Ten years at Successive Digital, five promotions — the only company he's worked at.\n\n- Technology Manager (Nov 2024–now): 20+ engineers across India, UK, South Africa — 20–30% AI productivity lift, zero escalations\n- Technology Lead (2021–2024): Connectors Platform (200+ data sources), ACH banking (160K daily transactions, 99.9% uptime)\n- Senior & Software Engineer (2018–2021): Full-stack delivery, Node.js/React/GraphQL\n- Trainee → early roles (2015–2018): Foundation years, Successive Digital",
+      text: "Ten years at Successive Digital, five promotions — the only company he's worked at.\n\n- Technology Manager (Nov 2024–now): 20+ engineers across India, UK, South Africa — 20–30% AI productivity lift, zero escalations\n- Technology Lead (2021–2024): Connectors Platform (90+ data sources), ACH banking (160K daily transactions, 99.9% uptime)\n- Senior & Software Engineer (2018–2021): Full-stack delivery, Node.js/React/GraphQL\n- Trainee → early roles (2015–2018): Foundation years, Successive Digital",
       actions: [
         { label: "Major projects", query: "What are his major engineering projects?" },
         { label: "Tech stack", query: "What is his technical stack?" },
@@ -330,7 +330,7 @@ function getSandboxResponse(inputText) {
       actions: [
         { label: "Cloud certifications", query: "What cloud certifications does he have?" },
         { label: "AI projects", query: "What AI projects has he built?" },
-        { label: "Download ATS Resume", type: "download_ats" }
+        { label: "Download Resume (PDF)", type: "download_ats" }
       ]
     };
   }
@@ -439,7 +439,7 @@ function getSandboxResponse(inputText) {
   // ── Projects ──────────────────────────────────────────────────────────────
   if (intents.includes('project')) {
     return {
-      text: "Enterprise delivery (NDA-safe, evidence-backed):\n\n- Connectors Platform: data integration across 200+ sources — Facebook Ads, Google Campaign Manager, OAuth flows, taxonomy management\n- ACH Banking Platform: white-labeled debit tender with fraud detection, 160K+ daily transactions at 99.9% uptime\n- Data Serve Platform: centralized data layer across GCP, Azure ADLS, AWS S3, and Snowflake\n\nIndependent: school website, lovebook, RPG game, visual novel, notes app — all built AI-first.",
+      text: "Enterprise delivery (NDA-safe, evidence-backed):\n\n- Connectors Platform: data integration across 90+ sources — Facebook Ads, Google Campaign Manager, OAuth flows, taxonomy management\n- ACH Banking Platform: white-labeled debit tender with fraud detection, 160K+ daily transactions at 99.9% uptime\n- Data Serve Platform: centralized data layer across GCP, Azure ADLS, AWS S3, and Snowflake\n\nIndependent: school website, lovebook, RPG game, visual novel, notes app — all built AI-first.",
       actions: [
         { label: "View AI projects", url: "/ai-projects" },
         { label: "Cloud certifications", query: "What cloud certifications does he have?" }
@@ -472,7 +472,7 @@ function getSandboxResponse(inputText) {
   };
 }
 
-export default function AIBrandChatbot({ generateATSResume, generateExecutiveProfile }) {
+export default function AIBrandChatbot({ downloadResume, generateExecutiveProfile }) {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
     {
@@ -599,13 +599,13 @@ export default function AIBrandChatbot({ generateATSResume, generateExecutivePro
         }
       ]);
     } else if (action.type === "download_ats") {
-      generateATSResume();
+      downloadResume();
       setMessages((prev) => [
         ...prev,
         {
           id: Date.now().toString(),
           role: "model",
-          text: "I've dynamically generated Prawal's **ATS-Optimized Resume** in a new printer-friendly tab. You can save it directly as a PDF from there!"
+          text: "Downloading Prawal's **resume** (2-page PDF) — it's the same version he uses for job applications."
         }
       ]);
     } else if (action.url) {

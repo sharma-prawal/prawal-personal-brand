@@ -4,7 +4,7 @@ import { ChevronRight } from "lucide-react";
 import { CheckCircleMark, DownloadMark, DocMark } from "../components/icons.jsx";
 import { Button } from "../components/ui/button.jsx";
 import {
-  ATSResumeDownloadButton,
+  ResumeDownloadButton,
   ExecutiveProfileDownloadButton,
   LinkedInButton,
   MotionCard,
@@ -408,7 +408,7 @@ export default function ExecutivePage() {
             <LinkedInButton className="exec-colophon__primary" />
             <div className="exec-colophon__secondary">
               <ExecutiveProfileDownloadButton />
-              <ATSResumeDownloadButton />
+              <ResumeDownloadButton />
             </div>
           </div>
         </div>

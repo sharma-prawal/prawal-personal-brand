@@ -38,10 +38,10 @@ export const profile = {
     },
     {
       label: "Data platform delivery",
-      metric: "200+",
+      metric: "90+",
       title: "External data sources unified into one platform",
       detail:
-        "Replaced fragmented data pipelines with a single governed integration platform — enabling self-service reporting for 87+ media sources without manual engineering."
+        "Replaced fragmented data pipelines with a single governed integration platform — enabling self-service reporting for 90+ media sources without manual engineering."
     },
     {
       label: "Global delivery",
@@ -147,7 +147,7 @@ export const profile = {
           period: "July 2021 - November 2024",
           details: [
             "Delivered end-to-end engineering for multiple large-scale applications with 100% client satisfaction and zero escalations; directly contributed to multi-year client retention and contract extensions.",
-            "Connectors Platform (Media | Team: 11): Architected and built a data integration platform connecting 200+ data sources including Facebook Ads and Google Campaign Manager; implemented OAuth flows, data ingestion pipelines, and enterprise reporting systems.",
+            "Connectors Platform (Media | Team: 11): Architected and built a data integration platform connecting 90+ data sources including Facebook Ads and Google Campaign Manager; implemented OAuth flows, data ingestion pipelines, and enterprise reporting systems.",
             "Data Serve (Media): Designed a centralized data platform integrating GCP, Azure ADLS, AWS S3, and Snowflake; enabled fully automated enterprise-grade data pipelines reducing manual data ops overhead.",
             "Enrollment & Transactions (Banking): Built a white-labeled ACH debit payment solution with fraud detection workflows, transaction management, and compliance-grade reliability for a US banking client.",
             "Managed cross-functional teams (PM, QA, BA) across MERN, PHP, and GraphQL ecosystems; improved delivery efficiency through process automation and structured engineering practices."
@@ -229,7 +229,7 @@ export const profile = {
       access: "Case-study asset + NDA-safe summary; no client screenshots",
       systems: ["Connectors App", "Trifacta Recipes", "Data Serve UI"],
       points: [
-        "Governed data platform serving 87+ sources with 1-2 day onboarding across Dentsu International's media advertising operations.",
+        "Governed data platform serving 90+ sources with 1-2 day onboarding across Dentsu International's media advertising operations.",
         "Three-app model: Connectors for automated source fetches, Trifacta for cleansing and enrichment, Data Serve for multi-channel delivery to S3, GCP, Snowflake, and analytics tools."
       ],
       outcome:

@@ -488,162 +488,25 @@ export function EmailLinkButton() {
   );
 }
 
-export function generateATSResume() {
-  const directContact = getDirectContact();
+/** The downloadable resume. It is generated in the prawal-the-series project (`npm run resume`) and copied here. */
+export const RESUME_PDF = "/Prawal_Sharma_Resume.pdf";
 
-  // Derived live from profile.skillGroups + certifications
-  const atsSkills = profile.skillGroups.map((g) => ({
-    label: g.label.charAt(0).toUpperCase() + g.label.slice(1),
-    value: g.skills.join(", ")
-  })).concat([{
-    label: "Key Certifications",
-    value: [
-      ...profile.certifications[0].items.slice(0, 5),
-      ...profile.certifications[2].items.slice(0, 3),
-      "Graph Developer – Professional (Apollo GraphQL)"
-    ].join(" | ")
-  }]);
-
-  const abbrevPeriod = (s) => s
-    .replace(" - ", "–")
-    .replace("November", "Nov").replace("October", "Oct").replace("September", "Sep")
-    .replace("August", "Aug").replace("February", "Feb").replace("January", "Jan")
-    .replace("March", "Mar").replace("April", "Apr").replace("July", "Jul").replace("June", "Jun");
-
-  const successive = profile.experience[0];
-  const successiveHTML = successive.roles
-    .map((role) => {
-      const bullets = role.details.map((d) => `<li>${d}</li>`).join("");
-      return `
-        <div class="exp-block">
-          <div class="exp-header">
-            <span class="exp-title">${role.title}</span>
-            <span class="exp-date">${abbrevPeriod(role.period)}</span>
-          </div>
-          <div class="exp-header">
-            <span class="exp-company">${successive.company}</span>
-            <span class="exp-location">${successive.location}, India</span>
-          </div>
-          <ul>${bullets}</ul>
-        </div>`;
-    })
-    .join("");
-
-  // Derived live from profile.experience (all companies after Successive)
-  const earlierHTML = profile.experience
-    .slice(1)
-    .map((co) => {
-      const role = co.roles[0];
-      const bullets = role.details.map((d) => `<li>${d}</li>`).join("");
-      return `
-        <div class="exp-block">
-          <div class="exp-header">
-            <span class="exp-title">${role.title}</span>
-            <span class="exp-date">${co.duration}</span>
-          </div>
-          <div class="exp-header">
-            <span class="exp-company">${co.company}</span>
-            <span class="exp-location">${co.location}</span>
-          </div>
-          ${bullets ? `<ul>${bullets}</ul>` : ""}
-        </div>`;
-    })
-    .join("");
-
-  const awardHTML = profile.awards
-    .slice(0, 6)
-    .map((a) => `<div class="award-row"><strong>${a.title}</strong> – ${a.description}</div>`)
-    .join("");
-
-  const skillsHTML = atsSkills
-    .map((s) => `<div class="skills-row"><span class="skills-label">${s.label}:</span> ${s.value}</div>`)
-    .join("");
-
-  const html = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Prawal Sharma — ATS Resume</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet" />
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'EB Garamond', Georgia, 'Times New Roman', serif; font-size: 10.5pt; line-height: 1.35; color: #000; background: #fff; padding: 0.5in 0.6in; }
-    @media print { body { padding: 0; } @page { margin: 0.5in 0.6in; size: letter; } .no-print { display: none !important; } }
-    h1 { font-size: 18pt; font-weight: 700; text-align: center; margin-bottom: 2pt; letter-spacing: 0.01em; }
-    .contact-line { text-align: center; font-size: 9.5pt; margin-bottom: 12pt; color: #111; }
-    h2 { font-size: 10.5pt; font-variant: small-caps; font-weight: 400; letter-spacing: 0.08em; border-bottom: 0.8pt solid #000; padding-bottom: 1pt; margin: 10pt 0 4pt; }
-    p.summary { font-size: 10.5pt; line-height: 1.4; text-align: justify; }
-    .skills-row { margin-bottom: 1.5pt; font-size: 10.5pt; }
-    .skills-label { font-weight: 700; }
-    .exp-block { margin-bottom: 6pt; }
-    .exp-header { display: flex; justify-content: space-between; align-items: baseline; gap: 6pt; }
-    .exp-title { font-weight: 700; font-size: 10.5pt; }
-    .exp-date { font-size: 9.5pt; white-space: nowrap; flex-shrink: 0; }
-    .exp-company { font-style: italic; font-size: 9.5pt; }
-    .exp-location { font-size: 9.5pt; color: #333; }
-    ul { padding-left: 14pt; margin-top: 2pt; }
-    li { margin-bottom: 1.5pt; font-size: 10.5pt; line-height: 1.35; }
-    .edu-block { margin-top: 3pt; }
-    .edu-header { display: flex; justify-content: space-between; align-items: baseline; }
-    .edu-name { font-weight: 700; font-size: 10.5pt; }
-    .edu-date { font-size: 9.5pt; }
-    .edu-degree { font-style: italic; font-size: 9.5pt; }
-    .award-row { margin-bottom: 2pt; font-size: 10.5pt; line-height: 1.35; }
-    .save-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 9999; display: flex; align-items: center; justify-content: space-between; padding: 10px 20px; background: #0f6b5c; color: #fff; font-family: system-ui, sans-serif; font-size: 13px; }
-    .save-bar button { padding: 8px 20px; background: #fff; color: #0f6b5c; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
-    .save-bar button:hover { background: #e8f4f2; }
-    .content { margin-top: 48px; }
-    @media print { .content { margin-top: 0; } }
-  </style>
-</head>
-<body>
-  <div class="save-bar no-print">
-    <span>Prawal Sharma — ATS Resume &nbsp;&middot;&nbsp; Save as PDF to download</span>
-    <button onclick="window.print()">&#8595; Save as PDF</button>
-  </div>
-  <div class="content">
-    <h1>${profile.name}</h1>
-    <p class="contact-line">${profile.location} &nbsp;|&nbsp; ${directContact.phone} &nbsp;|&nbsp; ${directContact.email} &nbsp;|&nbsp; linkedin.com/in/sharma-prawal</p>
-    <h2>Summary</h2>
-    <p class="summary">${profile.atsSummary}</p>
-    <h2>Technical Skills</h2>
-    ${skillsHTML}
-    <h2>Experience</h2>
-    ${successiveHTML}
-    ${earlierHTML}
-    <h2>Education</h2>
-    <div class="edu-block">
-      <div class="edu-header">
-        <span class="edu-name">${profile.education.school}</span>
-        <span class="edu-date">${profile.education.period}</span>
-      </div>
-      <div class="edu-degree">${profile.education.degree}</div>
-    </div>
-    <h2>Awards &amp; Recognition</h2>
-    ${awardHTML}
-  </div>
-</body>
-</html>`;
-
-  const win = window.open("", "_blank");
-  if (!win) {
-    alert("Please allow pop-ups for this site to generate the resume.");
-    return;
-  }
-  win.document.write(html);
-  win.document.close();
-  win.addEventListener("load", () => { win.focus(); win.print(); });
+export function downloadResume() {
+  const link = document.createElement("a");
+  link.href = RESUME_PDF;
+  link.download = "Prawal_Sharma_Resume.pdf";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
 }
 
-export function ATSResumeDownloadButton() {
+export function ResumeDownloadButton() {
   return (
     <Button asChild variant="secondary" className="secondary-link download-link ats-download-link">
-      <button onClick={generateATSResume}>
+      <a href={RESUME_PDF} download="Prawal_Sharma_Resume.pdf">
         <DocMark size={18} />
         <span>Download CV</span>
-      </button>
+      </a>
     </Button>
   );
 }

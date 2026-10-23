@@ -3,7 +3,7 @@ import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring } from 
 import { Link, NavLink, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { Check, ChevronLeft, ChevronRight, Copy, Linkedin, LockKeyhole, Menu, X } from "lucide-react";
 import { LocationDot } from "./components/icons.jsx";
-import { LinkedInButton, ScrollToTop, generateATSResume, generateExecutiveProfile } from "./components/shared.jsx";
+import { LinkedInButton, ScrollToTop, downloadResume, generateExecutiveProfile } from "./components/shared.jsx";
 import { getDirectContact, profile } from "./data/profile.js";
 import { pageEntrance, exitEase, premiumEase } from "./lib/motion.js";
 
@@ -551,7 +551,7 @@ function AppShell() {
       </footer>
 
       <Suspense fallback={<AIBrandChatbotFallback />}>
-        <LazyAIBrandChatbot generateATSResume={generateATSResume} generateExecutiveProfile={generateExecutiveProfile} />
+        <LazyAIBrandChatbot downloadResume={downloadResume} generateExecutiveProfile={generateExecutiveProfile} />
       </Suspense>
     </div>
   );

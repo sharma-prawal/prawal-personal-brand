@@ -40,7 +40,7 @@ const SYNONYMS = {
 
   // Projects
   projects: ['project', 'case study', 'portfolio', 'built', 'delivered', 'poc', 'application', 'system'],
-  connectors: ['connectors platform', 'data integration', 'source integration', '200 sources', 'facebook ads'],
+  connectors: ['connectors platform', 'data integration', 'source integration', '90 sources', 'facebook ads'],
   banking: ['fintech', 'ach', 'payment', 'transaction', 'bim', 'enrollment', 'fraud'],
   'data platform': ['data serve', 'data refinery', 'pipeline', 'ingestion', 'snowflake'],
   media: ['dentsu', 'advertising', 'media domain', 'campaign'],
