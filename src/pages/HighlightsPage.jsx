@@ -36,7 +36,7 @@ function HighlightCard({ highlight, priority, isBook }) {
         {highlight.links.length > 0 ? (
           <div className="highlight-links">
             {highlight.links.map((link) => (
-              <Button asChild variant="secondary" size="compact" className="highlight-links__item" key={link.url}>
+              <Button asChild variant="secondary" size="compact" className="secondary-link compact highlight-links__item" key={link.url}>
                 <a href={link.url} target="_blank" rel="noreferrer">
                   <DiagArrow size={14} />
                   <span>{link.label}</span>

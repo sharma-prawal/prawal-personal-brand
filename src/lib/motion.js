@@ -2,8 +2,8 @@ export const premiumEase = [0.16, 1, 0.3, 1];
 export const exitEase = [0.7, 0, 0.84, 0];
 
 export const fadeUp = {
-  hidden: { opacity: 0, y: 22, filter: "blur(10px)" },
-  visible: { opacity: 1, y: 0, filter: "blur(0px)" }
+  hidden: { opacity: 0, y: 12 },
+  visible: { opacity: 1, y: 0 }
 };
 
 export const stagger = {
@@ -24,8 +24,8 @@ export const pageEntrance = {
 };
 
 export const itemReveal = {
-  hidden: { opacity: 0, y: 18, filter: "blur(8px)" },
-  visible: { opacity: 1, y: 0, filter: "blur(0px)" }
+  hidden: { opacity: 0, y: 18 },
+  visible: { opacity: 1, y: 0 }
 };
 
 export const cardHover = {
@@ -43,18 +43,18 @@ export const viewportReveal = { once: true, amount: 0.04, margin: "0px 0px -4% 0
 
 // Split-slide — opposing horizontal entries for two-column layouts
 export const slideLeft = {
-  hidden: { opacity: 0, x: -28, filter: "blur(4px)" },
-  visible: { opacity: 1, x: 0, filter: "blur(0px)" }
+  hidden: { opacity: 0, x: -28 },
+  visible: { opacity: 1, x: 0 }
 };
 export const slideRight = {
-  hidden: { opacity: 0, x: 28, filter: "blur(4px)" },
-  visible: { opacity: 1, x: 0, filter: "blur(0px)" }
+  hidden: { opacity: 0, x: 28 },
+  visible: { opacity: 1, x: 0 }
 };
 
 // Scale reveal — cinematic entrance for featured hero cards
 export const scaleReveal = {
-  hidden: { opacity: 0, scale: 0.97, filter: "blur(6px)" },
-  visible: { opacity: 1, scale: 1, filter: "blur(0px)" }
+  hidden: { opacity: 0, scale: 0.97 },
+  visible: { opacity: 1, scale: 1 }
 };
 
 // Row reveal — horizontal slide for list/archive rows (no blur for perf)

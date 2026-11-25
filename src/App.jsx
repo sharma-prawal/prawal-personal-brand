@@ -1,7 +1,7 @@
 import React, { lazy, Suspense, useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Link, NavLink, Navigate, Route, Routes, useLocation } from "react-router-dom";
-import { Check, ChevronLeft, ChevronRight, Copy, Linkedin, LockKeyhole, Menu, X } from "lucide-react";
+import { Check, ChevronDown, ChevronLeft, ChevronRight, Copy, Linkedin, LockKeyhole, Menu, X } from "lucide-react";
 import { LocationDot } from "./components/icons.jsx";
 import { LinkedInButton, ScrollToTop, downloadResume, generateExecutiveProfile } from "./components/shared.jsx";
 import { getDirectContact, profile } from "./data/profile.js";
@@ -159,18 +159,11 @@ function DirectContactPanel() {
 function AppShell() {
   const location = useLocation();
   const shouldReduceMotion = useReducedMotion();
-  const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001
-  });
   const topNavRef = useRef(null);
   const topNavPointerTypeRef = useRef("mouse");
   const topNavCloseTimerRef = useRef(null);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [openTopMenu, setOpenTopMenu] = useState(null);
-  const [hoveredItem, setHoveredItem] = useState(null);
   const [isScrolled, setIsScrolled] = useState(false);
 
   const cancelTopMenuClose = () => {
@@ -263,15 +256,11 @@ function AppShell() {
 
   return (
     <div className="site-shell" data-theme={currentTheme}>
-      <motion.div className="scroll-progress-bar" style={{ scaleX }} />
       <ScrollToTop />
       <header className={`topbar${isScrolled ? " is-scrolled" : ""}`}>
         <Link className="brand-lockup" to="/" aria-label="Prawal Sharma home">
-          <span className="brand-mark">{profile.initials}</span>
-          <span className="brand-text">
-            <strong>{profile.name}</strong>
-            <small>Engineering Leader</small>
-          </span>
+          <strong>{profile.name}</strong>
+          <small>Engineering leader</small>
         </Link>
         <nav aria-label="Primary navigation" className="topbar-nav" ref={topNavRef}>
           {topNavItems.map((item) => {
@@ -297,26 +286,10 @@ function AppShell() {
                       (isKeyboardAction || topNavPointerTypeRef.current !== "mouse") && current === item.label ? null : item.label
                     ));
                   }}
-                  onMouseEnter={() => setHoveredItem(item.label)}
-                  onMouseLeave={() => setHoveredItem(null)}
                 >
-                  {isActive && (
-                    <motion.span
-                      layoutId="topNavActivePill"
-                      className="topbar-nav-pill"
-                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                    />
-                  )}
-                  {hoveredItem === item.label && !isActive && (
-                    <motion.span
-                      layoutId="topNavHoverPill"
-                      className="topbar-nav-pill--hover"
-                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                    />
-                  )}
-                  <span style={{ position: "relative", zIndex: 2, display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                  <span className="topbar-nav-label">
                     {item.label}
-                    <ChevronRight size={12} />
+                    <ChevronDown size={14} aria-hidden="true" />
                   </span>
                 </button>
                 <div className="topbar-submenu" role="menu" aria-label={`${item.label} pages`}>
@@ -341,24 +314,8 @@ function AppShell() {
                 to={item.path}
                 key={item.path}
                 aria-current={isActive ? "page" : undefined}
-                onMouseEnter={() => setHoveredItem(item.label)}
-                onMouseLeave={() => setHoveredItem(null)}
               >
-                {isActive && (
-                  <motion.span
-                    layoutId="topNavActivePill"
-                    className="topbar-nav-pill"
-                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                  />
-                )}
-                {hoveredItem === item.label && !isActive && (
-                  <motion.span
-                    layoutId="topNavHoverPill"
-                    className="topbar-nav-pill--hover"
-                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                  />
-                )}
-                <span style={{ position: "relative", zIndex: 2 }}>{item.label}</span>
+                {item.label}
               </Link>
             );
           })}
@@ -398,7 +355,7 @@ function AppShell() {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="mobile-nav-header">
-                <span className="brand-mark">{profile.initials}</span>
+                <strong className="mobile-nav-name">{profile.name}</strong>
                 <button type="button" aria-label="Close navigation" onClick={() => setMobileNavOpen(false)}>
                   <X size={20} />
                 </button>

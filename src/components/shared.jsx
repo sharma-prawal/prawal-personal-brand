@@ -160,8 +160,8 @@ export function ImageCarousel({ images, renderImage, size = "default", onSlideCl
 export function Reveal({ as: Component = motion.div, className, children, delay = 0, variants: variantsOverride, ...props }) {
   const shouldReduceMotion = useReducedMotion();
   const revealVariants = variantsOverride || {
-    hidden: { opacity: 0, y: 22, filter: "blur(10px)" },
-    visible: { opacity: 1, y: 0, filter: "blur(0px)" }
+    hidden: { opacity: 0, y: 12 },
+    visible: { opacity: 1, y: 0 }
   };
 
   return (
@@ -286,9 +286,9 @@ export function ProofImage({ src, alt, caption, priority = false, eager = false,
               >
                 <motion.div
                   className="image-lightbox__panel"
-                  initial={shouldReduceMotion ? false : { opacity: 0, scale: 0.975, y: 18, filter: "blur(10px)" }}
-                  animate={{ opacity: 1, scale: 1, y: 0, filter: "blur(0px)" }}
-                  exit={shouldReduceMotion ? undefined : { opacity: 0, scale: 0.985, y: 10, filter: "blur(8px)" }}
+                  initial={shouldReduceMotion ? false : { opacity: 0, scale: 0.975, y: 18 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={shouldReduceMotion ? undefined : { opacity: 0, scale: 0.985, y: 10 }}
                   transition={{ duration: shouldReduceMotion ? 0 : 0.38, ease: premiumEase }}
                   onClick={(event) => event.stopPropagation()}
                 >
@@ -342,8 +342,8 @@ export function ProofImage({ src, alt, caption, priority = false, eager = false,
       <motion.span
         className="proof-image-frame"
         style={frameStyle}
-        initial={shouldReduceMotion || !priority ? false : { opacity: 0, scale: 1.025, filter: "blur(8px)" }}
-        animate={shouldReduceMotion || !priority ? undefined : { opacity: 1, scale: 1, filter: "blur(0px)" }}
+        initial={shouldReduceMotion || !priority ? false : { opacity: 0, scale: 1.025 }}
+        animate={shouldReduceMotion || !priority ? undefined : { opacity: 1, scale: 1 }}
         transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.82, ease: premiumEase }}
       >
         {zoomable ? (
