@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "public/ai-engineering-leadership-framework.html"
+        ],
+        "createdAt": "2026-11-25T15:30:22.456Z",
+        "reason": "Claude verified in browser: .cover gets padding clamp(18px,4vw,34px) from linked public/portfolio-documents.css; measured 18px inset at 390px and 34px at 1440px. Detector scans the HTML without the external stylesheet."
+      }
+    ]
+  }
+}

@@ -1,0 +1,13 @@
+# Not needed to build the site. Keeps Vercel CLI uploads small.
+# Patterns start with "/" so they match only at the project root
+# (src/assets/ holds the diagram SVGs and must be uploaded).
+# Vercel also skips .env.local, node_modules and .git by default.
+/Assets/
+/images-output/
+/chatbot-images/
+/review-screenshots/
+/scratch/
+/docs/
+/dist/
+/.claude/
+/VISUAL_AUDIT_TRACKER.md
