@@ -1,88 +1,46 @@
 import { motion } from "framer-motion";
 import { DiagArrow } from "../components/icons.jsx";
-import { ImageCarousel, MotionCard, MotionGroup, PageFrame, ProofImage, Reveal } from "../components/shared.jsx";
-import { Button } from "../components/ui/button.jsx";
+import { ImageCarousel, PageFrame, ProofImage, Reveal } from "../components/shared.jsx";
 import { imageAlt, imageCaption, imageSrc } from "../data/imageMetadata.js";
 import { internationalExposure, professionalHighlights } from "../data/mediaAssets.js";
-import { itemReveal } from "../lib/motion.js";
 
-function HighlightCard({ highlight, priority, isBook }) {
+function HighlightFeature({ highlight, reverse = false, priority = false }) {
+  if (!highlight) return null;
   return (
-    <MotionCard className={`highlight-card${isBook ? " highlight-card--book" : ""}`} priority={priority}>
-      <div className="highlight-media-gallery">
+    <Reveal as={motion.section} className={["conf-feature", reverse ? "conf-feature--reverse" : ""].filter(Boolean).join(" ")} aria-labelledby={`hl-${highlight.title.replace(/\W+/g, "-")}`}>
+      <div className="conf-feature__media">
         <ImageCarousel
           images={highlight.images}
           onSlideClick={(e) => { const btn = e.currentTarget.querySelector(".proof-image-button"); if (btn) btn.click(); }}
           renderImage={(image) => (
             <ProofImage
               src={imageSrc(image)}
-              alt={imageAlt(image, `${highlight.title} proof`)}
+              alt={imageAlt(image, `${highlight.title} photo`)}
               caption={imageCaption(image, highlight.context)}
               priority={priority}
+              eager={priority}
             />
           )}
         />
       </div>
-      <div className="highlight-copy">
-        <div className="highlight-category-header">
-          <span className="highlight-category-pill">{highlight.category.toUpperCase()}</span>
-        </div>
-        <h3 className="premium-highlight-title">{highlight.title}</h3>
-        <p className="premium-highlight-description">{highlight.context}</p>
-        <div className="takeaway-panel highlight-takeaway-panel">
-          <strong>Why it matters</strong>
+      <div className="conf-feature__copy">
+        <p className="conf-feature__meta">{highlight.category}</p>
+        <h2 id={`hl-${highlight.title.replace(/\W+/g, "-")}`}>{highlight.title}</h2>
+        <p className="conf-feature__theme">{highlight.context}</p>
+        <div className="conf-feature__takeaway">
+          <span>Why it matters</span>
           <p>{highlight.story}</p>
         </div>
-        {highlight.links.length > 0 ? (
-          <div className="highlight-links">
+        {highlight.links?.length ? (
+          <div className="projects-links">
             {highlight.links.map((link) => (
-              <Button asChild variant="secondary" size="compact" className="secondary-link compact highlight-links__item" key={link.url}>
-                <a href={link.url} target="_blank" rel="noreferrer">
-                  <DiagArrow size={14} />
-                  <span>{link.label}</span>
-                </a>
-              </Button>
+              <a className="projects-link" href={link.url} target="_blank" rel="noreferrer" key={link.url}>
+                <span>{link.label}</span>
+                <DiagArrow size={14} />
+              </a>
             ))}
           </div>
         ) : null}
-      </div>
-    </MotionCard>
-  );
-}
-
-function FeaturedHighlight({ highlight }) {
-  if (!highlight) return null;
-
-  return (
-    <Reveal as={motion.section} className="featured-highlight">
-      <div className="featured-highlight__media">
-        <ImageCarousel
-          images={highlight.images}
-          onSlideClick={(e) => { const btn = e.currentTarget.querySelector(".proof-image-button"); if (btn) btn.click(); }}
-          renderImage={(image) => (
-            <ProofImage
-              src={imageSrc(image)}
-              alt={imageAlt(image, `${highlight.title} featured proof`)}
-              caption={imageCaption(image, highlight.context)}
-              priority
-              eager
-            />
-          )}
-        />
-      </div>
-      <div className="featured-highlight__copy">
-        <span className="eyebrow">{highlight.category}</span>
-        <h2>{highlight.title}</h2>
-        <p>{highlight.context}</p>
-        <div className="featured-highlight__why">
-          <span>Why it matters</span>
-          <strong>{highlight.story}</strong>
-        </div>
-        <div className="featured-highlight__signals">
-          <span>{highlight.images.length} documentary proofs</span>
-          <span>B1/B2 business visa</span>
-          <span>US onsite client delivery</span>
-        </div>
       </div>
     </Reveal>
   );
@@ -190,83 +148,50 @@ function GlobalRoutesMap() {
 }
 
 export default function HighlightsPage() {
-  const featuredHighlight = professionalHighlights[0];
-  const supportingHighlights = professionalHighlights.slice(1);
-  const highlightProofSignals = [
-    { value: "Onsite", label: "client-facing alignment" },
-    { value: "Published", label: "communication contribution" },
-    { value: "Global", label: "cross-border operating range" }
-  ];
-  const globalSignalLedger = [
-    { label: "US onsite delivery", value: "B1/B2 business visa, so I can work in person with US clients" },
-    { label: "Remote stakeholder alignment", value: "UK and South Africa: multi-year delivery relationships" },
-    { label: "Cultural operating range", value: "Phuket, Nepal, Vietnam and Dubai" }
+  const workAbroad = [
+    { title: "US onsite delivery", text: "Worked in person with US clients on a B1/B2 business visa." },
+    { title: "UK and South Africa", text: "Multi-year delivery relationships with remote stakeholders." },
+    { title: "Travel", text: "Phuket, Nepal, Vietnam and Dubai." }
   ];
 
   return (
     <div data-theme="highlights">
-    <PageFrame
-      eyebrow="Highlights"
-      title="Client visits, publications and other milestones."
-      intro="The moments that don’t show up in delivery numbers: working onsite with clients, international exposure and published writing."
-      className="highlights-page-hero"
-      heroAside={
-        <motion.div className="highlights-hero-ledger" variants={itemReveal}>
-          {highlightProofSignals.map((item) => (
-            <div className="highlights-hero-ledger__item" key={item.label}>
-              <strong>{item.value}</strong>
-              <span>{item.label}</span>
-            </div>
+      <PageFrame
+        eyebrow="Highlights"
+        title="Client visits, publications and other milestones."
+        intro="The moments that don’t show up in delivery numbers: working onsite with clients, international exposure and published writing."
+        className="highlights-page-hero"
+      >
+        <div className="ledger-page">
+          {professionalHighlights.map((highlight, index) => (
+            <HighlightFeature highlight={highlight} reverse={index % 2 === 1} priority={index === 0} key={highlight.title} />
           ))}
-        </motion.div>
-      }
-    >
-      <FeaturedHighlight highlight={featuredHighlight} />
 
-      <div className="premium-section-divider highlight-section-divider">
-        <span className="premium-divider-label">Selected proof notes</span>
-        <hr />
-      </div>
-
-      <div className="highlight-supporting-layout">
-        <MotionGroup className="highlight-grid highlight-grid--supporting">
-          {supportingHighlights.map((highlight, index) => (
-            <HighlightCard
-              highlight={highlight}
-              priority={index === 0}
-              key={highlight.title}
-              isBook={highlight.links && highlight.links.length > 0}
-            />
-          ))}
-        </MotionGroup>
-        <Reveal as={motion.section} className="international-note">
-          <div className="international-note__copy">
-            <span>{internationalExposure.category}</span>
-            <h3 className="international-note__title">{internationalExposure.title}</h3>
-            <p>{internationalExposure.summary}</p>
-            <small>{internationalExposure.note}</small>
-            <div className="global-signal-ledger">
-              {globalSignalLedger.map((item) => (
-                <div className="global-signal-ledger__item" key={item.label}>
-                  <span>{item.label}</span>
-                  <strong>{item.value}</strong>
-                </div>
+          <Reveal as={motion.section} className="home-section home-section--split" aria-labelledby="hl-abroad-title">
+            <header className="home-section__head">
+              <h2 id="hl-abroad-title">Working across borders</h2>
+              <p>{internationalExposure.summary}</p>
+            </header>
+            <ol className="home-rules">
+              {workAbroad.map((item) => (
+                <li key={item.title}>
+                  <h3>{item.title}</h3>
+                  <p>{item.text}</p>
+                </li>
               ))}
-            </div>
-          </div>
-        </Reveal>
-      </div>
+            </ol>
+          </Reveal>
 
-      <Reveal as={motion.section} className="global-map-card">
-        <div className="global-map-card__header">
-          <span className="eyebrow">Travel</span>
-          <h2>Where work and travel have taken me</h2>
+          <Reveal as={motion.section} className="home-section global-map-section" aria-labelledby="hl-map-title">
+            <header className="home-section__head">
+              <h2 id="hl-map-title">Where work and travel have taken me</h2>
+            </header>
+            <div className="global-map-card__body">
+              <GlobalRoutesMap />
+            </div>
+          </Reveal>
         </div>
-        <div className="global-map-card__body">
-          <GlobalRoutesMap />
-        </div>
-      </Reveal>
-    </PageFrame>
+      </PageFrame>
     </div>
   );
 }

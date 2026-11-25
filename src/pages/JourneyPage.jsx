@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
-import { MotionGroup, Reveal } from "../components/shared.jsx";
+import { PageFrame, Reveal } from "../components/shared.jsx";
 import { profile } from "../data/profile.js";
-import { itemReveal, premiumEase, slideLeft, slideRight, splitStagger, tapPress } from "../lib/motion.js";
 
 const journeyArc = [
   { label: "Foundation", title: "Built from implementation depth", text: "Started close to the code, delivery details, production constraints, and practical engineering habits." },
@@ -28,177 +27,103 @@ const roleProofs = [
 function formatRoleYears(period) {
   const years = period.match(/\d{4}|Present/g);
   if (!years?.length) return period;
-  return `${years[0]} - ${years[years.length - 1]}`;
+  return `${years[0]} – ${years[years.length - 1]}`;
 }
 
 export default function JourneyPage() {
   const successive = profile.experience[0];
+  const facts = [
+    { value: "10", label: "Years at Successive Digital" },
+    { value: String(successive.roles.length), label: "Roles, trainee to technology manager" },
+    { value: "3", label: "Client regions: US, UK, South Africa" },
+    { value: "10", label: "Awards along the way" }
+  ];
 
   return (
     <div data-theme="journey">
-      <Reveal as={motion.section} className="journey-hero">
-        <div className="journey-hero__copy">
-          <span className="eyebrow">Career</span>
-          <h1>From trainee to technology manager in ten years.</h1>
-          <p>How hands-on engineering grew into owning systems, leading global delivery and building an AI-assisted way of working.</p>
-        </div>
-        <div className="journey-hero__ledger" aria-label="Journey proof ledger">
-          {[
-            { value: "10", label: "Years in engineering" },
-            { value: "5", label: "Role transitions" },
-            { value: "3", label: "Client regions: US, UK, South Africa" }
-          ].map((item) => (
-            <div className="journey-hero__ledger-item" key={item.label}>
-              <strong>{item.value}</strong>
-              <span>{item.label}</span>
-            </div>
-          ))}
-        </div>
-      </Reveal>
-
-      <Reveal as={motion.section} className="journey-arc">
-        <div className="journey-arc__lead">
-          <span className="eyebrow">Three stages</span>
-          <h2>How the work changed.</h2>
-          <p>Titles changed along the way, but the bigger shift was the size of the problems: larger systems, higher stakes and more judgment calls.</p>
-        </div>
-        <MotionGroup className="journey-arc__grid">
-          {journeyArc.map((item) => (
-            <motion.article className="journey-arc-card" variants={itemReveal} key={item.title}>
-              <span>{item.label}</span>
-              <h3>{item.title}</h3>
-              <p>{item.text}</p>
-            </motion.article>
-          ))}
-        </MotionGroup>
-      </Reveal>
-
-      <section className="successive-flagship">
-        <Reveal as={motion.div} className="successive-dossier-heading" variants={splitStagger}>
-          <motion.div
-            className="successive-dossier-signal"
-            aria-label="Career signal"
-            variants={slideLeft}
-            transition={{ duration: 0.72, ease: premiumEase }}
-          >
-            <span>Primary tenure</span>
-            <strong>
-              <span>10 yr</span>
-            </strong>
-            <p>Five role transitions, ten recognitions, and delivery exposure across US, UK, and South Africa stakeholders.</p>
-          </motion.div>
-          <motion.div
-            variants={slideRight}
-            transition={{ duration: 0.72, ease: premiumEase }}
-          >
-            <span className="eyebrow">Successive Digital</span>
-            <h2>Most of my career has been at one company.</h2>
-            <p>Ten years at Successive Digital, from trainee to technology manager, with each step earned through delivery rather than time served.</p>
-          </motion.div>
-        </Reveal>
-        <div className="successive-flagship-layout">
-          <aside className="successive-side-panel">
-            <div className="successive-side-sticky">
-              <span className="eyebrow">At a glance</span>
-              <h2 className="successive-company-title">{successive.company}</h2>
-              <span className="successive-company-loc">{successive.location}</span>
-              <p className="successive-tagline">5 promotions in 10 years</p>
-              <div className="successive-side-stats">
-                {[
-                  { value: "5", label: "Role transitions", numeric: true },
-                  { value: "10", label: "Recognitions", numeric: true },
-                  { value: "US·UK·SA", label: "Delivery regions", numeric: false },
-                  { value: "10yr", label: "At Successive", numeric: true }
-                ].map((s) => (
-                  <div className="successive-side-stat" key={s.label}>
-                    <strong>{s.value}</strong>
-                    <span>{s.label}</span>
-                  </div>
-                ))}
+      <PageFrame
+        eyebrow="Career"
+        title="From trainee to technology manager in ten years."
+        intro="How hands-on engineering grew into owning systems, leading global delivery and building an AI-assisted way of working."
+      >
+        <div className="ledger-page">
+          <dl className="home-facts" aria-label="Career at a glance">
+            {facts.map((fact) => (
+              <div className="home-facts__item" key={fact.label}>
+                <dt>{fact.label}</dt>
+                <dd>{fact.value}</dd>
               </div>
-              <div className="progression-mini-rail">
-                <span className="eyebrow">Roles</span>
-                <div className="progression-mini-rail__list">
-                  {successive.roles.map((role, idx) => (
-                    <div className={`progression-rail-item ${idx === 0 ? "active" : ""}`} key={role.title}>
-                      <div className="progression-rail-dot" />
-                      <div className="progression-rail-info">
-                        <strong>{role.title}</strong>
-                        <span>{formatRoleYears(role.period)}</span>
-                      </div>
-                    </div>
-                  ))}
+            ))}
+          </dl>
+
+          <Reveal as={motion.section} className="home-section" aria-labelledby="journey-stages-title">
+            <header className="home-section__head">
+              <h2 id="journey-stages-title">How the work changed</h2>
+              <p>Titles changed along the way, but the bigger shift was the size of the problems: larger systems, higher stakes and more judgment calls.</p>
+            </header>
+            <ol className="stage-cols">
+              {journeyArc.map((item, index) => (
+                <li key={item.title}>
+                  <span className="stage-cols__no">{String(index + 1).padStart(2, "0")} · {item.label}</span>
+                  <h3>{item.title}</h3>
+                  <p>{item.text}</p>
+                </li>
+              ))}
+            </ol>
+          </Reveal>
+
+          <Reveal as={motion.section} className="home-section" aria-labelledby="journey-roles-title">
+            <header className="home-section__head">
+              <h2 id="journey-roles-title">Successive Digital, {successive.location}</h2>
+              <p>Most of my career has been at one company: five roles in ten years, each earned through delivery rather than time served.</p>
+            </header>
+            <ol className="role-ledger">
+              {successive.roles.map((role, idx) => (
+                <li key={role.title}>
+                  <div className="role-ledger__when">
+                    <span>{formatRoleYears(role.period)}</span>
+                    {idx === 0 ? <span className="role-ledger__current">Current role</span> : null}
+                  </div>
+                  <div className="role-ledger__what">
+                    <h3>{role.title}</h3>
+                    {roleProofs[idx]?.summary ? <p className="role-ledger__summary">{roleProofs[idx].summary}</p> : null}
+                    <ul>
+                      {role.details.map((detail) => <li key={detail}>{detail}</li>)}
+                    </ul>
+                    {roleTags[idx]?.length ? (
+                      <p className="role-ledger__focus"><span>Focus</span> {roleTags[idx].join(" · ")}</p>
+                    ) : null}
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </Reveal>
+
+          <Reveal as={motion.section} className="home-section" aria-labelledby="journey-before-title">
+            <header className="home-section__head">
+              <h2 id="journey-before-title">Before that, and education</h2>
+            </header>
+            <ol className="role-ledger role-ledger--compact">
+              <li>
+                <div className="role-ledger__when"><span>2014 – 2016</span></div>
+                <div className="role-ledger__what">
+                  <h3>Early roles</h3>
+                  <p className="role-ledger__summary">
+                    Software trainee at GirnarSoft (CarDekho and BikeDekho, 2016), and summer internships at NIIT Technologies (2015) and Aptech (2014).
+                  </p>
                 </div>
-              </div>
-            </div>
-          </aside>
-
-          <div className="successive-roles-timeline">
-            <div className="journey-timeline-rail" />
-            <div className="successive-roles">
-              {successive.roles.map((role, idx) => {
-                const isCurrent = idx === 0;
-                const roleProof = roleProofs[idx];
-                return (
-                  <div className="journey-timeline-item" key={role.title}>
-                    <div className={`journey-timeline-marker ${isCurrent ? "journey-timeline-marker--active" : ""}`}>
-                      <span className="journey-timeline-year">{formatRoleYears(role.period).split(" - ")[0]}</span>
-                    </div>
-                    <motion.article
-                      className={["successive-role glass-card spotlight-card", isCurrent ? "successive-role--current" : ""].filter(Boolean).join(" ")}
-                      variants={itemReveal}
-                      whileTap={tapPress}
-                      transition={{ duration: 0.42, ease: premiumEase }}
-                    >
-                      <div className="successive-role-header">
-                        <div>
-                          <h3>{role.title}</h3>
-                          <span className="role-period">{role.period}</span>
-                        </div>
-                        {isCurrent && <span className="current-badge">Current</span>}
-                      </div>
-                      <div className="role-dossier-grid">
-                        <p className="role-summary">{roleProof.summary}</p>
-                        <ul>
-                          {roleProof.points.map((detail) => (
-                            <li key={detail}>{detail}</li>
-                          ))}
-                        </ul>
-                      </div>
-                      <div className="journey-capability-tags">
-                        {roleTags[idx]?.map((tag) => (
-                          <span className="journey-tag" key={tag}>{tag}</span>
-                        ))}
-                      </div>
-                    </motion.article>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+              </li>
+              <li>
+                <div className="role-ledger__when"><span>{profile.education.period}</span></div>
+                <div className="role-ledger__what">
+                  <h3>{profile.education.school}</h3>
+                  <p className="role-ledger__summary">{profile.education.degree}</p>
+                </div>
+              </li>
+            </ol>
+          </Reveal>
         </div>
-      </section>
-
-      <Reveal className="earlier-career earlier-career--compact">
-        <p>
-          <strong>Before Successive Digital:</strong> software trainee at GirnarSoft (CarDekho and BikeDekho, 2016),
-          and summer internships at NIIT Technologies (2015) and Aptech (2014).
-        </p>
-      </Reveal>
-
-      <Reveal className="education-block">
-        <div className="education-card">
-          <span className="eyebrow">Education</span>
-          <div className="education-main">
-            <h3>{profile.education.school}</h3>
-            <span>{profile.education.degree}</span>
-          </div>
-          <div className="education-meta">
-            <span className="education-period">{profile.education.period}</span>
-          </div>
-        </div>
-      </Reveal>
-
+      </PageFrame>
     </div>
   );
 }

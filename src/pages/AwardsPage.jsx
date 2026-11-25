@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronRight, X, ZoomIn } from "lucide-react";
-import { MotionGroup, PageFrame, ReflectionBlock, Reveal } from "../components/shared.jsx";
+import { X } from "lucide-react";
+import { PageFrame, Reveal } from "../components/shared.jsx";
 import { imageSrc } from "../data/imageMetadata.js";
 import { awardAssets } from "../data/mediaAssets.js";
-import { itemReveal, premiumEase, rowReveal, rowStagger, viewportReveal } from "../lib/motion.js";
+import { premiumEase } from "../lib/motion.js";
 
 const awardSignals = {
   "ESOP Ownership Achievement Award": { signal: "Ownership maturity", meaning: "Long-term commitment translated into trust, accountability, and organization-level contribution." },
@@ -104,162 +104,93 @@ function PremiumProofGalleryModal({ award, signal, onClose }) {
 
 export default function AwardsPage() {
   const [selectedAward, setSelectedAward] = useState(null);
-
-  const heroAward = awardAssets[0];
-  const gridAwards = awardAssets.slice(1, 4);
-  const archiveAwards = awardAssets.slice(4);
-  const recognitionLedger = [
-    { value: "10", label: "awards", text: "Repeated recognition across ownership, client trust, delivery, and long-term contribution." },
-    { value: "8", label: "year span", text: "From early performer awards to recent leadership recognition." },
-    { value: "2", label: "awards at the 2026 offsite", text: "Outstanding Contribution and ESOP Ownership Achievement, at the Leadership Offsite 2026." },
-    { value: "2023", label: "Employee of the Year", text: "For contribution to organizational growth and delivery excellence." }
+  const recent = awardAssets.filter((award) => award.date?.includes("2026"));
+  const years = awardAssets.map((award) => Number((award.date || "").match(/\d{4}/)?.[0])).filter(Boolean);
+  const facts = [
+    { value: String(awardAssets.length), label: "Awards at Successive Digital" },
+    { value: `${Math.min(...years)}–${Math.max(...years)}`, label: "Years covered" },
+    { value: String(recent.length), label: "At the 2026 leadership offsite" },
+    { value: "2023", label: "Employee of the Year" }
   ];
 
-  const signatureAwards = gridAwards.map((award) => ({ ...award, ...getSignal(award) }));
-  const archiveEntries = archiveAwards.map((award) => ({ ...award, ...getSignal(award) }));
-  const heroProofImage = heroAward?.images?.[0];
-  const heroSignal = heroAward ? getSignal(heroAward) : null;
-  const proofCount = awardAssets.reduce((count, award) => count + (award.images?.length || 0), 0);
-
   return (
-    <div data-theme="awards" style={{ position: "relative" }}>
-      {/* Ambient gold glow — non-fixed, scrolls with content for visible gold atmosphere */}
-      <div aria-hidden="true" style={{
-        position: "absolute",
-        top: 0,
-        left: "50%",
-        transform: "translateX(-50%)",
-        width: "140%",
-        height: "680px",
-        background: "radial-gradient(ellipse 80% 60% at 50% 0%, rgba(209,176,106,0.22) 0%, rgba(180,148,78,0.10) 40%, transparent 72%)",
-        pointerEvents: "none",
-        zIndex: 0,
-      }} />
-    <PageFrame
-      eyebrow="Recognition"
-      title="Ten awards in ten years at Successive Digital."
-      intro="For delivery milestones, client work and long-term contribution."
-    >
-      {heroAward && (
-        <Reveal as={motion.section} className="awards-recognition-hero">
-          <div className="awards-recognition-hero__copy">
-            <div className="award-metadata-row">
-              <span>{heroAward.issuer}</span>
-              <small>{heroAward.date}</small>
-            </div>
-            <h2>Recognised repeatedly, not just once.</h2>
-            <p>What matters is the pattern: ownership noticed across different years, teams and clients.</p>
-            <div className="awards-recognition-hero__signal">
-              <span>{heroSignal.signal}</span>
-              <strong>{heroAward.title}</strong>
-              <p>{heroSignal.meaning}</p>
-            </div>
-            <button className="award-proof-button" type="button" onClick={() => setSelectedAward(heroAward)}>
-              <ZoomIn size={15} />
-              <span>Inspect proof</span>
-            </button>
-          </div>
-          <button className="awards-recognition-hero__proof" type="button" onClick={() => setSelectedAward(heroAward)} aria-label={`Inspect ${heroAward.title}`}>
-            <span className="award-proof-kicker">Featured proof</span>
-            <span className="award-artifact-stage award-artifact-stage--hero">
-              {heroProofImage && <img src={imageSrc(heroProofImage)} alt={heroAward.title} />}
-            </span>
-          </button>
-        </Reveal>
-      )}
+    <div data-theme="awards">
+      <PageFrame
+        eyebrow="Awards"
+        title="Ten awards in ten years at Successive Digital."
+        intro="For delivery milestones, client work and long-term contribution. Select any award to see the certificate or photos."
+      >
+        <div className="ledger-page">
+          <dl className="home-facts" aria-label="Awards at a glance">
+            {facts.map((fact) => (
+              <div className="home-facts__item" key={fact.label}>
+                <dt>{fact.label}</dt>
+                <dd>{fact.value}</dd>
+              </div>
+            ))}
+          </dl>
 
-      <MotionGroup as={motion.section} className="awards-recognition-ledger" aria-label="Recognition proof ledger">
-        {recognitionLedger.map((item) => (
-          <motion.article className="awards-recognition-ledger__item" variants={itemReveal} key={item.label}>
-            <strong>{item.value}</strong>
-            <span>{item.label}</span>
-            <p>{item.text}</p>
-          </motion.article>
-        ))}
-      </MotionGroup>
+          {recent.length ? (
+            <Reveal as={motion.section} className="home-section" aria-labelledby="awards-recent-title">
+              <header className="home-section__head">
+                <h2 id="awards-recent-title">Most recent</h2>
+                <p>Both presented at the Successive Digital Leadership Offsite in May 2026.</p>
+              </header>
+              <ul className="photo-pair">
+                {recent.map((award) => (
+                  <li key={award.title}>
+                    <button type="button" onClick={() => setSelectedAward(award)} aria-label={`View ${award.title}`}>
+                      <span className="photo-pair__img">
+                        {award.images?.[0] ? <img src={imageSrc(award.images[0])} alt={award.images[0].alt || award.title} /> : null}
+                      </span>
+                      <span className="photo-pair__meta">{award.date}</span>
+                      <strong>{award.title}</strong>
+                      <span className="photo-pair__text">{award.description}</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
+          ) : null}
 
-      <Reveal as={motion.section} className="awards-section-intro">
-        <div>
-          <span className="eyebrow">Recent awards</span>
-          <h2>The latest awards and what each was for.</h2>
+          <Reveal as={motion.section} className="home-section" aria-labelledby="awards-all-title">
+            <header className="home-section__head">
+              <h2 id="awards-all-title">All awards</h2>
+              <p>Newest first.</p>
+            </header>
+            <ol className="ledger-rows">
+              {awardAssets.map((award) => {
+                const signal = getSignal(award);
+                return (
+                  <li key={`${award.title}-${award.date}`}>
+                    <button type="button" onClick={() => setSelectedAward(award)}>
+                      <span className="ledger-rows__date">{award.date}</span>
+                      <span className="ledger-rows__main">
+                        <strong>{award.title}</strong>
+                        <span>{award.description}</span>
+                      </span>
+                      <span className="ledger-rows__tag">{signal.signal}</span>
+                      <span className="ledger-rows__thumb">
+                        {award.images?.[0] ? <img src={imageSrc(award.images[0])} alt="" loading="lazy" /> : null}
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ol>
+          </Reveal>
         </div>
-        <p className="awards-section-intro__copy">
-          Each recognition is interpreted for what it signals: not a trophy, but a moment where ownership, contribution, or delivery reliability was made visible to the organization.
-        </p>
-      </Reveal>
 
-      <MotionGroup className="signature-awards-grid">
-        {signatureAwards.map((award) => (
-          <motion.button className="signature-award-card" type="button" variants={itemReveal} key={award.title} onClick={() => setSelectedAward(award)}>
-            <span className="award-artifact-stage signature-award-card__media">
-              {award.images?.[0] && <img src={imageSrc(award.images[0])} alt={award.title} />}
-            </span>
-            <span className="signature-award-card__body">
-              <span className="award-metadata-row">
-                <span>{award.issuer}</span>
-                <small>{award.date}</small>
-              </span>
-              <strong>{award.title}</strong>
-              <span className="signature-award-card__signal">{award.signal}</span>
-              <p>{award.meaning}</p>
-            </span>
-          </motion.button>
-        ))}
-      </MotionGroup>
-
-      <Reveal as={motion.section} className="awards-archive-ledger" aria-label="Award archive ledger">
-        <div className="awards-archive-ledger__header">
-          <div>
-            <span className="eyebrow">All awards</span>
-            <h2>Every award, newest first.</h2>
-          </div>
-          <span>{archiveEntries.length} archive entries - {proofCount} proof images</span>
-        </div>
-        <motion.div
-          className="awards-archive-ledger__rows"
-          initial="hidden"
-          whileInView="visible"
-          viewport={viewportReveal}
-          variants={rowStagger}
-        >
-          {archiveEntries.map((award) => (
-            <motion.button
-              className="awards-archive-row"
-              type="button"
-              key={`${award.title}-${award.date}`}
-              onClick={() => setSelectedAward(award)}
-              variants={rowReveal}
-              transition={{ duration: 0.42, ease: premiumEase }}
-            >
-              <span className="awards-archive-row__date">{award.date}</span>
-              <span className="awards-archive-row__main">
-                <strong>{award.title}</strong>
-                <p className="awards-archive-row__meaning">{award.meaning}</p>
-                <small>{award.issuer}</small>
-              </span>
-              <span className="awards-archive-row__signal">{award.signal}</span>
-              <ChevronRight size={16} />
-            </motion.button>
-          ))}
-        </motion.div>
-      </Reveal>
-
-      <AnimatePresence>
-        {selectedAward && (
-          <PremiumProofGalleryModal
-            award={selectedAward}
-            signal={getSignal(selectedAward)}
-            onClose={() => setSelectedAward(null)}
-          />
-        )}
-      </AnimatePresence>
-
-      <ReflectionBlock
-        eyebrow="In short"
-        title="Consistency is the point."
-        text="The awards came from different managers, years and projects. Together they point to the same things: ownership, client trust and reliable delivery."
-      />
-    </PageFrame>
+        <AnimatePresence>
+          {selectedAward && (
+            <PremiumProofGalleryModal
+              award={selectedAward}
+              signal={getSignal(selectedAward)}
+              onClose={() => setSelectedAward(null)}
+            />
+          )}
+        </AnimatePresence>
+      </PageFrame>
     </div>
   );
 }
