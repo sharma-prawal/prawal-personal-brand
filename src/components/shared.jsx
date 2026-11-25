@@ -82,6 +82,13 @@ export const getSystemIcon = (label) => {
 
 // ─── ScrollToTop ──────────────────────────────────────────────────────────────
 
+/** Sets the browser-tab title, e.g. "Awards | Prawal Sharma". */
+export function usePageTitle(title) {
+  useEffect(() => {
+    if (title) document.title = `${title} | Prawal Sharma`;
+  }, [title]);
+}
+
 export function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => {

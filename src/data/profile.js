@@ -7,15 +7,14 @@ export const profile = {
     "Technology Manager | AI-Driven Engineering Leader | Cloud & Scalable Systems | AWS | Azure | GCP Certified | Node.js | React | GraphQL",
   shortHeadline: "I lead engineering teams that ship faster with AI — without giving up reliability.",
   summary:
-    "Engineering leader who ships: 160K+ daily banking transactions at 99.9% uptime, 20–30% AI-assisted productivity gains across global teams, and a zero-escalation track record across nine years at Successive Digital.",
+    "Engineering leader who ships: 160K+ daily banking transactions at 99.9% uptime, 20–30% AI-assisted productivity gains across global teams, and multi-year client relationships across nine years at Successive Digital.",
   atsSummary:
-    "Technology Manager with 10 years of experience building and leading engineering teams delivering scalable, cloud-native, and AI-enabled systems for global clients across Media and Banking domains (US, UK, South Africa). Proven track record of 100% client satisfaction, zero escalations, and multi-year client retention. Strong hands-on expertise in distributed systems, microservices, LLM integrations, and full-stack development. AWS, Azure, and GCP certified. B1/B2 visa holder with onsite US client engagement experience.",
+    "Technology Manager with 10 years of experience building and leading engineering teams delivering scalable, cloud-native, and AI-enabled systems for global clients across Media and Banking domains (US, UK, South Africa). Proven track record of multi-year client retention and contract extensions. Strong hands-on expertise in distributed systems, microservices, LLM integrations, and full-stack development. AWS, Azure, and GCP certified. B1/B2 visa holder with onsite US client engagement experience.",
   focus:
     "Currently focused on LLM-enabled workflows, intelligent automation, scalable architecture, microservices, event-driven systems, serverless platforms, and AI-assisted engineering productivity.",
   proofPoints: [
     { value: "10", label: "Years in engineering" },
-    { value: "100%", label: "Client retention — 5+ year engagements, zero formal escalations" },
-    { value: "0", label: "Escalations in global delivery" },
+    { value: "5+ yrs", label: "Client engagements, with multi-year extensions" },
     { value: "20–30%", label: "Productivity lift via AI-assisted code, debugging & delivery" },
     { value: "5K", label: "LinkedIn followers" },
     { value: "15", label: "Recommendations received" }
@@ -44,11 +43,11 @@ export const profile = {
         "Replaced fragmented data pipelines with a single governed integration platform — enabling self-service reporting for 90+ media sources without manual engineering."
     },
     {
-      label: "Escalations, US, UK and SA clients",
-      metric: "0",
-      title: "Zero escalations across complex client engagements",
+      label: "Client engagements, US, UK and SA",
+      metric: "5+ yrs",
+      title: "Multi-year client relationships",
       detail:
-        "Led cross-functional delivery across US, UK, and South Africa stakeholders with calm ownership and consistent alignment."
+        "Led cross-functional delivery across US, UK, and South Africa stakeholders; engagements were extended over multiple years."
     },
     {
       label: "Uptime on banking payments",
@@ -66,7 +65,7 @@ export const profile = {
     "Strong exposure across media and banking domains"
   ],
   bring: [
-    "Led cross-functional teams delivering complex applications with 100% client satisfaction and zero escalations.",
+    "Led cross-functional teams delivering complex applications for US, UK, and South Africa clients.",
     "Built long-term client relationships resulting in multi-year project extensions.",
     "Drives adoption of AI-assisted development and automation workflows to improve engineering productivity.",
     "Strong hands-on expertise across Node.js, React, GraphQL, AWS, Azure, and GCP."
@@ -143,7 +142,7 @@ export const profile = {
           title: "Technology Lead",
           period: "July 2021 - November 2024",
           details: [
-            "Delivered end-to-end engineering for multiple large-scale applications with 100% client satisfaction and zero escalations; directly contributed to multi-year client retention and contract extensions.",
+            "Delivered end-to-end engineering for multiple large-scale applications with no formal client escalations; directly contributed to multi-year client retention and contract extensions.",
             "Connectors Platform (Media | Team: 11): Architected and built a data integration platform connecting 90+ data sources including Facebook Ads and Google Campaign Manager; implemented OAuth flows, data ingestion pipelines, and enterprise reporting systems.",
             "Data Serve (Media): Designed a centralized data platform integrating GCP, Azure ADLS, AWS S3, and Snowflake; enabled fully automated enterprise-grade data pipelines reducing manual data ops overhead.",
             "Enrollment & Transactions (Banking): Built a white-labeled ACH debit payment solution with fraud detection workflows, transaction management, and compliance-grade reliability for a US banking client.",

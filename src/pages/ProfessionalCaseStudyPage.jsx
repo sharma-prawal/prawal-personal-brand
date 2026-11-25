@@ -1,7 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { KeepRanges, PageFrame, ProofIndex, RecoveryPage, Reveal } from "../components/shared.jsx";
+import { KeepRanges, PageFrame, ProofIndex, RecoveryPage, Reveal, usePageTitle } from "../components/shared.jsx";
 import { professionalCasesWithSlugs } from "../data/derived.js";
 
 // Detailed system flow for the client case study.
@@ -32,6 +32,7 @@ export default function ProfessionalCaseStudyPage() {
   const { caseSlug } = useParams();
   const caseIndex = professionalCasesWithSlugs.findIndex((p) => p.slug === caseSlug);
   const project = professionalCasesWithSlugs[caseIndex];
+  usePageTitle(project ? project.name : "Case study not found");
 
   if (!project) return <RecoveryPage />;
 

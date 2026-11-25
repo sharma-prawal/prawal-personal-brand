@@ -106,7 +106,7 @@ function SelectedWork() {
               </div>
               <SystemFlowPreview diagram={diagram} />
               <Link className="home-link" to={`/ai-projects/professional/${project.slug}`} aria-label={`Read the ${title} case study`}>
-                Read case study <ArrowRight size={16} aria-hidden="true" />
+                Read the case study <ArrowRight size={16} aria-hidden="true" />
               </Link>
             </article>
           );

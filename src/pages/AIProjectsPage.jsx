@@ -40,7 +40,7 @@ function TextLink({ href, to, children }) {
   );
 }
 
-function BuildLinks({ project, caseLabel = "Case study" }) {
+function BuildLinks({ project, caseLabel = "Read the case study" }) {
   return (
     <div className="projects-links">
       <TextLink to={`/ai-projects/${project.slug}`}>{caseLabel}</TextLink>
@@ -66,7 +66,7 @@ function FlagshipCase({ project }) {
           {project.preview && <SystemFlowPreview diagram={project.preview.diagram} />}
           <div className="projects-case__outcome-wrap">
             {project.outcome ? <p className="projects-case__outcome">{project.outcome}</p> : null}
-            <TextLink to={`/ai-projects/professional/${project.slug}`}>Read the case</TextLink>
+            <TextLink to={`/ai-projects/professional/${project.slug}`}>Read the case study</TextLink>
           </div>
         </div>
       </div>

@@ -106,8 +106,29 @@ function ContactBand() {
   );
 }
 
+const pageTitles = {
+  "/": "Prawal Sharma | Engineering Leader",
+  "/journey": "Career | Prawal Sharma",
+  "/awards": "Awards | Prawal Sharma",
+  "/certifications": "Certifications | Prawal Sharma",
+  "/ai-projects": "Projects | Prawal Sharma",
+  "/conferences": "Conferences | Prawal Sharma",
+  "/highlights": "Highlights | Prawal Sharma",
+  "/recommendations": "Recommendations | Prawal Sharma"
+};
+
+// Case-study pages set their own title from the project name.
+function useRouteTitle(pathname) {
+  useEffect(() => {
+    const path = pathname.length > 1 ? pathname.replace(/\/+$/, "") : pathname;
+    if (path.startsWith("/ai-projects/") || path === "/references") return;
+    document.title = pageTitles[path] || "Page not found | Prawal Sharma";
+  }, [pathname]);
+}
+
 function AppShell() {
   const location = useLocation();
+  useRouteTitle(location.pathname);
   const shouldReduceMotion = useReducedMotion();
   const topNavRef = useRef(null);
   const mobileNavTrigger = useRef(null);

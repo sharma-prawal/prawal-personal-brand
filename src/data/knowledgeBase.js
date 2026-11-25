@@ -47,7 +47,7 @@ const identityChunks = [
     title: 'Impact Highlights & Proof Points',
     category: 'identity',
     rawText: profile.impactHighlights.map(h => `${h.label}: ${h.metric} — ${h.title}. ${h.detail}`).join(' | '),
-    summary: `Key achievements: 20–30% AI productivity lift (Successive Digital 2023–2025), 90+ data sources unified, zero escalations across US/UK/SA stakeholders, white-labeled fintech payment systems.`,
+    summary: `Key achievements: 20–30% AI productivity lift (Successive Digital 2023–2025), 90+ data sources unified, multi-year client engagements across US/UK/SA, white-labeled fintech payment systems.`,
     keywords: ['achievements', 'impact', 'results', 'productivity lift', '20 30', 'ai assisted', 'data platform', '90 sources', 'zero escalation', 'fintech', 'payment', 'banking', 'impact highlights', 'proof'],
     sourceSection: 'Executive',
     sourceUrl: '/',

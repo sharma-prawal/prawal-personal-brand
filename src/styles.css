@@ -71,11 +71,12 @@ svg.lucide {
   --font-display: "Newsreader", "Source Serif 4", Georgia, "Iowan Old Style", serif;
   --font-quote: var(--font-display);
   --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
-  --type-hero: clamp(2.6rem, 6.2vw, 5.4rem);
-  --type-page: clamp(2.4rem, 5.6vw, 4.9rem);
-  --type-section: clamp(1.9rem, 4vw, 3.6rem);
-  --type-feature: clamp(2rem, 4.8vw, 4.2rem);
-  --type-cta: clamp(1.9rem, 4vw, 3.7rem);
+  /* One display scale: home title > page title > CTA > section heading. */
+  --type-hero: clamp(2.3rem, 4.6vw, 4.25rem);
+  --type-page: clamp(2.2rem, 4.1vw, 3.6rem);
+  --type-cta: clamp(1.9rem, 3.2vw, 2.9rem);
+  --type-feature: clamp(1.9rem, 3.2vw, 2.8rem);
+  --type-section: clamp(1.7rem, 2.8vw, 2.5rem);
   --type-card-title: clamp(1.1rem, 1.6vw, 1.25rem);
   --type-sub-heading: clamp(1.3rem, 2vw, 1.65rem);
   --type-body: 1rem;
@@ -477,7 +478,7 @@ nav {
   align-items: center;
   gap: 6px;
   color: var(--green-text);
-  font-weight: 800;
+  font-weight: 600;
   font-size: 0.88rem;
   padding: 0 12px;
   text-decoration: none;
@@ -497,7 +498,7 @@ nav {
 
 main,
 footer {
-  width: min(var(--max), calc(100vw - 32px));
+  width: min(var(--max), calc(100vw - 40px));
   margin: 0 auto;
 }
 
@@ -754,11 +755,11 @@ h1,
 
 .page-hero h1 {
   max-width: 900px;
-  font-size: clamp(2.75rem, 5.2vw, 4.6rem);
+  font-size: var(--type-page);
   font-weight: 400;
   line-height: 1.06;
   padding-bottom: 0.08em;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
   font-variant-numeric: lining-nums;
 }
 
@@ -833,7 +834,7 @@ li {
   grid-column: 2;
   color: var(--ink-muted);
   font-size: 0.88rem;
-  font-weight: 800;
+  font-weight: 600;
 }
 
 .cert-group ul {
@@ -994,9 +995,9 @@ li {
   border-radius: 4px;
   font-family: var(--font-display);
   font-size: 1.05rem;
-  font-weight: 700;
+  font-weight: 600;
   flex-shrink: 0;
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
 }
 
 .recommendation-avatar--senior {
@@ -1151,14 +1152,6 @@ a.recommendation-verification--link:hover {
 }
 
 @media (max-width: 1100px) {
-  :root {
-    --type-hero: 5.25rem;
-    --type-page: 5.25rem;
-    --type-section: 3.9rem;
-    --type-feature: 4.25rem;
-    --type-cta: 3.9rem;
-  }
-
   .highlights-page-hero .page-hero__inner {
     grid-template-columns: 1fr;
     gap: 28px;
@@ -1174,17 +1167,12 @@ a.recommendation-verification--link:hover {
 
 @media (max-width: 760px) {
   :root {
-    --type-hero: 3.55rem;
-    --type-page: 3.75rem;
-    --type-section: 3.05rem;
-    --type-feature: 3.25rem;
-    --type-cta: 2.85rem;
     --type-card-title: 1.18rem;
     --type-body-large: 1rem;
   }
 
 main {
-    width: min(100vw - 24px, var(--max));
+    width: min(100vw - 40px, var(--max));
   }
 
   .page-hero {
@@ -1235,8 +1223,7 @@ main {
   }
 
   .page-hero h1 {
-    font-size: clamp(2.6rem, 10vw, var(--type-page));
-    line-height: 1.06;
+    line-height: 1.08;
   }
 
 .page-hero p,
@@ -1339,7 +1326,7 @@ main {
 .header-identity h3 {
   font-family: var(--font-sans);
   font-size: 1rem;
-  font-weight: 750;
+  font-weight: 600;
   margin: 0;
   color: var(--ink);
 }
@@ -1349,7 +1336,7 @@ main {
   align-items: center;
   gap: 6px;
   font-size: 0.72rem;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--ink-soft);
   margin-top: 2px;
 }
@@ -1504,7 +1491,7 @@ main {
 }
 
 .msg-bubble strong {
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .msg-bubble a {
@@ -1797,7 +1784,7 @@ main {
 .email-form-success strong {
   display: block;
   font-size: 0.88rem;
-  font-weight: 700;
+  font-weight: 600;
   margin-bottom: 2px;
   color: var(--ink);
 }
@@ -2081,10 +2068,6 @@ main {
 }
 
 @media (max-width: 520px) {
-  :root {
-    --type-section: 2.2rem;
-    --type-cta: 2.3rem;
-  }
 
 .eyebrow {
   }
@@ -2129,8 +2112,8 @@ main {
   max-width: 18ch;
   margin-top: 14px;
   font-family: var(--font-display);
-  font-size: clamp(2rem, 3.6vw, 3.9rem);
-  font-weight: 700;
+  font-size: var(--type-section);
+  font-weight: 600;
   line-height: 0.98;
 }
 
@@ -2233,7 +2216,7 @@ main {
   background: rgba(23, 22, 21, 0.72);
   color: #fff;
   font-size: 0.75rem;
-  font-weight: 900;
+  font-weight: 600;
   letter-spacing: 0.1em;
   pointer-events: none;
 }
@@ -2251,10 +2234,6 @@ main {
   border-bottom: none;
 }
 
-/* Override body background for awards theme — eliminates teal/green bleed */
-body:has([data-theme="awards"]) {
-  background: var(--raised);
-}
 
 /* ── Step 2: Remove every structural edge from hero sections ─────────────
    No border. No margin-top gap. No overflow clip.

@@ -1,7 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
-import { PageFrame, ProofImage, ProofIndex, RecoveryPage, Reveal } from "../components/shared.jsx";
+import { PageFrame, ProofImage, ProofIndex, RecoveryPage, Reveal, usePageTitle } from "../components/shared.jsx";
 import { imageAlt, imageCaption, imageSrc } from "../data/imageMetadata.js";
 import { aiProjectsWithSlugs } from "../data/derived.js";
 
@@ -28,6 +28,7 @@ export default function ProjectCaseStudyPage() {
   const { projectSlug: activeProjectSlug } = useParams();
   const projectIndex = aiProjectsWithSlugs.findIndex((p) => p.slug === activeProjectSlug);
   const project = aiProjectsWithSlugs[projectIndex];
+  usePageTitle(project ? project.name : "Case study not found");
 
   if (!project) return <RecoveryPage />;
 

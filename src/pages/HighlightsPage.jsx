@@ -1,9 +1,37 @@
+import { useLayoutEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { DiagArrow } from "../components/icons.jsx";
 import { ImageCarousel, PageFrame, ProofImage, Reveal } from "../components/shared.jsx";
 import { imageAlt, imageCaption, imageSrc } from "../data/imageMetadata.js";
 import { projectSlug } from "../data/derived.js";
 import { internationalExposure, professionalHighlights } from "../data/mediaAssets.js";
+
+// A map label whose background chip is sized from the rendered text, so it fits
+// whatever font is in use instead of a per-character estimate.
+function MapLabel({ x, y, anchor, label, textFill, chipStroke, weight, spacing }) {
+  const textRef = useRef(null);
+  const [box, setBox] = useState(null);
+  useLayoutEffect(() => {
+    let active = true;
+    const measure = () => {
+      const bounds = active ? textRef.current?.getBBox() : null;
+      if (bounds) setBox({ x: bounds.x, y: bounds.y, width: bounds.width, height: bounds.height });
+    };
+    measure();
+    document.fonts?.ready.then(measure);
+    return () => {
+      active = false;
+    };
+  }, [label]);
+  return (
+    <>
+      {box ? (
+        <rect x={box.x - 4} y={box.y - 1.5} width={box.width + 8} height={box.height + 3} rx="3" fill="rgba(251, 250, 246, 0.96)" stroke={chipStroke} strokeWidth="0.5" />
+      ) : null}
+      <text ref={textRef} x={x} y={y} fill={textFill} fontSize="9" fontWeight={weight} fontFamily="var(--font-sans)" letterSpacing={spacing} textAnchor={anchor}>{label}</text>
+    </>
+  );
+}
 
 function HighlightFeature({ highlight, reverse = false, priority = false }) {
   if (!highlight) return null;
@@ -108,30 +136,20 @@ function GlobalRoutesMap() {
           );
         })}
         {professionalRoutes.map((r) => {
-          const textWidth = r.label.length * 5.8 + 6;
-          const textHeight = 12;
-          const rx = r.dx < 0 ? r.x + r.dx - textWidth + 1 : r.x + r.dx - 1;
-          const ry = r.y + r.dy - 9;
           return (
             <g key={`dot-${r.id}`} className="route-dot route-dot--professional">
               <circle cx={r.x} cy={r.y} r="10" fill="url(#glow)" className="pulse-glow" />
               <circle cx={r.x} cy={r.y} r="3.5" fill="var(--gold)" />
-              <rect x={rx - 3} y={ry} width={textWidth + 6} height={textHeight} rx="3" fill="rgba(251, 250, 246, 0.96)" stroke="rgba(21, 94, 78, 0.45)" strokeWidth="0.5" />
-              <text x={r.x + r.dx} y={r.y + r.dy} fill="rgb(21, 94, 78)" fontSize="9" fontWeight="600" fontFamily="var(--font-sans)" letterSpacing="0.04em" textAnchor={r.dx < 0 ? "end" : "start"}>{r.label}</text>
+              <MapLabel x={r.x + r.dx} y={r.y + r.dy} anchor={r.dx < 0 ? "end" : "start"} label={r.label} textFill="rgb(21, 94, 78)" chipStroke="rgba(21, 94, 78, 0.45)" weight="600" spacing="0.04em" />
             </g>
           );
         })}
         {personalRoutes.map((r) => {
-          const textWidth = r.label.length * 5.8 + 6;
-          const textHeight = 12;
-          const rx = r.dx < 0 ? r.x + r.dx - textWidth + 1 : r.x + r.dx - 1;
-          const ry = r.y + r.dy - 9;
           return (
             <g key={`dot-${r.id}`} className="route-dot route-dot--personal">
               <circle cx={r.x} cy={r.y} r="9" fill="url(#glowPersonal)" className="pulse-glow" />
               <circle cx={r.x} cy={r.y} r="2.5" fill="rgba(84, 79, 71, 0.9)" />
-              <rect x={rx - 3} y={ry} width={textWidth + 6} height={textHeight} rx="3" fill="rgba(251, 250, 246, 0.96)" stroke="rgba(23, 21, 15, 0.18)" strokeWidth="0.5" />
-              <text x={r.x + r.dx} y={r.y + r.dy} fill="rgb(23, 21, 15)" fontSize="9" fontWeight="500" fontFamily="var(--font-sans)" letterSpacing="0.03em" textAnchor={r.dx < 0 ? "end" : "start"}>{r.label}</text>
+              <MapLabel x={r.x + r.dx} y={r.y + r.dy} anchor={r.dx < 0 ? "end" : "start"} label={r.label} textFill="rgb(23, 21, 15)" chipStroke="rgba(23, 21, 15, 0.18)" weight="500" spacing="0.03em" />
             </g>
           );
         })}
