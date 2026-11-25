@@ -624,8 +624,8 @@
 }
 
 .home-field__lead img {
-  aspect-ratio: 16 / 9;
-  object-position: center 45%;
+  aspect-ratio: 1068 / 1232; /* the summit photo's own proportions, so the sign is not cropped */
+  object-position: center 35%;
 }
 
 .home-field__grid figcaption {
@@ -676,6 +676,7 @@
 
 @media (min-width: 761px) {
   .home-field__grid {
+    grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
     grid-template-rows: repeat(2, 1fr) auto;
     row-gap: clamp(12px, 1.5vw, 20px);
   }

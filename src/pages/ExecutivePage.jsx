@@ -17,7 +17,7 @@ import { profile } from "../data/profile.js";
 const featuredWork = professionalCasesWithSlugs.filter(({ preview }) => preview);
 
 const fieldPhotos = [
-  { records: conferenceAssets, title: "AI Impact Summit", photoIndex: 1, to: "/conferences#featured-event", label: "AI Impact Summit", caption: "On the exhibition floor at the 2026 summit.", lead: true },
+  { records: conferenceAssets, title: "AI Impact Summit", photoIndex: 5, to: "/conferences#featured-event", label: "AI Impact Summit", caption: "Attending the 2026 summit.", lead: true },
   { records: professionalHighlights, title: "USA Client Business Visit", photoIndex: 0, to: "/highlights#usa-client-business-visit", label: "Client visit, USA", caption: "A trip for onsite client collaboration." },
   { records: conferenceAssets, title: "Deloitte Fast 50", photoIndex: 7, to: "/conferences#deloitte-fast-50", label: "Deloitte Fast 50", caption: "Onstage at the 2023 recognition event." }
 ].map(({ records, title, photoIndex, ...photo }) => ({
