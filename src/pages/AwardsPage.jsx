@@ -35,10 +35,10 @@ function AwardProofViewer({ award, signal, onClose, returnFocusRef }) {
   return createPortal(
     <OverlayDialog className="award-modal-overlay proof-modal" label={`${award.title} proof viewer`} onDismiss={onClose} returnFocusRef={returnFocusRef}>
       <div className="award-modal" data-theme="awards">
+        <button className="award-modal__close" type="button" onClick={onClose} aria-label="Close award viewer" data-dialog-initial-focus>
+          <X size={18} />
+        </button>
         <div className="award-modal__stage">
-          <button className="award-modal__close" type="button" onClick={onClose} aria-label="Close proof viewer" data-dialog-initial-focus>
-            <X size={17} />
-          </button>
           <div className="award-artifact-stage award-artifact-stage--modal">
             {activeImage && <img src={imageSrc(activeImage)} alt={award.title} />}
           </div>

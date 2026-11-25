@@ -1098,6 +1098,9 @@ a.recommendation-verification--link:hover {
   width: min(320px, 85vw);
   display: flex;
   flex-direction: column;
+  /* Start at the top: the global nav rule centres its content, which pushed
+     the header and close button above the screen on short phones. */
+  justify-content: flex-start;
   gap: 4px;
   padding: env(safe-area-inset-top, 0px) 0 max(32px, env(safe-area-inset-bottom, 0px));
   background: var(--raised);

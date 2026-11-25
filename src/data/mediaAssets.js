@@ -94,8 +94,8 @@ const awardRecords = [
     description:
       "Recognition for impactful engineering initiatives, ownership, collaboration, and contribution toward growth.",
     images: [
-      "/media/awards/Outstanding Contribution Award/1777978179122.jpeg",
-      "/media/awards/Outstanding Contribution Award/1777978177532.jpeg"
+      "/media/awards/Outstanding Contribution Award/1777978177532.jpeg",
+      "/media/awards/Outstanding Contribution Award/1777978179122.jpeg"
     ]
   },
   {

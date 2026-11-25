@@ -380,6 +380,21 @@
   filter: none;
 }
 
+/* Desktop: the portrait runs the full height of the text column,
+   from the top of the headline to the bottom of the buttons. */
+@media (min-width: 961px) {
+  .home-hero {
+    align-items: stretch;
+  }
+
+  .home-hero__portrait {
+    aspect-ratio: auto;
+    height: auto;
+    min-height: 320px;
+    contain: size; /* the photo fills the row; the text column sets its height */
+  }
+}
+
 .home-heading {
   display: flex;
   flex-wrap: wrap;
@@ -2359,6 +2374,7 @@ p.case-modules--after-list {
 }
 
 .award-modal {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1.8fr) minmax(260px, 1fr);
   grid-template-rows: minmax(0, 1fr) auto;
@@ -2393,15 +2409,16 @@ p.case-modules--after-list {
   object-fit: contain;
 }
 
+/* Top-right, like the other image viewers. */
 .award-modal__close {
   position: absolute;
   top: 12px;
-  left: 12px;
+  right: 12px;
   z-index: 2;
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   border: 1px solid rgba(244, 241, 234, 0.24);
   border-radius: 50%;
   background: rgba(15, 14, 11, 0.7);
