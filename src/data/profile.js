@@ -5,17 +5,16 @@ export const profile = {
   profileUrl: "https://www.linkedin.com/in/sharma-prawal/",
   headline:
     "Technology Manager | AI-Driven Engineering Leader | Cloud & Scalable Systems | AWS | Azure | GCP Certified | Node.js | React | GraphQL",
-  shortHeadline: "Engineering leadership for the AI era.",
+  shortHeadline: "I lead engineering teams that ship faster with AI — without giving up reliability.",
   summary:
-    "Engineering leader who ships: 160K+ daily banking transactions at 99.9% uptime, 20–30% AI-assisted productivity gains across global teams, and a zero-escalation track record across 10 years at Successive Digital.",
+    "Engineering leader who ships: 160K+ daily banking transactions at 99.9% uptime, 20–30% AI-assisted productivity gains across global teams, and multi-year client relationships across nine years at Successive Digital.",
   atsSummary:
-    "Technology Manager with 10 years of experience building and leading engineering teams delivering scalable, cloud-native, and AI-enabled systems for global clients across Media and Banking domains (US, UK, South Africa). Proven track record of 100% client satisfaction, zero escalations, and multi-year client retention. Strong hands-on expertise in distributed systems, microservices, LLM integrations, and full-stack development. AWS, Azure, and GCP certified. B1/B2 visa holder with onsite US client engagement experience.",
+    "Technology Manager with 10 years of experience building and leading engineering teams delivering scalable, cloud-native, and AI-enabled systems for global clients across Media and Banking domains (US, UK, South Africa). Proven track record of multi-year client retention and contract extensions. Strong hands-on expertise in distributed systems, microservices, LLM integrations, and full-stack development. AWS, Azure, and GCP certified. B1/B2 visa holder with onsite US client engagement experience.",
   focus:
     "Currently focused on LLM-enabled workflows, intelligent automation, scalable architecture, microservices, event-driven systems, serverless platforms, and AI-assisted engineering productivity.",
   proofPoints: [
     { value: "10", label: "Years in engineering" },
-    { value: "100%", label: "Client retention — 5+ year engagements, zero formal escalations" },
-    { value: "0", label: "Escalations in global delivery" },
+    { value: "5+ yrs", label: "Client engagements, with multi-year extensions" },
     { value: "20–30%", label: "Productivity lift via AI-assisted code, debugging & delivery" },
     { value: "5K", label: "LinkedIn followers" },
     { value: "15", label: "Recommendations received" }
@@ -44,15 +43,15 @@ export const profile = {
         "Replaced fragmented data pipelines with a single governed integration platform — enabling self-service reporting for 90+ media sources without manual engineering."
     },
     {
-      label: "Global delivery",
-      metric: "US·UK·SA",
-      title: "Zero escalations across complex client engagements",
+      label: "Client engagements, US, UK and SA",
+      metric: "5+ yrs",
+      title: "Multi-year client relationships",
       detail:
-        "Led cross-functional delivery across US, UK, and South Africa stakeholders with calm ownership and consistent alignment."
+        "Led cross-functional delivery across US, UK, and South Africa stakeholders; engagements were extended over multiple years."
     },
     {
-      label: "Payment systems",
-      metric: "FINTECH",
+      label: "Uptime on banking payments",
+      metric: "99.9%",
       title: "White-labeled payment and transaction systems",
       detail:
         "Delivered debit payment, fraud detection, and transaction workflows for banking-domain systems where trust and reliability matter."
@@ -66,7 +65,7 @@ export const profile = {
     "Strong exposure across media and banking domains"
   ],
   bring: [
-    "Led cross-functional teams delivering complex applications with 100% client satisfaction and zero escalations.",
+    "Led cross-functional teams delivering complex applications for US, UK, and South Africa clients.",
     "Built long-term client relationships resulting in multi-year project extensions.",
     "Drives adoption of AI-assisted development and automation workflows to improve engineering productivity.",
     "Strong hands-on expertise across Node.js, React, GraphQL, AWS, Azure, and GCP."
@@ -126,27 +125,24 @@ export const profile = {
     {
       company: "Successive Digital",
       location: "Noida",
-      duration: "10 years",
+      duration: "9 years",
       roles: [
         {
           title: "Technology Manager",
           period: "November 2024 - Present",
           details: [
-            "Leading multiple global client engagements, ensuring consistent delivery, quality, and stakeholder alignment.",
-            "Driving engineering strategy across projects, focusing on scalability, performance, and system reliability.",
-            "Introducing AI-assisted development practices for code generation, debugging, and documentation automation.",
-            "Improved engineering productivity by approximately 20-30% using AI-assisted workflows and automation.",
-            "Identifying opportunities for AI-driven features and intelligent automation across products.",
-            "Built and experimented with AI-based POCs and use cases, including LLM integrations and intelligent data workflows.",
-            "Mentoring engineers and strengthening team capabilities across full-stack and cloud technologies.",
-            "Collaborating directly with stakeholders across US, UK, and South Africa regions."
+            "Lead two parallel fintech and media-data engagements with 5–12 contributors each, coordinating architecture, roadmap trade-offs, sprint execution, quality gates, production releases and client communication across the US, UK and South Africa.",
+            "Directly manage about half of the combined team: performance appraisals, feedback, mentoring, career growth and hiring decisions. Guide partner-vendor engineers as technical lead.",
+            "Led modernization of Payliance settlement and return processing on Azure Functions and Service Bus, with retry and error-handling patterns, secure configuration and phased merchant onboarding.",
+            "Drive Data Refinery platform upgrades and connector delivery; coordinate enrollment and fraud-control improvements across API, UI and QA teams with production-readiness reviews.",
+            "Introduced AI-assisted development and documentation practices, improving engineering productivity by about 20–30%; guided schedule-intelligence, LLM and MCP integrations as proofs of concept."
           ]
         },
         {
           title: "Technology Lead",
           period: "July 2021 - November 2024",
           details: [
-            "Delivered end-to-end engineering for multiple large-scale applications with 100% client satisfaction and zero escalations; directly contributed to multi-year client retention and contract extensions.",
+            "Delivered end-to-end engineering for multiple large-scale applications with no formal client escalations; directly contributed to multi-year client retention and contract extensions.",
             "Connectors Platform (Media | Team: 11): Architected and built a data integration platform connecting 90+ data sources including Facebook Ads and Google Campaign Manager; implemented OAuth flows, data ingestion pipelines, and enterprise reporting systems.",
             "Data Serve (Media): Designed a centralized data platform integrating GCP, Azure ADLS, AWS S3, and Snowflake; enabled fully automated enterprise-grade data pipelines reducing manual data ops overhead.",
             "Enrollment & Transactions (Banking): Built a white-labeled ACH debit payment solution with fraud detection workflows, transaction management, and compliance-grade reliability for a US banking client.",
@@ -224,112 +220,127 @@ export const profile = {
       domain: "Media advertising",
       meta: "Governed data activation platform",
       role: "Technical Lead / Team Lead",
-      tenure: "Managed from 2019",
-      evidence: "Resume-backed + case study PDF",
-      access: "Case-study asset + NDA-safe summary; no client screenshots",
+      tenure: "2019 to present",
+      team: "Connectors team of 11",
+      featured: true,
+      headline: "90+ media data sources, each onboarded in 1–2 days.",
+      preview: {
+        result: "90+ media sources, onboarded in 1–2 days each.",
+        diagram: "data-refinery"
+      },
+      context:
+        "Dentsu International's media teams pulled advertising data from dozens of platforms, and every new source meant manual engineering before anyone could report on it.",
       systems: ["Connectors App", "Trifacta Recipes", "Data Serve UI"],
+      flow: [
+        { label: "90+ sources", detail: "Facebook Ads, Google Campaign Manager and more, via OAuth" },
+        { label: "Connectors", detail: "Scheduled ingestion" },
+        { label: "Trifacta recipes", detail: "Cleansing and enrichment" },
+        { label: "Data Serve", detail: "Multi-channel delivery" },
+        { label: "Destinations", detail: "AWS S3, Google Cloud, Azure ADLS, Snowflake, BI tools" }
+      ],
       points: [
-        "Governed data platform serving 90+ sources with 1-2 day onboarding across Dentsu International's media advertising operations.",
-        "Three-app model: Connectors for automated source fetches, Trifacta for cleansing and enrichment, Data Serve for multi-channel delivery to S3, GCP, Snowflake, and analytics tools."
+        "Built and ran a governed data platform serving 90+ sources with 1–2 day onboarding across Dentsu International's media advertising operations.",
+        "Three apps: Connectors for automated source fetches, Trifacta for cleansing and enrichment, and Data Serve for delivery to S3, Google Cloud, Azure ADLS, Snowflake and analytics tools.",
+        "Led the connectors team of 11; now drive platform upgrades and connector delivery with production-readiness reviews."
       ],
       outcome:
-        "Positions Data Refinery as a governed media-data activation platform: reusable recipes, faster source onboarding, reduced manual delivery, and multi-channel data access for users, storage platforms, and analytics tools."
+        "Media teams get self-service reporting from 90+ sources without manual engineering, and a new source is live in 1–2 days."
     },
     {
-      name: "BIM / Enrollment & Transactions",
+      name: "ACH Payments Platform",
+      slug: "bim-enrollment-and-transactions",
       domain: "Fintech / banking",
       meta: "ACH payments, fraud workflows",
-      role: "Team Lead / Engineering Dev Manager",
-      tenure: "Managed from 2017 to present",
-      evidence: "Resume-backed",
-      access: "NDA-safe summary; no client screenshots",
+      role: "Team Lead to Engineering Manager",
+      tenure: "2017 to present",
+      team: "API, UI and QA teams",
+      featured: true,
+      headline: "White-label ACH payments for a US bank, from enrollment to settlement.",
+      preview: {
+        result: "160K+ daily transactions at 99.9% uptime.",
+        diagram: "banking-payments"
+      },
+      context:
+        "A US bank needed white-label ACH debit payments for merchant, mobile and web commerce, with identity checks, fraud controls and compliance reporting built in.",
       systems: ["Enrollments", "Transactions", "Reporting", "Authentication", "Scoring", "Fraud Detection", "Client Boarding Wizard"],
+      flow: [
+        { label: "Enrollment", detail: "Plaid and Socure identity flows" },
+        { label: "ACH transactions", detail: "Merchant, mobile and web" },
+        { label: "Fraud scoring", detail: "Detection and scoring rules" },
+        { label: "Settlement and returns", detail: "Azure Functions and Service Bus" },
+        { label: "Compliance reporting", detail: "Bank-facing reports" }
+      ],
       points: [
-        "White-labeled ACH payment platform for merchant, mobile, and web commerce — full ownership of enrollment APIs, transaction ops, fraud detection, and compliance reporting.",
-        "Integrated Plaid, Socure, and banking-grade identity flows alongside full-stack delivery in PHP, MySQL, and React."
+        "Own enrollment APIs, transaction operations, merchant mapping, returns and settlements, fraud detection and scoring, and compliance reporting.",
+        "Integrated Plaid and Socure identity flows alongside full-stack delivery in PHP, MySQL and React.",
+        "Led the modernization of Payliance settlement and return processing on Azure Functions and Service Bus, with retry and error-handling patterns, secure configuration and phased merchant onboarding.",
+        "Coordinate enrollment and fraud-control improvements across API, UI and QA teams with production-readiness reviews."
       ],
       outcome:
-        "Shows concrete fintech/payment depth with reliability, compliance sensitivity, fraud workflows, and transaction operations beyond small public builds."
+        "Supports 160K+ daily ACH transactions at 99.9% uptime, with event-driven settlement jobs now running on Azure."
     },
     {
       name: "Taxonomy",
       domain: "Media advertising",
       meta: "Campaign taxonomy and dynamic spreadsheet UX",
       role: "Senior Developer",
-      evidence: "Resume-backed",
-      access: "NDA-safe summary; no client screenshots",
       systems: ["Name Generator", "Handsontable", "Data Dependency Handling"],
       points: [
         "Built dynamically generated spreadsheet workflows for advertisement taxonomy and unique identifier generation.",
-        "Handled dependency-driven configuration logic for partners including Coca-Cola and Microsoft contexts referenced in resume assets.",
-        "Focused on performance optimization, sprint delivery, and demo-ready increments."
+        "Handled dependency-driven configuration rules for partners including Coca-Cola and Microsoft.",
+        "React, GraphQL, Node.js and MongoDB."
       ],
-      outcome:
-        "Adds media-domain product complexity: structured campaign data, dependency rules, and enterprise spreadsheet interaction design."
+      outcome: "Unique campaign identifiers generated from dependency rules instead of by hand."
     },
     {
       name: "TruckBoard",
       domain: "Transportation",
       meta: "Fleet tracking and booking",
       role: "Software Developer / Support Lead",
-      evidence: "Resume-backed",
-      access: "NDA-safe summary; no client screenshots",
       systems: ["Tracking", "Booking", "Map View", "Driver Details", "Admin Panel"],
       points: [
-        "Built truck and driver tracking workflows with map-based location visibility using latitude/longitude data.",
-        "Supported booking, admin, and record-management modules for a US transportation business.",
-        "Worked across React, Redux, JavaScript, PHP, Laravel, MySQL, Google Maps, and Google Places APIs."
+        "Built truck and driver tracking with map-based location visibility.",
+        "Supported booking, admin and record-management modules for a US transportation business.",
+        "React, Redux, PHP, Laravel, MySQL, Google Maps and Google Places APIs."
       ],
-      outcome:
-        "Expands domain range into logistics and transportation operations."
+      outcome: "Fleet tracking, bookings and driver records for a US carrier in one admin tool."
     },
     {
       name: "ACL URL Shortener",
       domain: "Banking",
       meta: "Promotional URL and reporting system",
       role: "Software Developer",
-      evidence: "Resume-backed",
-      access: "NDA-safe summary; no client screenshots",
       systems: ["Single URL Shortener", "Batch URL Shortener", "Authentication", "Reporting", "Admin Panel"],
       points: [
-        "Built URL shortening workflows for banking promotional links where long URLs needed cleaner customer-facing presentation.",
-        "Supported single and batch shortening, authentication, reporting, and admin workflows.",
-        "Worked across React, Redux, Node.js, Express, MongoDB, and reporting modules."
+        "Built single and batch URL shortening for a bank's promotional links, with authentication, reporting and admin workflows.",
+        "React, Redux, Node.js, Express and MongoDB."
       ],
-      outcome:
-        "Shows banking-domain utility work beyond payments, with operational reporting and customer-facing link hygiene."
+      outcome: "Cleaner customer-facing promotional links for a bank, created in bulk and tracked in reports."
     },
     {
       name: "StormSmart",
       domain: "Operations / services",
       meta: "Internal entity management",
       role: "Software Developer",
-      evidence: "Resume-backed",
-      access: "NDA-safe summary; no client screenshots",
       systems: ["Employee", "Authentication", "Users", "Skills", "Admin Panel"],
       points: [
-        "Delivered CRUD and admin workflows for a services business focused on storm-prevention related operations.",
-        "Handled employee, authentication, user, skills, and admin-panel modules.",
-        "Worked across PHP, HTML, CSS, jQuery, PostgreSQL, and Laravel."
+        "Delivered employee, user, skills and admin-panel workflows for a storm-prevention services business.",
+        "PHP, Laravel, PostgreSQL and jQuery."
       ],
-      outcome:
-        "Adds early-career breadth in operational systems and admin platform delivery."
+      outcome: "Staff, skills and admin records for a services business in one system."
     },
     {
       name: "Meeting Booking & HR Letter App",
       domain: "Internal automation",
       meta: "HR operations and meeting-room workflow",
       role: "Software Developer",
-      evidence: "Resume-backed",
-      access: "Internal tool summary; no public screenshots",
       systems: ["PDF Generation", "Dynamic HR Letters", "Meeting Booking", "Calendar Invites", "Email Notifications", "Admin Panel"],
       points: [
-        "Built internal workflows for meeting-room booking, calendar invites, email notifications, and admin control.",
-        "Created dynamic HR letter generation and PDF output to reduce repetitive HR operations.",
-        "Worked across PHP, JavaScript, CSS, jQuery, HTML, MySQL, Laravel, and Lumen."
+        "Built meeting-room booking with calendar invites and email notifications.",
+        "Generated HR letters as PDFs to replace repetitive manual drafting.",
+        "PHP, Laravel, Lumen and MySQL."
       ],
-      outcome:
-        "Shows practical automation and internal-product delivery before later enterprise platform ownership."
+      outcome: "Self-service room booking and generated HR letters for Successive Digital's internal teams."
     }
   ],
   skillGroups: [
@@ -742,8 +753,32 @@ export const profile = {
   },
   languages: ["English - Native or bilingual proficiency", "Hindi - Native or bilingual proficiency", "Punjabi - Native or bilingual proficiency"],
   interests: ["Successive Cloud", "AI adoption strategy", "Open-source engineering"],
+  writing: [
+    {
+      title: "Predicting data-pipeline risk before the first run",
+      note: "A proof of concept with Amit Bora: learning schedule and configuration risk from past pipeline behaviour.",
+      date: "March 2026",
+      url: "https://www.linkedin.com/posts/sharma-prawal_ai-machinelearning-dataengineering-activity-7439154736408285185-gSZG"
+    },
+    {
+      title: "AI is moving into the infrastructure layer",
+      note: "Takeaways from Convergence India Expo 2026 on AI agents, edge and real-time systems in production.",
+      date: "April 2026",
+      url: "https://www.linkedin.com/posts/sharma-prawal_ai-aiagents-generativeai-activity-7444949187982671872-O0zi"
+    },
+    {
+      title: "What preparing for Claude Certified Architect taught me",
+      note: "Notes on MCP, agentic workflows, tool design and production-ready AI architecture.",
+      date: "August 2026",
+      url: "https://www.linkedin.com/posts/sharma-prawal_anthropic-claude-ccaf-activity-7490647800594989056-7xjc"
+    }
+  ],
+  linkedinActivity: "https://www.linkedin.com/in/sharma-prawal/recent-activity/all/",
   contact: {
     linkedin: "https://www.linkedin.com/in/sharma-prawal/",
+    github: "https://github.com/sharma-prawal",
+    credly: "https://www.credly.com/users/sharma-prawal",
+    hackerrank: "https://www.hackerrank.com/profile/PrawalSharma",
     emailParts: ["prawal0007", "gmail", "com"],
     phoneParts: ["+91", "98911", "14036"]
   }

@@ -1,8 +1,7 @@
 import { motion } from "framer-motion";
-import { QuoteMark, VerifyCircle } from "../components/icons.jsx";
-import { MotionCard, MotionGroup, Reveal, handleCardMouseMove } from "../components/shared.jsx";
+import { VerifyCircle } from "../components/icons.jsx";
+import { PageFrame, Reveal } from "../components/shared.jsx";
 import { profile } from "../data/profile.js";
-import { itemReveal } from "../lib/motion.js";
 
 function LinkedInVerify({ url, compact = false }) {
   if (!url) return (
@@ -52,205 +51,109 @@ function isSeniorRole(role) {
   return /manager|vp|director|lead|chief|head|president|executive|founder|principal/i.test(role);
 }
 
-export default function RecommendationsPage() {
-  const leadRecommendation = profile.recommendations[0];
-  const sapnaRecommendation = profile.recommendations.find(rec => rec.name === "Sapna Upreti");
-  const supportingRecommendations = profile.recommendations.slice(1, 3);
-  const secondaryRecommendations = profile.recommendations.slice(3).filter(rec => rec.name !== "Sapna Upreti");
+function Person({ rec }) {
+  return (
+    <div className="quote-person">
+      <RecommenderAvatar rec={rec} senior={isSeniorRole(rec.role)} />
+      <div>
+        <strong>{rec.name}</strong>
+        <span>{rec.role}</span>
+      </div>
+    </div>
+  );
+}
 
-  const recommendationThemes = [
-    { title: "Calm ownership under client pressure", text: "Recommendations repeatedly describe composure, patience, and accountability when delivery conditions are difficult." },
-    { title: "Technical breadth without ego", text: "Cloud, full-stack systems, React, GraphQL, automation, and multi-project execution appear as practical usefulness." },
-    { title: "Team influence and mentoring", text: "The strongest language is not only about skill. It is about availability, motivation, and helping teams move." },
-    { title: "Adaptability and learning speed", text: "Multiple recommendations point to fast learning, change readiness, and the ability to operate across unfamiliar contexts." }
+export default function RecommendationsPage() {
+  const recs = profile.recommendations;
+  const featured = [recs[0], recs.find((rec) => rec.name === "Sapna Upreti")].filter(Boolean);
+  const rest = recs.filter((rec) => !featured.includes(rec));
+  const seniorCount = recs.filter((rec) => isSeniorRole(rec.role)).length;
+  const years = recs.map((rec) => Number(String(rec.date || "").match(/\d{4}/)?.[0])).filter(Boolean);
+
+  const themes = [
+    { title: "Calm ownership under client pressure", text: "Composure, patience and accountability when delivery conditions are difficult." },
+    { title: "Technical breadth without ego", text: "Cloud, full-stack systems, React, GraphQL and automation, described as practical help." },
+    { title: "Team influence and mentoring", text: "Availability, motivation and helping teams move, not only individual skill." },
+    { title: "Adaptability and learning speed", text: "Fast learning and working well in unfamiliar contexts." }
   ];
-  const referenceSignals = [
-    { value: String(profile.recommendations.length), label: "recommendations", text: "A broad recommendation base across managers, peers, leads, and specialists." },
-    { value: "5 yrs", label: "time span", text: "Recommendations span multiple roles and operating contexts over five years." },
-    { value: "5", label: "leadership patterns", text: "Ownership, composure, mentoring, adaptability, and technical breadth repeat." }
-  ];
-  const referenceLedger = [
-    { value: String(profile.recommendations.length), label: "LinkedIn recommendations" },
-    { value: "5 yrs", label: "Consistent over" },
-    { value: "5", label: "Repeated signals" }
-  ];
-  const referenceVoices = [
-    { label: "Managerial voice", text: "Leadership, ownership, and client-facing calm." },
-    { label: "Technical voice", text: "Cloud, full-stack, React, GraphQL, and multi-project delivery." },
-    { label: "Team voice", text: "Mentorship, availability, motivation, and execution support." }
-  ];
+
+  const facts = [
+    { value: String(recs.length), label: "LinkedIn recommendations" },
+    { value: String(seniorCount), label: "From managers and leads" },
+    { value: years.length ? `${Math.min(...years)}–${Math.max(...years)}` : "", label: "Years written" },
+    { value: String(themes.length), label: "Recurring themes" }
+  ].filter((fact) => fact.value);
 
   return (
     <div data-theme="references">
-      <Reveal as={motion.section} className="reference-hero">
-        <div className="reference-hero__copy">
-          <span className="eyebrow">What colleagues say</span>
-          <h1>How the work is experienced by others.</h1>
-          <p>The strongest signal is the pattern — the same qualities repeating across managers, peers, technical collaborators, and team members.</p>
-        </div>
-        <div className="reference-hero__ledger" aria-label="Reference proof ledger">
-          {referenceLedger.map((item) => (
-            <div className="reference-hero__ledger-item" key={item.label}>
-              <strong>{item.value}</strong>
-              <span>{item.label}</span>
-            </div>
-          ))}
-        </div>
-      </Reveal>
+      <PageFrame
+        eyebrow="Recommendations"
+        title="What colleagues say about working with me."
+        intro="LinkedIn recommendations from managers, peers and the engineers I have led."
+      >
+        <div className="ledger-page">
+          <Reveal as={motion.section} className="home-section ledger-page__lead" aria-label="Featured recommendations">
+            <ul className="quote-pair">
+              {featured.map((rec) => (
+                <li key={rec.name}>
+                  <blockquote><p>{rec.quote}</p></blockquote>
+                  <Person rec={rec} />
+                  <LinkedInVerify url={rec.linkedinUrl} />
+                </li>
+              ))}
+            </ul>
+          </Reveal>
 
-      <Reveal as={motion.section} className="reference-dossier">
-        <MotionCard
-          className="reference-lead-quote glass-card spotlight-card"
-          priority
-          immediate
-          onMouseMove={handleCardMouseMove}
-        >
-          <div className="recommendation-card-header">
-            <RecommenderAvatar rec={leadRecommendation} senior={isSeniorRole(leadRecommendation.role)} />
-            <LinkedInVerify url={leadRecommendation.linkedinUrl} />
-          </div>
-          <p className="recommendation-quote">{leadRecommendation.quote}</p>
-          <div className="recommendation-author-info">
-            <strong>{leadRecommendation.name}</strong>
-            <span>{leadRecommendation.role}</span>
-            <small>{leadRecommendation.date}</small>
-          </div>
-        </MotionCard>
-
-        <div className="reference-dossier__analysis">
-          <span className="eyebrow">What stands out</span>
-          <h2>The same qualities repeat across every relationship.</h2>
-          <p>The recommendations point to the same operating qualities from different angles: ownership under pressure, technical usefulness, team steadiness, and the ability to learn quickly without creating noise.</p>
-          <div className="reference-voice-list">
-            {referenceVoices.map((voice) => (
-              <div className="reference-voice-item" key={voice.label}>
-                <strong>{voice.label}</strong>
-                <span>{voice.text}</span>
+          <Reveal as={motion.section} className="home-section" aria-labelledby="recs-all-title">
+            <header className="home-section__head">
+              <h2 id="recs-all-title">More recommendations</h2>
+              <p>
+                Taken from my public LinkedIn profile, where each one can be{" "}
+                <a className="inline-link" href={profile.profileUrl} target="_blank" rel="noreferrer">verified</a>.
+              </p>
+            </header>
+            <ol className="quote-rows">
+              {rest.map((rec) => (
+                <li key={rec.name}>
+                  <div className="quote-rows__who">
+                    <Person rec={rec} />
+                    <span className="quote-rows__date">{rec.date}</span>
+                  </div>
+                  <div className="quote-rows__what">
+                    <p>{rec.quote}</p>
+                    <LinkedInVerify url={rec.linkedinUrl} compact />
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </Reveal>
+          <dl className="home-facts" aria-label="Recommendations at a glance">
+            {facts.map((fact) => (
+              <div className="home-facts__item" key={fact.label}>
+                <dt>{fact.label}</dt>
+                <dd>{fact.value}</dd>
               </div>
             ))}
-          </div>
+          </dl>
+
+          <Reveal as={motion.section} className="home-section home-section--split" aria-labelledby="recs-themes-title">
+            <header className="home-section__head">
+              <h2 id="recs-themes-title">The same qualities come up again and again</h2>
+              <p>Read together, the recommendations keep returning to four things.</p>
+            </header>
+            <ol className="home-rules home-rules--numbered">
+              {themes.map((theme, index) => (
+                <li key={theme.title}>
+                  <span className="home-rules__num">{String(index + 1).padStart(2, "0")}</span>
+                  <h3>{theme.title}</h3>
+                  <p>{theme.text}</p>
+                </li>
+              ))}
+            </ol>
+          </Reveal>
+
         </div>
-
-        {sapnaRecommendation && (
-          <MotionCard
-            className="reference-lead-quote glass-card spotlight-card"
-            onMouseMove={handleCardMouseMove}
-          >
-            <div className="recommendation-card-header">
-              <RecommenderAvatar rec={sapnaRecommendation} senior={isSeniorRole(sapnaRecommendation.role)} />
-              <LinkedInVerify url={sapnaRecommendation.linkedinUrl} />
-            </div>
-            <p className="recommendation-quote">{sapnaRecommendation.quote}</p>
-            <div className="recommendation-author-info">
-              <strong>{sapnaRecommendation.name}</strong>
-              <span>{sapnaRecommendation.role}</span>
-              <small>{sapnaRecommendation.date}</small>
-            </div>
-          </MotionCard>
-        )}
-
-        <MotionGroup className="reference-supporting-quotes">
-          {supportingRecommendations.map((rec) => (
-            <motion.article
-              className="reference-supporting-quote glass-card spotlight-card"
-              variants={itemReveal}
-              onMouseMove={handleCardMouseMove}
-              key={rec.name}
-            >
-              <QuoteMark className="recommendation-quote-icon" size={36} />
-              <p>{rec.quote}</p>
-              <div className="reference-supporting-quote__author">
-                <RecommenderAvatar rec={rec} senior={isSeniorRole(rec.role)} />
-                <div className="reference-supporting-quote__author-info">
-                  <strong>{rec.name}</strong>
-                  <span>{rec.role}</span>
-                </div>
-                <LinkedInVerify url={rec.linkedinUrl} compact />
-              </div>
-            </motion.article>
-          ))}
-        </MotionGroup>
-      </Reveal>
-
-      <Reveal as={motion.section} className="reference-signal-map-container">
-        <div className="reference-signal-map">
-          <div className="reference-signal-map__lead">
-            <span className="eyebrow">Reference signal map</span>
-            <h2>What the testimonials validate.</h2>
-            <p>The strongest recommendations do more than praise performance. They confirm how the work feels to people around it: calm under pressure, technically useful, and reliable for teams.</p>
-          </div>
-          <MotionGroup className="reference-signal-map__grid">
-            {referenceSignals.map((signal) => (
-              <motion.article
-                className="glass-card spotlight-card"
-                variants={itemReveal}
-                onMouseMove={handleCardMouseMove}
-                key={signal.label}
-              >
-                <strong>{signal.value}</strong>
-                <span>{signal.label}</span>
-                <p>{signal.text}</p>
-              </motion.article>
-            ))}
-          </MotionGroup>
-        </div>
-      </Reveal>
-
-      <Reveal className="recommendation-themes-container">
-        <div className="recommendation-themes">
-          <div>
-            <span className="eyebrow">Leadership themes</span>
-            <h2>Patterns that show up across the recommendations.</h2>
-          </div>
-          <div className="recommendation-theme-list">
-            {recommendationThemes.map((theme) => (
-              <div className="recommendation-theme-item" key={theme.title}>
-                <strong>{theme.title}</strong>
-                <span>{theme.text}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </Reveal>
-
-      <div className="reference-archive-heading">
-        <span className="premium-divider-label">Recommendation archive</span>
-        <hr />
-        <span className="premium-divider-count-pill">{secondaryRecommendations.length} MORE</span>
-      </div>
-
-      <MotionGroup className="reference-archive" aria-label="Recommendation archive">
-        {secondaryRecommendations.map((rec) => (
-          <motion.article
-            className={[
-              "reference-archive-row glass-card spotlight-card",
-              isSeniorRole(rec.role) ? "reference-archive-row--highlighted" : ""
-            ].filter(Boolean).join(" ")}
-            variants={itemReveal}
-            onMouseMove={handleCardMouseMove}
-            key={rec.name}
-          >
-            <div className="reference-archive-row__meta">
-              <RecommenderAvatar rec={rec} senior={isSeniorRole(rec.role)} />
-              <div>
-                <strong>{rec.name}</strong>
-                <span>{rec.role}</span>
-              </div>
-            </div>
-            <p className="recommendation-quote">{rec.quote}</p>
-            <div className="reference-archive-row__footer">
-              <small>{rec.date}</small>
-              <LinkedInVerify url={rec.linkedinUrl} compact />
-            </div>
-          </motion.article>
-        ))}
-      </MotionGroup>
-
-      <div className="reference-source-note">
-        <VerifyCircle size={15} />
-        <span>Recommendations are curated from the public LinkedIn recommendation record.</span>
-        <a href={profile.profileUrl} target="_blank" rel="noreferrer">Verify source &rarr;</a>
-      </div>
+      </PageFrame>
     </div>
   );
 }

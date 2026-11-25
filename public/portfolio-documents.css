@@ -1,0 +1,246 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap");
+
+@page {
+  size: A4;
+  margin: 12mm;
+}
+
+:root {
+  color-scheme: light;
+  --ink: #17150f;
+  --muted: #4f4a42;
+  --paper: #f4f1ea;
+  --accent: #155e4e;
+  --tint: #e5ece6;
+  --line: #d8d2c6;
+  --display: "Newsreader", Georgia, serif;
+  font: 16px/1.5 "IBM Plex Sans", system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  color: var(--ink);
+  background: var(--paper);
+}
+
+main {
+  width: min(100%, 960px);
+  margin: 0 auto;
+  padding: clamp(20px, 5vw, 54px);
+}
+
+h1, h2, h3, p, ul { margin: 0; }
+
+h1, h2, h3 {
+  font-family: var(--display);
+  line-height: 1.12;
+  text-wrap: balance;
+}
+
+h1 {
+  max-width: 17ch;
+  font-size: clamp(2rem, 6.2vw, 3.6rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+h3 {
+  font-size: 1.15rem;
+  font-weight: 500;
+}
+
+p, li { color: var(--muted); }
+
+a {
+  color: var(--accent);
+  text-underline-offset: 0.18em;
+}
+
+a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.eyebrow, .label {
+  color: var(--accent);
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+.eyebrow {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.cover {
+  padding: clamp(18px, 4vw, 34px);
+  border-radius: 6px;
+  background: var(--tint);
+}
+
+.cover p, .summary {
+  max-width: 62ch;
+  margin-top: 14px;
+}
+
+.grid, .operating-system {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.grid, .principles, .metrics, .main {
+  margin-top: 22px;
+}
+
+.pillar, .principle, .side-card {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+
+.pillar strong {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--accent);
+  font-size: 1rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.pillar p, .principle p, .principles p { margin-top: 6px; }
+
+.principles div {
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+
+footer {
+  margin-top: 18px;
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.top, .main {
+  display: grid;
+  gap: 24px;
+  align-items: start;
+}
+
+.top { grid-template-columns: minmax(0, 1fr) 130px; }
+.main { grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); }
+
+.portrait img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  object-position: 50% 24%;
+  border-radius: 4px;
+}
+
+.contact {
+  margin-top: 8px;
+  font-size: 0.9rem;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-block: 1px solid var(--line);
+}
+
+.metric { padding: 12px 10px; }
+
+.metric strong {
+  display: block;
+  color: var(--accent);
+  font-family: var(--display);
+  font-size: 1.6rem;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
+
+.metric span {
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.3;
+}
+
+.profile-document section + section, .signature { margin-top: 18px; }
+.profile-document ul { padding-left: 1.2em; margin-top: 8px; }
+.profile-document li + li { margin-top: 5px; }
+.operating-system { margin-top: 10px; gap: 10px; }
+.principle h3 { margin-top: 4px; }
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  margin-top: 8px;
+  color: var(--muted);
+}
+
+.signature {
+  padding: 14px;
+  border-radius: 4px;
+  background: var(--tint);
+}
+
+.signature p { margin-top: 5px; }
+
+@media screen and (max-width: 700px) {
+  .grid, .main { grid-template-columns: minmax(0, 1fr); }
+  .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .metric:nth-child(n + 3) { border-top: 1px solid var(--line); }
+}
+
+@media screen and (max-width: 480px) {
+  .top { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .top aside { display: flex; gap: 12px; align-items: center; }
+  .portrait { width: 80px; flex-shrink: 0; }
+  .operating-system { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media print {
+  :root { font-size: 11pt; }
+
+  body {
+    background: white;
+    print-color-adjust: exact;
+  }
+
+  main {
+    width: 186mm;
+    max-width: none;
+    padding: 0;
+  }
+
+  .cover, .pillar, .principle, .side-card, .signature, .principles div { break-inside: avoid; }
+  h1 { font-size: 30pt; }
+  h2 { font-size: 14pt; }
+
+  .profile-document main { font-size: 10pt; line-height: 1.42; }
+  .profile-document .top { grid-template-columns: minmax(0, 1fr) 55mm; }
+  .profile-document .top aside {
+    display: grid;
+    grid-template-columns: 24mm minmax(0, 1fr);
+    gap: 2.5mm;
+    align-items: center;
+  }
+  .profile-document .contact { margin-top: 0; }
+  .profile-document .metrics, .profile-document .main { margin-top: 4mm; }
+  .profile-document .metric { padding-block: 2.5mm; }
+  .profile-document .main { gap: 5mm; }
+  .profile-document .side-card, .profile-document .principle, .profile-document .signature { padding: 2.5mm; }
+  .profile-document section + section, .profile-document .signature { margin-top: 3mm; }
+  .profile-document .metric span, .profile-document .contact, .profile-document .eyebrow, .profile-document .label { font-size: 9pt; }
+}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
@@ -18,9 +18,8 @@ import { CheckCircleMark, DiagArrow, DocMark, DownloadMark, NodeMark, StarMark, 
 import { getDirectContact, profile } from "../data/profile.js";
 import { imageAlt, imageCaption, imageSrc } from "../data/imageMetadata.js";
 import { Button } from "./ui/button.jsx";
-import {
-  cardHover,
-  fadeUp,
+import OverlayDialog from "./OverlayDialog.jsx";
+import { fadeUp,
   itemReveal,
   premiumEase,
   stagger,
@@ -83,6 +82,13 @@ export const getSystemIcon = (label) => {
 
 // ─── ScrollToTop ──────────────────────────────────────────────────────────────
 
+/** Sets the browser-tab title, e.g. "Awards | Prawal Sharma". */
+export function usePageTitle(title) {
+  useEffect(() => {
+    if (title) document.title = `${title} | Prawal Sharma`;
+  }, [title]);
+}
+
 export function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => {
@@ -108,14 +114,44 @@ export function ImageCarousel({ images, renderImage, size = "default", onSlideCl
     setActiveImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
+  // Touch swipe: a horizontal drag of 40px or more changes the image.
+  const swipeStart = useRef(null);
+  const swiped = useRef(false);
+  const handlePointerDown = (e) => {
+    swiped.current = false;
+    swipeStart.current = e.pointerType === "mouse" ? null : { x: e.clientX, y: e.clientY };
+  };
+  const handlePointerUp = (e) => {
+    const start = swipeStart.current;
+    swipeStart.current = null;
+    if (!start || images.length < 2) return;
+    const dx = e.clientX - start.x;
+    if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(e.clientY - start.y)) return;
+    swiped.current = true;
+    if (dx < 0) setActiveImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+    else setActiveImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  };
+
+  // A click anywhere on the slide opens the image's own zoom button. Ignore clicks
+  // that come from the open viewer (rendered in a portal but bubbling through
+  // React), clicks on the zoom button itself, and the click that ends a swipe.
+  const handleSlideClick = (e) => {
+    if (!onSlideClick) return;
+    if (swiped.current) {
+      swiped.current = false;
+      return;
+    }
+    if (!e.currentTarget.contains(e.target) || e.target.closest(".proof-image-button")) return;
+    onSlideClick(e);
+  };
+
   return (
     <div className={`image-carousel${isCompact ? " image-carousel--compact" : ""}`}>
       <div
         className={`image-carousel__slide-area${onSlideClick ? " image-carousel__slide-area--zoomable" : ""}`}
-        onClick={onSlideClick}
-        onKeyDown={onSlideClick ? (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onSlideClick(e); } } : undefined}
-        role={onSlideClick ? "button" : undefined}
-        tabIndex={onSlideClick ? 0 : undefined}
+        onClick={handleSlideClick}
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
       >
         <AnimatePresence mode="wait">
           <motion.div
@@ -160,8 +196,8 @@ export function ImageCarousel({ images, renderImage, size = "default", onSlideCl
 export function Reveal({ as: Component = motion.div, className, children, delay = 0, variants: variantsOverride, ...props }) {
   const shouldReduceMotion = useReducedMotion();
   const revealVariants = variantsOverride || {
-    hidden: { opacity: 0, y: 22, filter: "blur(10px)" },
-    visible: { opacity: 1, y: 0, filter: "blur(0px)" }
+    hidden: { opacity: 0, y: 12 },
+    visible: { opacity: 1, y: 0 }
   };
 
   return (
@@ -208,7 +244,6 @@ export function MotionCard({ className, children, priority = false, immediate = 
       variants={shouldReduceMotion || priority || immediate ? undefined : variant}
       initial={immediate ? false : undefined}
       transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.56, ease: premiumEase }}
-      whileHover={shouldReduceMotion ? undefined : cardHover}
       whileTap={shouldReduceMotion ? undefined : tapPress}
       {...props}
     >
@@ -260,6 +295,7 @@ export function Magnetic({ children, strength = 10 }) {
 export function ProofImage({ src, alt, caption, priority = false, eager = false, zoomable = true, width = 800, height = 600 }) {
   const shouldReduceMotion = useReducedMotion();
   const [isZoomed, setIsZoomed] = useState(false);
+  const zoomTrigger = useRef(null);
   const [zoomScale, setZoomScale] = useState(1);
   const frameStyle = { "--proof-image": `url("${src.replaceAll("\"", "\\\"")}")` };
   const zoomImageStyle =
@@ -267,87 +303,54 @@ export function ProofImage({ src, alt, caption, priority = false, eager = false,
       ? { width: "auto", maxWidth: "100%", maxHeight: "calc(100dvh - 194px)" }
       : { width: `${Math.round(zoomScale * 100)}%`, maxWidth: "none", maxHeight: "none" };
   const pageTheme = typeof document !== "undefined" ? document.querySelector("[data-theme]")?.dataset.theme : undefined;
-  const lightbox =
-    zoomable && typeof document !== "undefined"
-      ? createPortal(
-          <AnimatePresence>
-            {isZoomed ? (
-              <motion.div
-                className="image-lightbox"
-                data-theme={pageTheme}
-                role="dialog"
-                aria-modal="true"
-                aria-label={alt}
-                initial={shouldReduceMotion ? false : { opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={shouldReduceMotion ? undefined : { opacity: 0 }}
-                transition={{ duration: shouldReduceMotion ? 0 : 0.24, ease: premiumEase }}
-                onClick={() => setIsZoomed(false)}
-              >
-                <motion.div
-                  className="image-lightbox__panel"
-                  initial={shouldReduceMotion ? false : { opacity: 0, scale: 0.975, y: 18, filter: "blur(10px)" }}
-                  animate={{ opacity: 1, scale: 1, y: 0, filter: "blur(0px)" }}
-                  exit={shouldReduceMotion ? undefined : { opacity: 0, scale: 0.985, y: 10, filter: "blur(8px)" }}
-                  transition={{ duration: shouldReduceMotion ? 0 : 0.38, ease: premiumEase }}
-                  onClick={(event) => event.stopPropagation()}
-                >
-                  <button className="image-lightbox__close" type="button" aria-label="Close zoomed image" onClick={() => setIsZoomed(false)}>
-                    <X size={18} />
-                  </button>
-                  <div className="image-lightbox__toolbar" onClick={(event) => event.stopPropagation()}>
-                    <span>Fit</span>
-                    <ZoomOut size={16} aria-hidden="true" />
-                    <input
-                      type="range"
-                      min="1"
-                      max="3"
-                      step="0.1"
-                      value={zoomScale}
-                      aria-label="Image zoom level"
-                      onInput={(event) => setZoomScale(Number(event.currentTarget.value))}
-                      onChange={(event) => setZoomScale(Number(event.target.value))}
-                    />
-                    <ZoomIn size={16} aria-hidden="true" />
-                    <output>{Math.round(zoomScale * 100)}%</output>
-                  </div>
-                  <div className="image-lightbox__viewport">
-                    <img src={src} alt={alt} style={zoomImageStyle} />
-                  </div>
-                  <p>{caption || alt}</p>
-                </motion.div>
-              </motion.div>
-            ) : null}
-          </AnimatePresence>,
-          document.body
-        )
-      : null;
-
-  useEffect(() => {
-    if (!zoomable || !isZoomed) return undefined;
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    function handleKeyDown(event) {
-      if (event.key === "Escape") setIsZoomed(false);
-    }
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [isZoomed, zoomable]);
+  const lightbox = zoomable && isZoomed && createPortal(
+    <OverlayDialog
+      className="image-lightbox proof-modal"
+      label={alt}
+      returnFocusRef={zoomTrigger}
+      onDismiss={() => setIsZoomed(false)}
+    >
+      <div className="image-lightbox__panel" data-theme={pageTheme}>
+        <button className="image-lightbox__close" type="button" aria-label="Close zoomed image" data-dialog-initial-focus onClick={() => setIsZoomed(false)}>
+          <X size={18} />
+        </button>
+        <div className="image-lightbox__toolbar">
+          <span>Fit</span>
+          <ZoomOut size={16} aria-hidden="true" />
+          <input
+            type="range"
+            min="1"
+            max="3"
+            step="0.1"
+            value={zoomScale}
+            aria-label="Image zoom level"
+            onInput={(event) => setZoomScale(Number(event.currentTarget.value))}
+            onChange={(event) => setZoomScale(Number(event.target.value))}
+          />
+          <ZoomIn size={16} aria-hidden="true" />
+          <output>{Math.round(zoomScale * 100)}%</output>
+        </div>
+        <div className="image-lightbox__viewport">
+          <img src={src} alt={alt} style={zoomImageStyle} />
+        </div>
+        <p>{caption || alt}</p>
+      </div>
+    </OverlayDialog>,
+    document.body
+  );
 
   return (
     <>
       <motion.span
         className="proof-image-frame"
         style={frameStyle}
-        initial={shouldReduceMotion || !priority ? false : { opacity: 0, scale: 1.025, filter: "blur(8px)" }}
-        animate={shouldReduceMotion || !priority ? undefined : { opacity: 1, scale: 1, filter: "blur(0px)" }}
+        initial={shouldReduceMotion || !priority ? false : { opacity: 0, scale: 1.025 }}
+        animate={shouldReduceMotion || !priority ? undefined : { opacity: 1, scale: 1 }}
         transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.82, ease: premiumEase }}
       >
         {zoomable ? (
           <button
+            ref={zoomTrigger}
             className="proof-image-button"
             type="button"
             aria-label={`Zoom ${alt}`}
@@ -432,23 +435,52 @@ export function ReflectionBlock({ eyebrow, title, text }) {
   );
 }
 
+/** Keeps numeric ranges such as "1–2 days" or "20–30%" on one line. */
+export function KeepRanges({ text }) {
+  if (typeof text !== "string") return text;
+  const parts = text.split(/(\d[\d.,+]*\s?[–-]\s?\d[\d.,+%]*(?:\s(?:days?|years?|weeks?))?)/);
+  return parts.map((part, index) => (index % 2 ? <span className="nowrap" key={index}>{part}</span> : part));
+}
+
 export function PageFrame({ eyebrow, title, intro, children, className = "", heroAside = null }) {
+  const { hash } = useLocation();
   const heroClassName = ["page-hero", className].filter(Boolean).join(" ");
+
+  useEffect(() => {
+    if (!hash) return;
+    const frame = requestAnimationFrame(() => {
+      document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: "instant" });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [hash]);
 
   return (
     <>
       <motion.section className={heroClassName} initial="hidden" animate="visible" variants={stagger}>
         <motion.div className="page-hero__inner" variants={fadeUp} transition={{ duration: 0.72, ease: premiumEase }}>
           <div className="page-hero__copy">
-            <motion.span className="eyebrow" variants={itemReveal}>{eyebrow}</motion.span>
+            {eyebrow && <motion.span className="eyebrow" variants={itemReveal}>{eyebrow}</motion.span>}
             <motion.h1 variants={fadeUp} transition={{ duration: 0.82, ease: premiumEase, delay: 0.02 }}>{title}</motion.h1>
-            <motion.p variants={itemReveal}>{intro}</motion.p>
+            {intro && <motion.p variants={itemReveal}>{intro}</motion.p>}
           </div>
           {heroAside}
         </motion.div>
       </motion.section>
       {children}
     </>
+  );
+}
+
+export function RecoveryPage({ title = "Case study not found", description = "Browse Projects to find the case study you were looking for.", to = "/ai-projects", label = "Back to Projects" }) {
+  return (
+    <section className="recovery-page">
+      <h1>{title}</h1>
+      <p>{description}</p>
+      <Link className="primary-link" to={to}>
+        <ChevronLeft size={16} aria-hidden="true" />
+        {label}
+      </Link>
+    </section>
   );
 }
 
@@ -474,7 +506,7 @@ export function LinkedInButton({ compact = false }) {
     </Button>
   );
 
-  return compact ? button : <Magnetic>{button}</Magnetic>;
+  return button;
 }
 
 export function EmailLinkButton() {
@@ -592,90 +624,90 @@ export function generateExecutiveProfile() {
   <title>${profile.name} — Executive Profile</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'EB Garamond', Georgia, serif; font-size: 10.5pt; line-height: 1.45; color: #1a1714; background: #fff; padding: 0.55in 0.65in; }
+    body { font-family: 'Newsreader', Georgia, serif; font-size: 10.5pt; line-height: 1.45; color: #17150f; background: #fff; padding: 0.55in 0.65in; }
     @media print { body { padding: 0; } @page { margin: 0.55in 0.65in; size: letter; } .no-print { display: none !important; } }
 
     /* Header */
-    .doc-header { display: grid; grid-template-columns: 1fr auto; gap: 16pt; align-items: end; padding-bottom: 10pt; border-bottom: 1.5pt solid #0f6b5c; margin-bottom: 14pt; }
-    h1 { font-family: 'EB Garamond', serif; font-size: 24pt; font-weight: 700; color: #0f6b5c; letter-spacing: -0.01em; line-height: 1; }
-    .doc-role { font-family: 'Inter', sans-serif; font-size: 9pt; font-weight: 600; color: #4a4540; letter-spacing: 0.06em; text-transform: uppercase; margin-top: 4pt; }
-    .doc-contact { font-family: 'Inter', sans-serif; font-size: 8.5pt; color: #4a4540; text-align: right; line-height: 1.7; }
-    .doc-contact a { color: #0f6b5c; text-decoration: none; }
+    .doc-header { display: grid; grid-template-columns: 1fr auto; gap: 16pt; align-items: end; padding-bottom: 10pt; border-bottom: 1.5pt solid #1a6c5a; margin-bottom: 14pt; }
+    h1 { font-family: 'Newsreader', Georgia, serif; font-size: 24pt; font-weight: 500; color: #1a6c5a; letter-spacing: -0.01em; line-height: 1; }
+    .doc-role { font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 9pt; font-weight: 600; color: #4a463f; letter-spacing: 0; margin-top: 4pt; }
+    .doc-contact { font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 8.5pt; color: #4a463f; text-align: right; line-height: 1.7; }
+    .doc-contact a { color: #1a6c5a; text-decoration: none; }
 
     /* Section headings */
-    h2 { font-family: 'Inter', sans-serif; font-size: 7.5pt; font-weight: 600; letter-spacing: 0.10em; text-transform: uppercase; color: #0f6b5c; border-bottom: 0.5pt solid rgba(15,107,92,0.3); padding-bottom: 2pt; margin: 13pt 0 6pt; }
+    h2 { font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 10pt; font-weight: 600; letter-spacing: 0; color: #1a6c5a; border-bottom: 0.5pt solid rgba(15,107,92,0.3); padding-bottom: 2pt; margin: 13pt 0 6pt; }
 
     /* Summary */
-    p.summary { font-size: 10.5pt; line-height: 1.52; text-align: justify; color: #1a1714; }
-    p.focus { font-size: 9.5pt; color: #4a4540; margin-top: 5pt; line-height: 1.45; font-style: italic; }
+    p.summary { font-size: 10.5pt; line-height: 1.52; text-align: justify; color: #17150f; }
+    p.focus { font-size: 9.5pt; color: #4a463f; margin-top: 5pt; line-height: 1.45; font-style: italic; }
 
     /* Metrics */
     .metric-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7pt; margin: 4pt 0; }
-    .metric-cell { border: 0.5pt solid rgba(15,107,92,0.22); border-top: 1.5pt solid #0f6b5c; border-radius: 2pt; padding: 6pt 9pt; }
-    .metric-value { font-family: 'EB Garamond', serif; font-size: 15pt; font-weight: 700; color: #0f6b5c; line-height: 1; }
-    .metric-label { font-family: 'Inter', sans-serif; font-size: 7pt; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: #7a7068; margin: 2pt 0 3pt; }
-    .metric-detail { font-size: 8.5pt; color: #4a4540; line-height: 1.35; }
+    .metric-cell { border: 0.5pt solid rgba(26,108,90,0.22); border-top: 1.5pt solid #1a6c5a; border-radius: 2pt; padding: 6pt 9pt; }
+    .metric-value { font-family: 'Newsreader', Georgia, serif; font-size: 15pt; font-weight: 500; color: #1a6c5a; line-height: 1; }
+    .metric-label { font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 7pt; font-weight: 600; letter-spacing: 0; color: #736d63; margin: 2pt 0 3pt; }
+    .metric-detail { font-size: 8.5pt; color: #4a463f; line-height: 1.35; }
 
     /* Impact */
     .impact-row { display: flex; gap: 10pt; margin-bottom: 6pt; align-items: flex-start; }
-    .impact-metric { font-family: 'EB Garamond', serif; font-size: 13pt; font-weight: 700; color: #c9972f; min-width: 52pt; line-height: 1; padding-top: 1pt; }
+    .impact-metric { font-family: 'Newsreader', Georgia, serif; font-size: 13pt; font-weight: 500; color: #1a6c5a; min-width: 52pt; line-height: 1; padding-top: 1pt; }
     .impact-title { font-weight: 600; font-size: 10.5pt; }
-    .impact-detail { font-size: 9.5pt; color: #4a4540; line-height: 1.38; margin-top: 1.5pt; }
+    .impact-detail { font-size: 9.5pt; color: #4a463f; line-height: 1.38; margin-top: 1.5pt; }
 
     /* Two-column layout */
     .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14pt; }
 
     /* Leadership notes */
     .note-row { display: flex; gap: 8pt; margin-bottom: 5pt; align-items: flex-start; }
-    .note-topic { font-family: 'Inter', sans-serif; font-size: 7.5pt; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #0f6b5c; min-width: 72pt; padding-top: 2pt; }
-    .note-text { font-size: 10pt; color: #1a1714; line-height: 1.42; font-style: italic; }
+    .note-topic { font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 7.5pt; font-weight: 600; letter-spacing: 0; color: #1a6c5a; min-width: 72pt; padding-top: 2pt; }
+    .note-text { font-size: 10pt; color: #17150f; line-height: 1.42; font-style: italic; }
 
     /* Framework */
     .framework-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7pt; margin: 4pt 0; }
-    .framework-cell { border-left: 2pt solid #c9972f; padding: 5pt 9pt; background: rgba(201,151,47,0.04); }
-    .framework-num { font-family: 'Inter', sans-serif; font-size: 7pt; font-weight: 700; color: #c9972f; letter-spacing: 0.08em; }
+    .framework-cell { border-left: 2pt solid #1a6c5a; padding: 5pt 9pt; background: rgba(26,108,90,0.05); }
+    .framework-num { font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 7pt; font-weight: 700; color: #1a6c5a; letter-spacing: 0.08em; }
     .framework-title { font-weight: 700; font-size: 10.5pt; margin: 1.5pt 0 2pt; }
-    .framework-detail { font-size: 9pt; color: #4a4540; line-height: 1.35; }
+    .framework-detail { font-size: 9pt; color: #4a463f; line-height: 1.35; }
 
     /* Experience */
     .exp-block { margin-bottom: 7pt; }
     .exp-row { display: flex; justify-content: space-between; align-items: baseline; gap: 8pt; }
     .exp-title { font-weight: 700; font-size: 10.5pt; }
-    .exp-date { font-family: 'Inter', sans-serif; font-size: 8.5pt; color: #7a7068; white-space: nowrap; flex-shrink: 0; }
-    .exp-co { font-family: 'Inter', sans-serif; font-style: normal; font-size: 8.5pt; color: #4a4540; }
-    .exp-loc { font-family: 'Inter', sans-serif; font-size: 8.5pt; color: #7a7068; }
+    .exp-date { font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 8.5pt; color: #736d63; white-space: nowrap; flex-shrink: 0; }
+    .exp-co { font-family: 'IBM Plex Sans', system-ui, sans-serif; font-style: normal; font-size: 8.5pt; color: #4a463f; }
+    .exp-loc { font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 8.5pt; color: #736d63; }
     ul { padding-left: 12pt; margin-top: 3pt; }
     li { font-size: 10pt; line-height: 1.38; margin-bottom: 1.5pt; }
 
     /* Awards */
     .award-row { display: flex; gap: 9pt; margin-bottom: 5pt; align-items: flex-start; }
-    .award-date { font-family: 'Inter', sans-serif; font-size: 8pt; color: #c9972f; font-weight: 600; min-width: 54pt; padding-top: 1pt; }
+    .award-date { font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 8pt; color: #1a6c5a; font-weight: 600; min-width: 54pt; padding-top: 1pt; }
     .award-title { font-weight: 700; font-size: 10.5pt; }
-    .award-desc { font-size: 9pt; color: #4a4540; line-height: 1.35; margin-top: 1pt; }
+    .award-desc { font-size: 9pt; color: #4a463f; line-height: 1.35; margin-top: 1pt; }
 
     /* Recommendations */
     .rec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7pt; margin: 4pt 0; }
     .rec-card { border: 0.5pt solid rgba(15,107,92,0.18); border-radius: 2pt; padding: 7pt 9pt; }
-    .rec-quote { font-style: italic; font-size: 9.5pt; line-height: 1.42; color: #1a1714; }
-    .rec-name { font-family: 'Inter', sans-serif; font-weight: 600; font-size: 8.5pt; margin-top: 5pt; color: #1a1714; }
-    .rec-role { font-family: 'Inter', sans-serif; font-size: 8pt; color: #7a7068; }
+    .rec-quote { font-style: italic; font-size: 9.5pt; line-height: 1.42; color: #17150f; }
+    .rec-name { font-family: 'IBM Plex Sans', system-ui, sans-serif; font-weight: 600; font-size: 8.5pt; margin-top: 5pt; color: #17150f; }
+    .rec-role { font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 8pt; color: #736d63; }
 
     /* Certs & edu */
     .cert-list { columns: 2; column-gap: 14pt; }
     .cert-list li { font-size: 9.5pt; break-inside: avoid; margin-bottom: 1.5pt; }
     .edu-row { display: flex; justify-content: space-between; align-items: baseline; gap: 8pt; }
     .edu-name { font-weight: 700; font-size: 10.5pt; }
-    .edu-date { font-family: 'Inter', sans-serif; font-size: 8.5pt; color: #7a7068; }
-    .edu-degree { font-family: 'Inter', sans-serif; font-size: 9pt; color: #4a4540; margin-top: 2pt; }
+    .edu-date { font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 8.5pt; color: #736d63; }
+    .edu-degree { font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 9pt; color: #4a463f; margin-top: 2pt; }
 
     /* Save bar */
-    .save-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 9999; display: flex; align-items: center; justify-content: space-between; padding: 9px 20px; background: #0f6b5c; color: #fff; font-family: 'Inter', system-ui, sans-serif; font-size: 12px; gap: 12px; }
+    .save-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 9999; display: flex; align-items: center; justify-content: space-between; padding: 9px 20px; background: #1a6c5a; color: #fff; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 12px; gap: 12px; }
     .save-bar-info { font-size: 11px; opacity: 0.82; }
-    .save-bar button { padding: 7px 18px; background: #fff; color: #0f6b5c; border: none; border-radius: 5px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; }
-    .save-bar button:hover { background: #e8f4f2; }
+    .save-bar button { padding: 7px 18px; background: #fff; color: #1a6c5a; border: none; border-radius: 5px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .save-bar button:hover { background: #eef4f1; }
     .content { margin-top: 52px; }
     @media print { .content { margin-top: 0; } }
 
@@ -728,7 +760,7 @@ export function generateExecutiveProfile() {
       </div>
       <div>
         <h2>${profile.signatureFramework.title}</h2>
-        <div style="font-size:8.5pt;color:#4a4540;margin-bottom:5pt;font-style:italic;">${profile.signatureFramework.subtitle}</div>
+        <div style="font-size:8.5pt;color:#4a463f;margin-bottom:5pt;font-style:italic;">${profile.signatureFramework.subtitle}</div>
         <div class="framework-grid">${frameworkHTML}</div>
       </div>
     </div>
@@ -800,10 +832,10 @@ export function ExecutiveProfileDownloadButton({ variant = "secondary" }) {
   const isPrimary = variant === "primary";
   return (
     <Button asChild variant={variant} className={isPrimary ? "primary-link download-link" : "secondary-link download-link"}>
-      <button onClick={generateExecutiveProfile}>
+      <a href="/prawal-sharma-executive-profile.pdf" download>
         <DownloadMark size={18} />
         <span>Download executive profile</span>
-      </button>
+      </a>
     </Button>
   );
 }

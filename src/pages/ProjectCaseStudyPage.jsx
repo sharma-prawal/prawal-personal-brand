@@ -1,20 +1,26 @@
 import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ChevronRight } from "lucide-react";
-import { DiagArrow } from "../components/icons.jsx";
-import { Button } from "../components/ui/button.jsx";
-import { MiniCase, MotionCard, MotionGroup, PageFrame, ProofImage, ProofIndex, Reveal, MotionRouterLink } from "../components/shared.jsx";
+import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
+import { PageFrame, ProofImage, ProofIndex, RecoveryPage, Reveal, usePageTitle } from "../components/shared.jsx";
 import { imageAlt, imageCaption, imageSrc } from "../data/imageMetadata.js";
 import { aiProjectsWithSlugs } from "../data/derived.js";
-import { itemReveal, tapPress, premiumEase } from "../lib/motion.js";
 
-function ProjectEvidence({ project }) {
+function Section({ id, title, children }) {
   return (
-    <div className="project-evidence" aria-label={`${project.name} evidence summary`}>
-      <span><strong>{project.images.length}</strong> proof image{project.images.length === 1 ? "" : "s"}</span>
-      <span><strong>{project.link ? "Live" : "Proof"}</strong>{project.link ? " external evidence" : " local evidence"}</span>
-      <span><strong>{project.stack.length}</strong> capability tags</span>
-    </div>
+    <Reveal as={motion.section} className="case-section" id={id} aria-labelledby={`${id}-title`}>
+      <h2 id={`${id}-title`}>{title}</h2>
+      <div className="case-section__body">{children}</div>
+    </Reveal>
+  );
+}
+
+function ExternalLink({ href, children }) {
+  const internal = href.startsWith("/");
+  return (
+    <a className="projects-link" href={href} target={internal ? undefined : "_blank"} rel={internal ? undefined : "noreferrer"}>
+      <span>{children}</span>
+      <ArrowUpRight size={15} aria-hidden="true" />
+    </a>
   );
 }
 
@@ -22,129 +28,112 @@ export default function ProjectCaseStudyPage() {
   const { projectSlug: activeProjectSlug } = useParams();
   const projectIndex = aiProjectsWithSlugs.findIndex((p) => p.slug === activeProjectSlug);
   const project = aiProjectsWithSlugs[projectIndex];
+  usePageTitle(project ? project.name : "Case study not found");
+
+  if (!project) return <RecoveryPage />;
+
   const previousProject = aiProjectsWithSlugs[(projectIndex - 1 + aiProjectsWithSlugs.length) % aiProjectsWithSlugs.length];
   const nextProject = aiProjectsWithSlugs[(projectIndex + 1) % aiProjectsWithSlugs.length];
-
-  if (!project) {
-    return (
-      <div data-theme="projects">
-        <PageFrame eyebrow="Project case study" title="Project case study not found." intro="Return to the project proof library to browse the available work.">
-          <div className="case-study-not-found">
-            <Button asChild variant="secondary" className="secondary-link">
-              <Link to="/ai-projects">
-                <ChevronRight size={18} />
-                <span>Back to project proof</span>
-              </Link>
-            </Button>
-          </div>
-        </PageFrame>
-      </div>
-    );
-  }
+  const facts = [
+    { label: "Type", value: project.type },
+    { label: "Status", value: project.stage },
+    { label: "Built with", value: project.stack.join(", ") }
+  ];
+  const [leadImage, ...galleryImages] = project.images;
+  const isMobileApp = project.type === "Android app";
+  const leadCaption = imageCaption(leadImage, `${project.name} preview`);
 
   return (
     <div data-theme="projects">
-    <PageFrame eyebrow={`${project.type} | ${project.stage}`} title={project.name} intro={project.summary}>
-      <ProofIndex
-        label="Case study index"
-        meta={`Case ${String(projectIndex + 1).padStart(2, "0")}`}
-        items={[
-          { id: "case-overview", label: "Overview" },
-          { id: "case-proof", label: "Proof" },
-          { id: "case-breakdown", label: "Breakdown" },
-          { id: "case-next", label: "Next" }
-        ]}
-      />
-
-      <Reveal className="project-case-hero-container">
-        <div className="project-case-hero" id="case-overview">
-          <div className="project-case-visual">
-            <div className="project-case-visual-inner">
-              <ProofImage
-                src={imageSrc(project.images[0])}
-                alt={imageAlt(project.images[0], `${project.name} primary proof`)}
-                caption={imageCaption(project.images[0], project.summary)}
-                priority
-                eager
-              />
-              <span className="project-case-proof-count">{project.images.length} proof image{project.images.length === 1 ? "" : "s"}</span>
+      <PageFrame
+        className="project-case-hero"
+        eyebrow={`${project.type} · ${project.stage}`}
+        title={project.name}
+        intro={project.summary}
+        heroAside={
+          <figure id={galleryImages.length ? "case-preview" : "case-gallery"} className={`case-lead${isMobileApp ? " case-lead--mobile" : ""}`}>
+            <div className="case-lead__media">
+              <ProofImage src={imageSrc(leadImage)} alt={imageAlt(leadImage, `${project.name} screenshot`)} caption={leadCaption} eager />
             </div>
-            {project.images.length > 1 ? (
-              <div className="project-case-proof-strip" aria-label={`${project.name} supporting proof preview`}>
-                {project.images.slice(1, 4).map((image, imageIndex) => {
-                  const isLastVisible = imageIndex === 2;
-                  const hasMore = project.images.length > 4;
-                  const moreCount = project.images.length - 4;
-                  return (
-                    <div className="project-case-proof-thumbnail" key={imageSrc(image)} style={{ position: "relative" }}>
-                      <ProofImage src={imageSrc(image)} alt={imageAlt(image, `${project.name} supporting proof ${imageIndex + 2}`)} caption={imageCaption(image, `${project.name} supporting proof ${imageIndex + 2}`)} eager />
-                      {isLastVisible && hasMore && (
-                        <div className="proof-more-overlay">
-                          <span>+{moreCount} more</span>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
+            <figcaption>{leadCaption}</figcaption>
+          </figure>
+        }
+      >
+        <ProofIndex
+          label="On this page"
+          backHref="/ai-projects"
+          items={[
+            { id: "case-problem", label: "Problem" },
+            { id: "case-built", label: "What I built" },
+            { id: "case-outcome", label: "Outcome" },
+            { id: "case-gallery", label: galleryImages.length ? "Screenshots" : "Screenshot" }
+          ]}
+        />
+
+        <div className="case-page">
+          <dl className="case-facts case-facts--project">
+            {facts.map((fact) => (
+              <div key={fact.label}>
+                <dt>{fact.label}</dt>
+                <dd>{fact.value}</dd>
               </div>
-            ) : null}
-          </div>
-          <div className="project-case-summary">
-            <div className="project-masthead">
-              <span>{project.type} | {project.stage}</span>
-              <strong>Case {String(projectIndex + 1).padStart(2, "0")}</strong>
+            ))}
+          </dl>
+
+          {project.link || project.repo ? (
+            <div className="projects-links case-links">
+              {project.link ? <ExternalLink href={project.link}>{project.linkLabel || "Open"}</ExternalLink> : null}
+              {project.repo ? <ExternalLink href={project.repo}>View the code</ExternalLink> : null}
             </div>
-            <h2>{project.name}</h2>
-            <p>{project.summary}</p>
-            <ProjectEvidence project={project} />
-            <div className="project-actions">
-              {project.link ? (
-                <motion.a className="project-link" href={project.link} target={project.link.startsWith("/") ? undefined : "_blank"} rel={project.link.startsWith("/") ? undefined : "noreferrer"} whileHover={{ y: -2, scale: 1.01 }} whileTap={tapPress} transition={{ duration: 0.22, ease: premiumEase }}>
-                  <DiagArrow size={15} />
-                  <span>{project.linkLabel || "Open evidence"}</span>
-                </motion.a>
-              ) : null}
-              <Button asChild variant="secondary" className="secondary-link">
-                <Link to="/ai-projects">
-                  <ChevronRight size={18} />
-                  <span>Back to all projects</span>
-                </Link>
-              </Button>
-            </div>
-            <div className="chip-list">
-              {project.stack.map((item) => <span key={item}>{item}</span>)}
-            </div>
-          </div>
+          ) : null}
+
+          <Section id="case-problem" title="Problem">
+            <p>{project.problem}</p>
+          </Section>
+
+          <Section id="case-built" title="What I built">
+            <p>{project.solution}</p>
+          </Section>
+
+          {project.aiUsage ? (
+            <Section id="case-ai" title="How AI was used">
+              <p>{project.aiUsage}</p>
+            </Section>
+          ) : null}
+
+          <Section id="case-outcome" title="Outcome">
+            <p className="case-outcome">{project.outcome}</p>
+          </Section>
+
+          {galleryImages.length > 0 && (
+            <Reveal as={motion.section} className="case-gallery-section" id="case-gallery" aria-labelledby="case-gallery-title">
+              <h2 id="case-gallery-title">More screenshots</h2>
+              <ul className={`case-gallery${isMobileApp ? " case-gallery--mobile" : ""}`}>
+                {galleryImages.map((image, index) => (
+                  <li key={imageSrc(image)}>
+                    <ProofImage
+                      src={imageSrc(image)}
+                      alt={imageAlt(image, `${project.name} screenshot ${index + 2}`)}
+                      caption={imageCaption(image, `${project.name} screenshot ${index + 2}`)}
+                    />
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
+          )}
+
+          <nav className="case-nav" aria-label="More projects">
+            <Link to={`/ai-projects/${previousProject.slug}`}>
+              <span><ArrowLeft size={14} aria-hidden="true" /> Previous</span>
+              <strong>{previousProject.name}</strong>
+            </Link>
+            <Link to={`/ai-projects/${nextProject.slug}`}>
+              <span>Next <ArrowRight size={14} aria-hidden="true" /></span>
+              <strong>{nextProject.name}</strong>
+            </Link>
+          </nav>
         </div>
-      </Reveal>
-
-      <MotionGroup className="case-proof-gallery" id="case-proof" immediate>
-        {project.images.map((image, index) => (
-          <MotionCard className={index === 0 ? "case-proof-card case-proof-card--lead" : "case-proof-card"} immediate key={imageSrc(image)}>
-            <ProofImage src={imageSrc(image)} alt={imageAlt(image, `${project.name} proof ${index + 1}`)} caption={imageCaption(image, `${project.name} proof ${index + 1}`)} eager priority={index < 3} />
-            <span>{String(index + 1).padStart(2, "0")}</span>
-          </MotionCard>
-        ))}
-      </MotionGroup>
-
-      <MotionGroup className="project-case-breakdown" id="case-breakdown">
-        <MiniCase title="Problem" text={project.problem} />
-        <MiniCase title="Solution" text={project.solution} />
-        <MiniCase title="AI usage" text={project.aiUsage} />
-        <MiniCase title="Outcome" text={project.outcome} />
-      </MotionGroup>
-
-      <Reveal as={motion.section} className="case-study-nav" id="case-next">
-        <Link to={`/ai-projects/${previousProject.slug}`}>
-          <span>Previous case</span>
-          <strong>{previousProject.name}</strong>
-        </Link>
-        <Link to={`/ai-projects/${nextProject.slug}`}>
-          <span>Next case</span>
-          <strong>{nextProject.name}</strong>
-        </Link>
-      </Reveal>
-    </PageFrame>
+      </PageFrame>
     </div>
   );
 }

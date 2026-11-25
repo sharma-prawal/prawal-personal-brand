@@ -1,9 +1,9 @@
 import React, { lazy, Suspense, useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Link, NavLink, Navigate, Route, Routes, useLocation } from "react-router-dom";
-import { Check, ChevronLeft, ChevronRight, Copy, Linkedin, LockKeyhole, Menu, X } from "lucide-react";
-import { LocationDot } from "./components/icons.jsx";
-import { LinkedInButton, ScrollToTop, downloadResume, generateExecutiveProfile } from "./components/shared.jsx";
+import { Check, ChevronDown, ChevronRight, Copy, Linkedin, Menu, X } from "lucide-react";
+import { ExecutiveProfileDownloadButton, LinkedInButton, RecoveryPage, ResumeDownloadButton, ScrollToTop, downloadResume, generateExecutiveProfile } from "./components/shared.jsx";
+import OverlayDialog from "./components/OverlayDialog.jsx";
 import { getDirectContact, profile } from "./data/profile.js";
 import { pageEntrance, exitEase, premiumEase } from "./lib/motion.js";
 
@@ -23,42 +23,33 @@ const RecommendationsPage = lazy(() => import("./pages/RecommendationsPage.jsx")
 const CURRENT_YEAR = new Date().getFullYear();
 
 const topNavItems = [
-  { label: "Executive", path: "/", match: (path) => path === "/" },
-  { label: "Journey", path: "/journey", match: (path) => path.startsWith("/journey") },
+  { label: "Home", path: "/", match: (path) => path === "/" },
+  { label: "Career", path: "/journey", match: (path) => path.startsWith("/journey") },
+  { label: "Projects", path: "/ai-projects", match: (path) => path.startsWith("/ai-projects") },
   {
-    label: "Portfolio",
-    path: "/ai-projects",
-    match: (path) => ["/ai-projects", "/awards", "/conferences", "/highlights"].some((prefix) => path.startsWith(prefix)),
+    label: "Recognition",
+    path: "/awards",
+    match: (path) => ["/awards", "/certifications", "/recommendations"].some((prefix) => path.startsWith(prefix)),
     children: [
-      { label: "Projects", path: "/ai-projects", text: "Builds and case studies" },
-      { label: "Awards", path: "/awards", text: "Recognition archive" },
-      { label: "Conferences", path: "/conferences", text: "Industry presence" },
-      { label: "Highlights", path: "/highlights", text: "Key moments" }
+      { label: "Awards", path: "/awards", text: "Ten awards at Successive Digital" },
+      { label: "Certifications", path: "/certifications", text: "Cloud, AI and architecture" },
+      { label: "Recommendations", path: "/recommendations", text: "What colleagues say" }
     ]
   },
-  { label: "Credentials", path: "/certifications", match: (path) => path.startsWith("/certifications") },
-  { label: "Recommendations", path: "/recommendations", match: (path) => path.startsWith("/recommendations") }
+  {
+    label: "Events",
+    path: "/conferences",
+    match: (path) => ["/conferences", "/highlights"].some((prefix) => path.startsWith(prefix)),
+    children: [
+      { label: "Conferences", path: "/conferences", text: "AI, cloud and data events" },
+      { label: "Highlights", path: "/highlights", text: "Client visits and publications" }
+    ]
+  }
 ];
 
 function NotFoundPage() {
   return (
-    <div data-theme="not-found">
-      <section className="page-hero">
-        <div className="page-hero__inner">
-          <div className="page-hero__copy">
-            <span className="eyebrow">404</span>
-            <h1>Page not found.</h1>
-            <p>The page you&apos;re looking for doesn&apos;t exist. Navigate back to explore the site.</p>
-          </div>
-        </div>
-        <div className="case-study-not-found">
-          <Link to="/" className="secondary-link" style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
-            <ChevronLeft size={18} />
-            <span>Back to executive summary</span>
-          </Link>
-        </div>
-      </section>
-    </div>
+    <RecoveryPage title="Page not found" description="Head back to the homepage or pick a page from the menu." to="/" label="Back to Home" />
   );
 }
 
@@ -66,168 +57,97 @@ function PageSuspenseFallback() {
   return <div className="page-suspense-fallback" aria-hidden="true" />;
 }
 
-function AIBrandChatbotFallback() {
-  return (
-    <div className="brand-chatbot is-collapsed" aria-hidden="true">
-      <button className="chatbot-fab" tabIndex={-1} type="button">
-        <span className="fab-glow" />
-        <span className="fab-monogram">PS</span>
-        <span className="fab-badge">AI</span>
-      </button>
-    </div>
-  );
-}
-
 function DirectContactPanel() {
-  const [name, setName] = useState("");
-  const [context, setContext] = useState("");
-  const [revealed, setRevealed] = useState(false);
-  const [copied, setCopied] = useState("");
-  const canReveal = name.trim().length >= 2 && context.trim().length >= 8;
-  const contact = revealed ? getDirectContact() : null;
+  const [copied, setCopied] = useState(false);
+  const { email } = getDirectContact();
 
-  const copyValue = async (label, value) => {
+  const copyEmail = async () => {
     try {
-      await navigator.clipboard.writeText(value);
-      setCopied(label);
-      window.setTimeout(() => setCopied(""), 1800);
+      await navigator.clipboard.writeText(email);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1800);
     } catch {
-      setCopied("");
+      setCopied(false);
     }
   };
 
   return (
-    <div className="direct-contact-panel" aria-label="Protected direct contact panel">
-      <div className="direct-contact-panel__header">
-        <LockKeyhole size={14} aria-hidden="true" />
-        <span>Direct contact</span>
+    <div className="direct-contact-panel">
+      <h2 className="direct-contact-panel__header">Get in touch</h2>
+      <div className="direct-contact-panel__row">
+        <a href={`mailto:${email}`}>{email}</a>
+        <button type="button" onClick={copyEmail} aria-live="polite">
+          {copied ? <Check size={14} aria-hidden="true" /> : <Copy size={14} aria-hidden="true" />}
+          <span>{copied ? "Copied" : "Copy"}</span>
+        </button>
       </div>
-      {!revealed ? (
-        <form
-          className="direct-contact-panel__form"
-          onSubmit={(event) => {
-            event.preventDefault();
-            if (canReveal) setRevealed(true);
-          }}
-        >
-          <label>
-            <span>Your name</span>
-            <input
-              autoComplete="name"
-              value={name}
-              onChange={(event) => setName(event.target.value)}
-              placeholder="Name"
-              type="text"
-            />
-          </label>
-          <label>
-            <span>Context</span>
-            <input
-              value={context}
-              onChange={(event) => setContext(event.target.value)}
-              placeholder="Hiring, consulting, collaboration..."
-              type="text"
-            />
-          </label>
-          <button type="submit" disabled={!canReveal}>
-            Reveal details
-          </button>
-        </form>
-      ) : (
-        <div className="direct-contact-panel__revealed" aria-live="polite">
-          <div className="direct-contact-panel__row">
-            <span>{contact.email}</span>
-            <button type="button" onClick={() => copyValue("email", contact.email)}>
-              {copied === "email" ? <Check size={14} /> : <Copy size={14} />}
-              <span>{copied === "email" ? "Copied" : "Copy"}</span>
-            </button>
-          </div>
-          <div className="direct-contact-panel__row">
-            <span>{contact.phone}</span>
-            <button type="button" onClick={() => copyValue("phone", contact.phone)}>
-              {copied === "phone" ? <Check size={14} /> : <Copy size={14} />}
-              <span>{copied === "phone" ? "Copied" : "Copy"}</span>
-            </button>
-          </div>
-          <small>Shown after a human context check. LinkedIn remains the preferred first touch.</small>
-        </div>
-      )}
+      <ul className="direct-contact-panel__links">
+        <li><a href={profile.contact.linkedin} target="_blank" rel="noreferrer">LinkedIn</a></li>
+        <li><a href={profile.contact.github} target="_blank" rel="noreferrer">GitHub</a></li>
+        <li><a href={profile.contact.credly} target="_blank" rel="noreferrer">Credly</a></li>
+        <li><a href={profile.contact.hackerrank} target="_blank" rel="noreferrer">HackerRank</a></li>
+      </ul>
     </div>
   );
 }
 
-function usePremiumCursor() {
-  const shouldReduceMotion = useReducedMotion();
+// Closing call to action for every page except the homepage, which has its own.
+function ContactBand() {
+  return (
+    <section className="contact-band" aria-labelledby="contact-band-title">
+      <h2 id="contact-band-title">Want to talk about engineering leadership or AI adoption?</h2>
+      <p>LinkedIn is the quickest way to reach me. My CV and executive profile are here too.</p>
+      <div className="home-actions">
+        <LinkedInButton />
+        <ResumeDownloadButton />
+        <ExecutiveProfileDownloadButton />
+      </div>
+    </section>
+  );
+}
+
+const pageTitles = {
+  "/": "Prawal Sharma | Engineering Leader",
+  "/journey": "Career | Prawal Sharma",
+  "/awards": "Awards | Prawal Sharma",
+  "/certifications": "Certifications | Prawal Sharma",
+  "/ai-projects": "Projects | Prawal Sharma",
+  "/conferences": "Conferences | Prawal Sharma",
+  "/highlights": "Highlights | Prawal Sharma",
+  "/recommendations": "Recommendations | Prawal Sharma"
+};
+
+// Case-study pages set their own title from the project name.
+function useRouteTitle(pathname) {
   useEffect(() => {
-    if (shouldReduceMotion || window.matchMedia("(hover: none)").matches) return;
-    const dot = document.createElement("div");
-    dot.className = "cursor-dot";
-    const ring = document.createElement("div");
-    ring.className = "cursor-ring";
-    document.body.append(dot, ring);
+    const path = pathname.length > 1 ? pathname.replace(/\/+$/, "") : pathname;
+    if (path.startsWith("/ai-projects/") || path === "/references") return;
+    document.title = pageTitles[path] || "Page not found | Prawal Sharma";
+  }, [pathname]);
+}
 
-    let dotX = 0, dotY = 0, ringX = 0, ringY = 0;
-    let rafId;
-
-    const lerp = (a, b, t) => a + (b - a) * t;
-
-    const tick = () => {
-      ringX = lerp(ringX, dotX, 0.1);
-      ringY = lerp(ringY, dotY, 0.1);
-      ring.style.transform = `translate(${ringX}px, ${ringY}px)`;
-      rafId = requestAnimationFrame(tick);
-    };
-    rafId = requestAnimationFrame(tick);
-
-    const onMove = (e) => {
-      dotX = e.clientX;
-      dotY = e.clientY;
-      dot.style.transform = `translate(${dotX}px, ${dotY}px)`;
-    };
-    const onOver = (e) => {
-      if (e.target.closest("a, button, [role='button'], label")) ring.classList.add("is-hovering");
-    };
-    const onOut = (e) => {
-      if (e.target.closest("a, button, [role='button'], label")) ring.classList.remove("is-hovering");
-    };
-    const onLeave = () => { dot.style.opacity = "0"; ring.style.opacity = "0"; };
-    const onEnter = () => { dot.style.opacity = "1"; ring.style.opacity = "1"; };
-
-    document.addEventListener("mousemove", onMove);
-    document.addEventListener("mouseover", onOver);
-    document.addEventListener("mouseout", onOut);
-    document.addEventListener("mouseleave", onLeave);
-    document.addEventListener("mouseenter", onEnter);
-
-    return () => {
-      cancelAnimationFrame(rafId);
-      document.removeEventListener("mousemove", onMove);
-      document.removeEventListener("mouseover", onOver);
-      document.removeEventListener("mouseout", onOut);
-      document.removeEventListener("mouseleave", onLeave);
-      document.removeEventListener("mouseenter", onEnter);
-      dot.remove();
-      ring.remove();
-    };
-  }, [shouldReduceMotion]);
+// After an in-app navigation, move focus to the new page so keyboard and
+// screen-reader users start at the content rather than on the old nav link.
+function useFocusMainOnNavigate(pathname) {
+  const previousPath = useRef(pathname);
+  useEffect(() => {
+    if (previousPath.current === pathname) return;
+    previousPath.current = pathname;
+    document.getElementById("main")?.focus({ preventScroll: true });
+  }, [pathname]);
 }
 
 function AppShell() {
   const location = useLocation();
+  useRouteTitle(location.pathname);
+  useFocusMainOnNavigate(location.pathname);
   const shouldReduceMotion = useReducedMotion();
-  usePremiumCursor();
-  const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001
-  });
   const topNavRef = useRef(null);
+  const mobileNavTrigger = useRef(null);
   const topNavPointerTypeRef = useRef("mouse");
   const topNavCloseTimerRef = useRef(null);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [openTopMenu, setOpenTopMenu] = useState(null);
-  const [hoveredItem, setHoveredItem] = useState(null);
   const [isScrolled, setIsScrolled] = useState(false);
 
   const cancelTopMenuClose = () => {
@@ -251,32 +171,9 @@ function AppShell() {
   };
 
   useEffect(() => {
-    isNavigatingRef.current = true;
     setMobileNavOpen(false);
     closeTopMenu();
-    window.scrollTo({ top: 0, behavior: "instant" });
   }, [location.pathname]);
-
-  const mobileNavRef = useRef(null);
-  const isNavigatingRef = useRef(false);
-
-  useEffect(() => {
-    if (mobileNavOpen) {
-      const scrollY = window.scrollY;
-      document.body.style.cssText = `overflow:hidden;position:fixed;top:-${scrollY}px;width:100%;`;
-      return () => {
-        document.body.style.cssText = "";
-        window.scrollTo({ top: isNavigatingRef.current ? 0 : scrollY, behavior: "instant" });
-        isNavigatingRef.current = false;
-      };
-    }
-  }, [mobileNavOpen]);
-
-  useEffect(() => {
-    if (mobileNavOpen && mobileNavRef.current) {
-      mobileNavRef.current.scrollTop = 0;
-    }
-  }, [mobileNavOpen]);
 
   useEffect(() => () => { cancelTopMenuClose(); }, []);
 
@@ -319,17 +216,22 @@ function AppShell() {
   const currentTheme = getThemeByPath(location.pathname);
 
   return (
-    <div className="site-shell" data-theme={currentTheme}>
-      <div aria-hidden="true" className="site-noise-overlay" />
-      <motion.div className="scroll-progress-bar" style={{ scaleX }} />
+    <div className={`site-shell${mobileNavOpen ? " nav-open" : ""}`} data-theme={currentTheme}>
       <ScrollToTop />
+      <a
+        className="skip-link"
+        href="#main"
+        onClick={(event) => {
+          event.preventDefault();
+          document.getElementById("main")?.focus();
+        }}
+      >
+        Skip to content
+      </a>
       <header className={`topbar${isScrolled ? " is-scrolled" : ""}`}>
         <Link className="brand-lockup" to="/" aria-label="Prawal Sharma home">
-          <span className="brand-mark">{profile.initials}</span>
-          <span className="brand-text">
-            <strong>{profile.name}</strong>
-            <small>Engineering Leader</small>
-          </span>
+          <strong>{profile.name}</strong>
+          <small>Engineering leader</small>
         </Link>
         <nav aria-label="Primary navigation" className="topbar-nav" ref={topNavRef}>
           {topNavItems.map((item) => {
@@ -355,26 +257,10 @@ function AppShell() {
                       (isKeyboardAction || topNavPointerTypeRef.current !== "mouse") && current === item.label ? null : item.label
                     ));
                   }}
-                  onMouseEnter={() => setHoveredItem(item.label)}
-                  onMouseLeave={() => setHoveredItem(null)}
                 >
-                  {isActive && (
-                    <motion.span
-                      layoutId="topNavActivePill"
-                      className="topbar-nav-pill"
-                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                    />
-                  )}
-                  {hoveredItem === item.label && !isActive && (
-                    <motion.span
-                      layoutId="topNavHoverPill"
-                      className="topbar-nav-pill--hover"
-                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                    />
-                  )}
-                  <span style={{ position: "relative", zIndex: 2, display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                  <span className="topbar-nav-label">
                     {item.label}
-                    <ChevronRight size={12} />
+                    <ChevronDown size={14} aria-hidden="true" />
                   </span>
                 </button>
                 <div className="topbar-submenu" role="menu" aria-label={`${item.label} pages`}>
@@ -399,24 +285,8 @@ function AppShell() {
                 to={item.path}
                 key={item.path}
                 aria-current={isActive ? "page" : undefined}
-                onMouseEnter={() => setHoveredItem(item.label)}
-                onMouseLeave={() => setHoveredItem(null)}
               >
-                {isActive && (
-                  <motion.span
-                    layoutId="topNavActivePill"
-                    className="topbar-nav-pill"
-                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                  />
-                )}
-                {hoveredItem === item.label && !isActive && (
-                  <motion.span
-                    layoutId="topNavHoverPill"
-                    className="topbar-nav-pill--hover"
-                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                  />
-                )}
-                <span style={{ position: "relative", zIndex: 2 }}>{item.label}</span>
+                {item.label}
               </Link>
             );
           })}
@@ -424,6 +294,7 @@ function AppShell() {
         <div className="topbar-actions">
           <LinkedInButton compact />
           <button
+            ref={mobileNavTrigger}
             className="hamburger-btn"
             type="button"
             aria-label={mobileNavOpen ? "Close navigation" : "Open navigation"}
@@ -435,57 +306,51 @@ function AppShell() {
         </div>
       </header>
 
-      <AnimatePresence>
-        {mobileNavOpen && (
-          <motion.div
-            className="mobile-nav-overlay"
-            initial={shouldReduceMotion ? false : { opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={shouldReduceMotion ? undefined : { opacity: 0 }}
-            transition={{ duration: 0.22, ease: premiumEase }}
-            onClick={() => setMobileNavOpen(false)}
+      {mobileNavOpen && (
+        <OverlayDialog
+          className="mobile-nav-overlay"
+          label="Site menu"
+          returnFocusRef={mobileNavTrigger}
+          onDismiss={() => setMobileNavOpen(false)}
+        >
+          <motion.nav
+            className="mobile-nav"
+            aria-label="Mobile navigation"
+            initial={shouldReduceMotion ? false : { x: "100%" }}
+            animate={{ x: 0 }}
+            transition={{ duration: 0.34, ease: premiumEase }}
           >
-            <motion.nav
-              ref={mobileNavRef}
-              className="mobile-nav"
-              aria-label="Mobile navigation"
-              initial={shouldReduceMotion ? false : { x: "100%" }}
-              animate={{ x: 0 }}
-              exit={shouldReduceMotion ? undefined : { x: "100%" }}
-              transition={{ duration: 0.34, ease: premiumEase }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="mobile-nav-header">
-                <span className="brand-mark">{profile.initials}</span>
-                <button type="button" aria-label="Close navigation" onClick={() => setMobileNavOpen(false)}>
-                  <X size={20} />
-                </button>
-              </div>
-              <div className="mobile-nav-section">
-                <span>Profile</span>
-                {topNavItems.filter((item) => !item.children).map((item) => (
-                  <NavLink className={({ isActive }) => (isActive ? "mobile-nav-link active" : "mobile-nav-link")} to={item.path} key={item.path}>
-                    {item.label}
-                  </NavLink>
-                ))}
-              </div>
-              <div className="mobile-nav-section">
-                <span>Portfolio</span>
-                {topNavItems.find((item) => item.label === "Portfolio")?.children.map((route) => (
-                  <NavLink className={({ isActive }) => (isActive ? "mobile-nav-link active" : "mobile-nav-link")} to={route.path} key={route.path}>
+            <div className="mobile-nav-header">
+              <strong className="mobile-nav-name">{profile.name}</strong>
+              <button type="button" aria-label="Close navigation" data-dialog-initial-focus onClick={() => setMobileNavOpen(false)}>
+                <X size={20} />
+              </button>
+            </div>
+            <div className="mobile-nav-section">
+              {topNavItems.filter((item) => !item.children).map((item) => (
+                <NavLink end={item.path === "/"} className={({ isActive }) => (isActive ? "mobile-nav-link active" : "mobile-nav-link")} to={item.path} key={item.path} onClick={() => setMobileNavOpen(false)}>
+                  {item.label}
+                </NavLink>
+              ))}
+            </div>
+            {topNavItems.filter((item) => item.children).map((group) => (
+              <div className="mobile-nav-section" key={group.label}>
+                <span>{group.label}</span>
+                {group.children.map((route) => (
+                  <NavLink className={({ isActive }) => (isActive ? "mobile-nav-link active" : "mobile-nav-link")} to={route.path} key={route.path} onClick={() => setMobileNavOpen(false)}>
                     {route.label}
                   </NavLink>
                 ))}
               </div>
-              <div className="mobile-nav-cta">
-                <LinkedInButton />
-              </div>
-            </motion.nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            ))}
+            <div className="mobile-nav-cta">
+              <LinkedInButton />
+            </div>
+          </motion.nav>
+        </OverlayDialog>
+      )}
 
-      <main aria-label="Main content">
+      <main id="main" tabIndex={-1} aria-label="Main content">
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             className="route-motion"
@@ -513,44 +378,39 @@ function AppShell() {
             </Suspense>
           </motion.div>
         </AnimatePresence>
+        {location.pathname !== "/" ? <ContactBand /> : null}
       </main>
 
       <footer className="site-footer">
-        <div className="footer-brand">
-          <span className="footer-name">{profile.name}</span>
-          <span className="footer-title">Engineering Leader · AI-Enabled Engineering</span>
-          <p className="footer-thesis">Shaping the intersection of software craftsmanship and machine intelligence.</p>
-          <div className="footer-location">
-            <LocationDot size={13} />
-            <span>{profile.location}</span>
+        <div className="site-footer__inner">
+          <div className="footer-brand">
+            <strong>{profile.name}</strong>
+            <p>Engineering leader · {profile.location}</p>
+            <small>&copy; {CURRENT_YEAR} {profile.name}</small>
+          </div>
+          <nav className="footer-nav" aria-label="Footer">
+            <div>
+              <h2>Work</h2>
+              <Link to="/">Home</Link>
+              <Link to="/journey">Career</Link>
+              <Link to="/ai-projects">Projects</Link>
+              <Link to="/conferences">Conferences</Link>
+              <Link to="/highlights">Highlights</Link>
+            </div>
+            <div>
+              <h2>Recognition</h2>
+              <Link to="/awards">Awards</Link>
+              <Link to="/certifications">Certifications</Link>
+              <Link to="/recommendations">Recommendations</Link>
+            </div>
+          </nav>
+          <div className="footer-contact">
+            <DirectContactPanel />
           </div>
         </div>
-        <div className="footer-nav-cols">
-          <div className="footer-nav-col">
-            <span className="footer-col-label">Narrative</span>
-            <Link to="/">Executive</Link>
-            <Link to="/journey">Journey</Link>
-            <Link to="/recommendations">Recommendations</Link>
-          </div>
-          <div className="footer-nav-col">
-            <span className="footer-col-label">Portfolio</span>
-            <Link to="/awards">Awards</Link>
-            <Link to="/certifications">Certifications</Link>
-            <Link to="/ai-projects">Projects</Link>
-            <Link to="/conferences">Conferences</Link>
-            <Link to="/highlights">Highlights</Link>
-          </div>
-        </div>
-        <div className="footer-contact">
-          <DirectContactPanel />
-        </div>
-        <small className="footer-copy">
-          <span>&copy; {CURRENT_YEAR} {profile.name}</span>
-          <span>Engineering Leader · AI-Enabled Delivery</span>
-        </small>
       </footer>
 
-      <Suspense fallback={<AIBrandChatbotFallback />}>
+      <Suspense fallback={null}>
         <LazyAIBrandChatbot downloadResume={downloadResume} generateExecutiveProfile={generateExecutiveProfile} />
       </Suspense>
     </div>

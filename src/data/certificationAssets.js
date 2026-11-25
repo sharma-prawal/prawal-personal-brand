@@ -195,7 +195,7 @@ export const certificationAssets = certificationFiles.map((file, index) => {
     date: isProctored ? "Official Proctored Exam" : "Continuous Learning Course",
     src: `/${file}`,
     type: file.toLowerCase().endsWith(".pdf") ? "pdf" : "image",
-    alt: `${title} certificate proof`,
+    alt: `${title} certificate issued to Prawal Sharma`,
     caption: `${title} credential proof from ${provider}.`,
     featured: isProctored,
     proctored: isProctored,

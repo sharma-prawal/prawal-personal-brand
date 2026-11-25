@@ -1,88 +1,76 @@
+import { useLayoutEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { DiagArrow } from "../components/icons.jsx";
-import { ImageCarousel, MotionCard, MotionGroup, PageFrame, ProofImage, Reveal } from "../components/shared.jsx";
-import { Button } from "../components/ui/button.jsx";
+import { ImageCarousel, PageFrame, ProofImage, Reveal } from "../components/shared.jsx";
 import { imageAlt, imageCaption, imageSrc } from "../data/imageMetadata.js";
+import { projectSlug } from "../data/derived.js";
 import { internationalExposure, professionalHighlights } from "../data/mediaAssets.js";
-import { itemReveal } from "../lib/motion.js";
 
-function HighlightCard({ highlight, priority, isBook }) {
+// A map label whose background chip is sized from the rendered text, so it fits
+// whatever font is in use instead of a per-character estimate.
+function MapLabel({ x, y, anchor, label, textFill, chipStroke, weight, spacing }) {
+  const textRef = useRef(null);
+  const [box, setBox] = useState(null);
+  useLayoutEffect(() => {
+    let active = true;
+    const measure = () => {
+      const bounds = active ? textRef.current?.getBBox() : null;
+      if (bounds) setBox({ x: bounds.x, y: bounds.y, width: bounds.width, height: bounds.height });
+    };
+    measure();
+    document.fonts?.ready.then(measure);
+    return () => {
+      active = false;
+    };
+  }, [label]);
   return (
-    <MotionCard className={`highlight-card${isBook ? " highlight-card--book" : ""}`} priority={priority}>
-      <div className="highlight-media-gallery">
-        <ImageCarousel
-          images={highlight.images}
-          onSlideClick={(e) => { const btn = e.currentTarget.querySelector(".proof-image-button"); if (btn) btn.click(); }}
-          renderImage={(image) => (
-            <ProofImage
-              src={imageSrc(image)}
-              alt={imageAlt(image, `${highlight.title} proof`)}
-              caption={imageCaption(image, highlight.context)}
-              priority={priority}
-            />
-          )}
-        />
-      </div>
-      <div className="highlight-copy">
-        <div className="highlight-category-header">
-          <span className="highlight-category-pill">{highlight.category.toUpperCase()}</span>
-        </div>
-        <h3 className="premium-highlight-title">{highlight.title}</h3>
-        <p className="premium-highlight-description">{highlight.context}</p>
-        <div className="takeaway-panel highlight-takeaway-panel">
-          <strong>Why it matters</strong>
-          <p>{highlight.story}</p>
-        </div>
-        {highlight.links.length > 0 ? (
-          <div className="highlight-links">
-            {highlight.links.map((link) => (
-              <Button asChild variant="secondary" size="compact" className="highlight-links__item" key={link.url}>
-                <a href={link.url} target="_blank" rel="noreferrer">
-                  <DiagArrow size={14} />
-                  <span>{link.label}</span>
-                </a>
-              </Button>
-            ))}
-          </div>
-        ) : null}
-      </div>
-    </MotionCard>
+    <>
+      {box ? (
+        <rect x={box.x - 4} y={box.y - 1.5} width={box.width + 8} height={box.height + 3} rx="3" fill="rgba(251, 250, 246, 0.96)" stroke={chipStroke} strokeWidth="0.5" />
+      ) : null}
+      <text ref={textRef} x={x} y={y} fill={textFill} fontSize="9" fontWeight={weight} fontFamily="var(--font-sans)" letterSpacing={spacing} textAnchor={anchor}>{label}</text>
+    </>
   );
 }
 
-function FeaturedHighlight({ highlight }) {
+function HighlightFeature({ highlight, reverse = false, priority = false }) {
   if (!highlight) return null;
-
+  const id = projectSlug(highlight.title);
   return (
-    <Reveal as={motion.section} className="featured-highlight">
-      <div className="featured-highlight__media">
+    <Reveal as={motion.section} className={`conf-feature${reverse ? " conf-feature--reverse" : ""}`} id={id} aria-labelledby={`${id}-title`}>
+      <div className={`conf-feature__media${highlight.title === "Book Contributor" ? " conf-feature__media--publication" : ""}`}>
         <ImageCarousel
           images={highlight.images}
           onSlideClick={(e) => { const btn = e.currentTarget.querySelector(".proof-image-button"); if (btn) btn.click(); }}
           renderImage={(image) => (
             <ProofImage
               src={imageSrc(image)}
-              alt={imageAlt(image, `${highlight.title} featured proof`)}
+              alt={imageAlt(image, `${highlight.title} photo`)}
               caption={imageCaption(image, highlight.context)}
-              priority
-              eager
+              priority={priority}
+              eager={priority}
             />
           )}
         />
       </div>
-      <div className="featured-highlight__copy">
-        <span className="eyebrow">{highlight.category}</span>
-        <h2>{highlight.title}</h2>
-        <p>{highlight.context}</p>
-        <div className="featured-highlight__why">
-          <span>Executive signal</span>
-          <strong>{highlight.story}</strong>
+      <div className="conf-feature__copy">
+        <p className="conf-feature__meta">{highlight.category}</p>
+        <h2 id={`${id}-title`}>{highlight.title}</h2>
+        <p className="conf-feature__theme">{highlight.context}</p>
+        <div className="conf-feature__takeaway">
+          <span>Why it matters</span>
+          <p>{highlight.story}</p>
         </div>
-        <div className="featured-highlight__signals">
-          <span>{highlight.images.length} documentary proofs</span>
-          <span>B1/B2 business visa</span>
-          <span>US onsite client delivery</span>
-        </div>
+        {highlight.links?.length ? (
+          <div className="projects-links">
+            {highlight.links.map((link) => (
+              <a className="projects-link" href={link.url} target="_blank" rel="noreferrer" key={link.url}>
+                <span>{link.label}</span>
+                <DiagArrow size={14} />
+              </a>
+            ))}
+          </div>
+        ) : null}
       </div>
     </Reveal>
   );
@@ -103,28 +91,28 @@ function GlobalRoutesMap() {
   const center = { x: 225, y: 135, label: "Delhi (HQ)" };
 
   return (
-    <div className="global-routes-container" aria-hidden="true">
-      <svg viewBox="0 0 380 260" width="100%" height="100%" className="global-routes-svg">
+    <div className="global-routes-container">
+      <svg aria-hidden="true" viewBox="-20 0 400 260" width="100%" height="100%" className="global-routes-svg">
         <defs>
           <radialGradient id="glow" cx="50%" cy="50%" r="50%">
             <stop offset="0%" stopColor="var(--gold)" stopOpacity="0.4" />
             <stop offset="100%" stopColor="var(--gold)" stopOpacity="0" />
           </radialGradient>
           <radialGradient id="glowPersonal" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="rgba(180,210,230,0.35)" stopOpacity="1" />
-            <stop offset="100%" stopColor="rgba(180,210,230,0)" stopOpacity="0" />
+            <stop offset="0%" stopColor="rgba(84, 79, 71, 0.35)" stopOpacity="1" />
+            <stop offset="100%" stopColor="rgba(84, 79, 71, 0)" stopOpacity="0" />
           </radialGradient>
           <linearGradient id="routeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="var(--gold)" />
             <stop offset="50%" stopColor="var(--gold)" />
-            <stop offset="100%" stopColor="rgba(255,255,255,0.4)" />
+            <stop offset="100%" stopColor="rgba(84, 79, 71, 0.4)" />
           </linearGradient>
           <linearGradient id="routeGradPersonal" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="rgba(180,210,230,0.85)" />
-            <stop offset="100%" stopColor="rgba(180,210,230,0.35)" />
+            <stop offset="0%" stopColor="rgba(84, 79, 71, 0.85)" />
+            <stop offset="100%" stopColor="rgba(84, 79, 71, 0.35)" />
           </linearGradient>
         </defs>
-        <g stroke="rgba(255,255,255,0.03)" strokeWidth="0.5">
+        <g stroke="rgba(23, 21, 15, 0.05)" strokeWidth="0.5">
           {Array.from({ length: 13 }).map((_, i) => <line key={`x-${i}`} x1={i * 30} y1="0" x2={i * 30} y2="260" />)}
           {Array.from({ length: 9 }).map((_, i) => <line key={`y-${i}`} x1="0" y1={i * 30} x2={380} y2={i * 30} />)}
         </g>
@@ -148,125 +136,85 @@ function GlobalRoutesMap() {
           );
         })}
         {professionalRoutes.map((r) => {
-          const textWidth = r.label.length * 5.8 + 6;
-          const textHeight = 12;
-          const rx = r.dx < 0 ? r.x + r.dx - textWidth + 1 : r.x + r.dx - 1;
-          const ry = r.y + r.dy - 9;
           return (
             <g key={`dot-${r.id}`} className="route-dot route-dot--professional">
               <circle cx={r.x} cy={r.y} r="10" fill="url(#glow)" className="pulse-glow" />
               <circle cx={r.x} cy={r.y} r="3.5" fill="var(--gold)" />
-              <rect x={rx - 3} y={ry} width={textWidth + 6} height={textHeight} rx="3" fill="rgba(40, 30, 14, 0.75)" stroke="rgba(209,176,106,0.42)" strokeWidth="0.5" />
-              <text x={r.x + r.dx} y={r.y + r.dy} fill="rgba(209,176,106,0.92)" fontSize="9" fontWeight="900" fontFamily="var(--font-sans)" letterSpacing="0.04em" textAnchor={r.dx < 0 ? "end" : "start"}>{r.label}</text>
+              <MapLabel x={r.x + r.dx} y={r.y + r.dy} anchor={r.dx < 0 ? "end" : "start"} label={r.label} textFill="rgb(21, 94, 78)" chipStroke="rgba(21, 94, 78, 0.45)" weight="600" spacing="0.04em" />
             </g>
           );
         })}
         {personalRoutes.map((r) => {
-          const textWidth = r.label.length * 5.8 + 6;
-          const textHeight = 12;
-          const rx = r.dx < 0 ? r.x + r.dx - textWidth + 1 : r.x + r.dx - 1;
-          const ry = r.y + r.dy - 9;
           return (
             <g key={`dot-${r.id}`} className="route-dot route-dot--personal">
               <circle cx={r.x} cy={r.y} r="9" fill="url(#glowPersonal)" className="pulse-glow" />
-              <circle cx={r.x} cy={r.y} r="2.5" fill="rgba(190,215,235,0.9)" />
-              <rect x={rx - 3} y={ry} width={textWidth + 6} height={textHeight} rx="3" fill="rgba(14, 22, 30, 0.72)" stroke="rgba(180,210,230,0.32)" strokeWidth="0.5" />
-              <text x={r.x + r.dx} y={r.y + r.dy} fill="rgba(210,230,245,0.88)" fontSize="9" fontWeight="600" fontFamily="var(--font-sans)" letterSpacing="0.03em" textAnchor={r.dx < 0 ? "end" : "start"}>{r.label}</text>
+              <circle cx={r.x} cy={r.y} r="2.5" fill="rgba(84, 79, 71, 0.9)" />
+              <MapLabel x={r.x + r.dx} y={r.y + r.dy} anchor={r.dx < 0 ? "end" : "start"} label={r.label} textFill="rgb(23, 21, 15)" chipStroke="rgba(23, 21, 15, 0.18)" weight="500" spacing="0.03em" />
             </g>
           );
         })}
-        <circle cx={center.x} cy={center.y} r="14" fill="rgba(209, 176, 106, 0.18)" />
-        <circle cx={center.x} cy={center.y} r="4" fill="#fff" />
-        <circle cx={center.x} cy={center.y} r="2" fill="var(--gold)" />
-        <rect x={center.x - 32} y={center.y + 11} width={64} height={13} rx="3" fill="rgba(15, 20, 18, 0.82)" stroke="rgba(209, 176, 106, 0.2)" strokeWidth="0.5" />
-        <text x={center.x} y={center.y + 20} fill="var(--gold)" fontSize="10" fontWeight="900" fontFamily="var(--font-sans)" letterSpacing="0.08em" textAnchor="middle">{center.label}</text>
+        <g className="route-dot">
+          <circle cx={center.x} cy={center.y} r="14" fill="rgba(21, 94, 78, 0.14)" />
+          <circle cx={center.x} cy={center.y} r="4" fill="#fff" />
+          <circle cx={center.x} cy={center.y} r="2" fill="rgb(21, 94, 78)" />
+          <rect x={center.x - 32} y={center.y + 11} width={64} height={13} rx="3" fill="rgba(251, 250, 246, 0.96)" stroke="rgba(21, 94, 78, 0.35)" strokeWidth="0.5" />
+          <text x={center.x} y={center.y + 20} fill="rgb(23, 21, 15)" fontSize="10" fontWeight="600" fontFamily="var(--font-sans)" letterSpacing="0.08em" textAnchor="middle">{center.label}</text>
+        </g>
       </svg>
-      <div className="global-routes-legend" aria-hidden="true">
-        <span><i className="legend-dot legend-dot--professional" />Client delivery — US (onsite, B1/B2 visa) · UK · South Africa</span>
-        <span><i className="legend-dot legend-dot--personal" />Cultural exposure — Phuket · Nepal · Vietnam · Dubai</span>
+      <div className="global-routes-legend">
+        <div><strong>Based in</strong><span>{center.label}</span></div>
+        <div><strong>Client delivery</strong><span>{professionalRoutes.map(({ label }) => label).join(", ")}</span></div>
+        <div><strong>Travel</strong><span>{personalRoutes.map(({ label }) => label).join(", ")}</span></div>
       </div>
     </div>
   );
 }
 
 export default function HighlightsPage() {
-  const featuredHighlight = professionalHighlights[0];
-  const supportingHighlights = professionalHighlights.slice(1);
-  const highlightProofSignals = [
-    { value: "Onsite", label: "client-facing alignment" },
-    { value: "Published", label: "communication contribution" },
-    { value: "Global", label: "cross-border operating range" }
-  ];
-  const globalSignalLedger = [
-    { label: "US onsite delivery", value: "B1/B2 business visa — can appear in person with US clients" },
-    { label: "Remote stakeholder alignment", value: "UK / South Africa — multi-year delivery relationships" },
-    { label: "Cultural operating range", value: "Phuket · Nepal · Vietnam · Dubai — not limited to one geography" }
+  const workAbroad = [
+    { title: "US onsite delivery", text: "Worked in person with US clients on a B1/B2 business visa." },
+    { title: "UK and South Africa", text: "Multi-year delivery relationships with remote stakeholders." },
+    { title: "Travel", text: "Phuket, Nepal, Vietnam and Dubai." }
   ];
 
   return (
     <div data-theme="highlights">
-    <PageFrame
-      eyebrow="Professional highlights"
-      title="Selected signals of client-facing trust."
-      intro="A tight evidence set for the moments that matter outside ordinary delivery metrics: onsite trust, global stakeholder exposure, and communication credibility."
-      className="highlights-page-hero"
-      heroAside={
-        <motion.div className="highlights-hero-ledger" variants={itemReveal}>
-          {highlightProofSignals.map((item) => (
-            <div className="highlights-hero-ledger__item" key={item.label}>
-              <strong>{item.value}</strong>
-              <span>{item.label}</span>
-            </div>
+      <PageFrame
+        eyebrow="Highlights"
+        title="Client visits, publications and other milestones."
+        intro="The moments that don’t show up in delivery numbers: working onsite with clients, international exposure and published writing."
+        className="highlights-page-hero"
+      >
+        <div className="ledger-page">
+          {professionalHighlights.map((highlight, index) => (
+            <HighlightFeature highlight={highlight} reverse={index % 2 === 1} priority={index === 0} key={highlight.title} />
           ))}
-        </motion.div>
-      }
-    >
-      <FeaturedHighlight highlight={featuredHighlight} />
 
-      <div className="premium-section-divider highlight-section-divider">
-        <span className="premium-divider-label">Selected proof notes</span>
-        <hr />
-      </div>
-
-      <div className="highlight-supporting-layout">
-        <MotionGroup className="highlight-grid highlight-grid--supporting">
-          {supportingHighlights.map((highlight, index) => (
-            <HighlightCard
-              highlight={highlight}
-              priority={index === 0}
-              key={highlight.title}
-              isBook={highlight.links && highlight.links.length > 0}
-            />
-          ))}
-        </MotionGroup>
-        <Reveal as={motion.section} className="international-note">
-          <div className="international-note__copy">
-            <span>{internationalExposure.category}</span>
-            <h3 className="international-note__title">{internationalExposure.title}</h3>
-            <p>{internationalExposure.summary}</p>
-            <small>{internationalExposure.note}</small>
-            <div className="global-signal-ledger">
-              {globalSignalLedger.map((item) => (
-                <div className="global-signal-ledger__item" key={item.label}>
-                  <span>{item.label}</span>
-                  <strong>{item.value}</strong>
-                </div>
+          <Reveal as={motion.section} className="home-section home-section--split" aria-labelledby="hl-abroad-title">
+            <header className="home-section__head">
+              <h2 id="hl-abroad-title">Working across borders</h2>
+              <p>{internationalExposure.summary}</p>
+            </header>
+            <ol className="home-rules">
+              {workAbroad.map((item) => (
+                <li key={item.title}>
+                  <h3>{item.title}</h3>
+                  <p>{item.text}</p>
+                </li>
               ))}
-            </div>
-          </div>
-        </Reveal>
-      </div>
+            </ol>
+          </Reveal>
 
-      <Reveal as={motion.section} className="global-map-card">
-        <div className="global-map-card__header">
-          <span className="eyebrow">Interactive footprint</span>
-          <h2>Lived global travel & connection range</h2>
+          <Reveal as={motion.section} className="home-section global-map-section" aria-labelledby="hl-map-title">
+            <header className="home-section__head">
+              <h2 id="hl-map-title">Where work and travel have taken me</h2>
+            </header>
+            <div className="global-map-card__body">
+              <GlobalRoutesMap />
+            </div>
+          </Reveal>
         </div>
-        <div className="global-map-card__body">
-          <GlobalRoutesMap />
-        </div>
-      </Reveal>
-    </PageFrame>
+      </PageFrame>
     </div>
   );
 }

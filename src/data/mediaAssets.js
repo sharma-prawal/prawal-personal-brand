@@ -1,8 +1,9 @@
 import { createImageMeta } from "./imageMetadata.js";
+import { describeImage } from "./imageDescriptions.js";
 
 export const profilePortrait = {
   title: "Prawal Sharma portrait",
-  src: "/media/profile/IMG_2574.JPG",
+  src: "/media/profile/portrait-1400.jpg",
   alt: "Prawal Sharma professional portrait",
   date: "Current profile asset",
   category: "Executive portrait",
@@ -54,8 +55,8 @@ export const professionalHighlights = professionalHighlightRecords.map((highligh
       title: `${highlight.title} proof ${index + 1}`,
       date: "Professional proof archive",
       category: highlight.category,
-      alt: `${highlight.title} proof image ${index + 1}`,
-      caption: index === 0 ? highlight.context : `${highlight.title} supporting proof image ${index + 1}.`,
+      alt: describeImage(src) || `${highlight.title}, photo ${index + 1} of ${highlight.images.length}`,
+      caption: index === 0 ? highlight.context : describeImage(src) || `${highlight.title}, photo ${index + 1}.`,
       featured: index === 0,
       priority: index === 0
     })
@@ -93,8 +94,8 @@ const awardRecords = [
     description:
       "Recognition for impactful engineering initiatives, ownership, collaboration, and contribution toward growth.",
     images: [
-      "/media/awards/Outstanding Contribution Award/1777978179122.jpeg",
-      "/media/awards/Outstanding Contribution Award/1777978177532.jpeg"
+      "/media/awards/Outstanding Contribution Award/1777978177532.jpeg",
+      "/media/awards/Outstanding Contribution Award/1777978179122.jpeg"
     ]
   },
   {
@@ -180,10 +181,10 @@ export const awardAssets = awardRecords.map((award) => ({
       title: `${award.title} proof ${index + 1}`,
       date: award.date,
       category: "Award recognition",
-      alt: `${award.title} award proof ${index + 1}`,
+      alt: describeImage(src) || `${award.title}, photo ${index + 1} of ${award.images.length}`,
       caption: index === 0
         ? `${award.title} from ${award.issuer}. ${award.description}`
-        : `${award.title} supporting award proof ${index + 1}.`,
+        : describeImage(src) || `${award.title}, photo ${index + 1}.`,
       featured: index === 0,
       priority: index === 0
     })
@@ -319,8 +320,8 @@ export const conferenceAssets = conferenceRecords.map((conference) => ({
       title: `${conference.title} proof ${index + 1}`,
       date: "Event proof archive",
       category: "Conference presence",
-      alt: `${conference.title} conference proof image ${index + 1}`,
-      caption: index === 0 ? conference.theme : `${conference.title} supporting conference moment ${index + 1}.`,
+      alt: describeImage(src) || `${conference.title}, photo ${index + 1} of ${conference.images.length}`,
+      caption: index === 0 ? conference.theme : describeImage(src) || `${conference.title}, photo ${index + 1}.`,
       featured: index === 0,
       priority: index === 0
     })

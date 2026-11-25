@@ -1,66 +1,20 @@
 import { motion } from "framer-motion";
-import { ImageCarousel, MotionCard, MotionGroup, PageFrame, ProofImage, Reveal, handleCardMouseMove } from "../components/shared.jsx";
+import { ImageCarousel, PageFrame, ProofImage, Reveal } from "../components/shared.jsx";
 import { imageAlt, imageCaption, imageSrc } from "../data/imageMetadata.js";
+import { projectSlug } from "../data/derived.js";
 import { conferenceAssets } from "../data/mediaAssets.js";
-import { itemReveal } from "../lib/motion.js";
 
-function ConferenceSignalLedger({ signals }) {
-  return (
-    <Reveal as={motion.section} className="conference-signal-ledger" aria-label="Conference signal ledger">
-      {signals.map((signal) => (
-        <div className="conference-signal-ledger__item" key={signal.label}>
-          <strong>{signal.value}</strong>
-          <span>{signal.label}</span>
-        </div>
-      ))}
-    </Reveal>
-  );
-}
-
-function ConferenceArchiveIntro({ count, groups }) {
-  return (
-    <Reveal as={motion.section} className="conference-archive-intro">
-      <div>
-        <span className="eyebrow">Supporting event archive</span>
-        <h2>Broader signals, grouped by what they sharpen.</h2>
-      </div>
-      <div className="conference-archive-intro__copy">
-        <p>The following {count} conferences cover AI adoption, cloud platforms, data architecture, and business strategy — grouped by what each sharpens.</p>
-        <div aria-label="Supporting event signals">
-          {groups.map((group) => (
-            <article key={group.title}>
-              <strong>{group.title}</strong>
-              <span>{group.text}</span>
-            </article>
-          ))}
-        </div>
-      </div>
-    </Reveal>
-  );
-}
+const whyIGo = [
+  { title: "AI adoption judgment", text: "Separating what enterprises are really adopting from what only sounds good on stage." },
+  { title: "Platform modernisation", text: "Reading cloud, data and developer-ecosystem shifts before they turn into delivery pressure." },
+  { title: "Business context", text: "Connecting technology choices to growth, operating models and stakeholder confidence." }
+];
 
 function ConferenceFeature({ moment }) {
+  const meta = ["Featured event", moment.eventType, moment.year].filter(Boolean).join(" · ");
   return (
-    <Reveal as={motion.section} className="conference-feature" id="featured-event">
-      <div className="conference-feature__copy">
-        <h2>{moment.title}</h2>
-        <p>{moment.theme}</p>
-        <div className="conference-feature__takeaway">
-          <span>Leadership takeaway</span>
-          <strong>{moment.takeaway}</strong>
-        </div>
-        <div className="conference-feature__signals">
-          <span>{moment.location}</span>
-          <span>Documented signal</span>
-          <span>AI adoption judgment</span>
-        </div>
-        <div className="conference-feature__meta-row">
-          <span className="eyebrow">Featured event</span>
-          {moment.eventType && <span className="conference-type-pill conference-type-pill--featured">{moment.eventType}</span>}
-          {moment.year && <span className="conference-year-badge">{moment.year}</span>}
-        </div>
-      </div>
-      <div className="conference-feature__media">
+    <Reveal as={motion.section} className="conf-feature" id="featured-event" aria-labelledby="conf-feature-title">
+      <div className="conf-feature__media">
         <ImageCarousel
           images={moment.images}
           onSlideClick={(e) => { const btn = e.currentTarget.querySelector(".proof-image-button"); if (btn) btn.click(); }}
@@ -75,75 +29,15 @@ function ConferenceFeature({ moment }) {
           )}
         />
       </div>
-    </Reveal>
-  );
-}
-
-function ConferenceCard({ moment, index, priority }) {
-  const isFeatured = index === 0;
-
-  return (
-    <MotionCard
-      className={[
-        isFeatured ? "conference-card conference-card--feature" : "conference-card",
-        "glass-card spotlight-card"
-      ].join(" ")}
-      priority={priority}
-      onMouseMove={handleCardMouseMove}
-    >
-      <div className="conference-media-gallery">
-        <ImageCarousel
-          images={moment.images}
-          size="compact"
-          onSlideClick={(e) => { const btn = e.currentTarget.querySelector(".proof-image-button"); if (btn) btn.click(); }}
-          renderImage={(image) => (
-            <ProofImage
-              src={imageSrc(image)}
-              alt={imageAlt(image, `${moment.title} conference moment`)}
-              caption={imageCaption(image, moment.theme)}
-              priority={priority}
-            />
-          )}
-        />
-      </div>
-
-      <div className="conference-card-body">
-        <div className="conference-card-meta-row">
-          <strong className="slot-number-inline">Event {String(index + 1).padStart(2, "0")}</strong>
-          {moment.eventType && <span className="conference-type-pill">{moment.eventType}</span>}
-          {moment.year && <span className="conference-year-badge">{moment.year}</span>}
-        </div>
-        <span className="conference-location-tag">{moment.location}</span>
-        <h3>{moment.title}</h3>
-        <p className="conference-theme-text">{moment.theme}</p>
-        <div className="takeaway-panel takeaway-panel--compact">
-          <strong>Takeaway</strong>
+      <div className="conf-feature__copy">
+        <p className="conf-feature__meta">{meta}</p>
+        <h2 id="conf-feature-title">{moment.title}</h2>
+        <p className="conf-feature__theme">{moment.theme}</p>
+        <div className="conf-feature__takeaway">
+          <span>What I took away</span>
           <p>{moment.takeaway}</p>
         </div>
-      </div>
-    </MotionCard>
-  );
-}
-
-function ConferenceJudgmentBlock({ items }) {
-  return (
-    <Reveal as={motion.section} className="conference-judgment-block">
-      <div className="conference-judgment-block__copy">
-        <span className="eyebrow">Leadership judgment</span>
-        <h2>How the signal translates into operating perspective.</h2>
-        <p>The value is repeated exposure to where markets, platforms, and business expectations are moving — before those pressures arrive in delivery.</p>
-      </div>
-      <div className="conference-judgment-block__grid">
-        {items.map((item) => (
-          <article
-            key={item.title}
-            className="glass-card spotlight-card"
-            onMouseMove={handleCardMouseMove}
-          >
-            <strong>{item.title}</strong>
-            <span>{item.text}</span>
-          </article>
-        ))}
+        {moment.location ? <p className="conf-feature__location">{moment.location}</p> : null}
       </div>
     </Reveal>
   );
@@ -151,41 +45,93 @@ function ConferenceJudgmentBlock({ items }) {
 
 export default function ConferencesPage() {
   const featuredMoment = conferenceAssets[0];
-  const archiveEvents = conferenceAssets.filter((moment) => moment.title !== featuredMoment?.title);
-  const conferenceSignals = [
-    { value: String(conferenceAssets.length), label: "industry forums" },
-    { value: "AI / Cloud / Data", label: "focus areas" },
-    { value: "2023-2026", label: "years attended" }
-  ];
-  const conferenceSignalGroups = [
-    { title: "AI & emerging technology", text: "AI Impact Summit, Convergence India, and IAMAI keep the page anchored in current technology direction." },
-    { title: "Cloud & data platforms", text: "AWS and MongoDB events connect market signals to practical platform and architecture choices." },
-    { title: "Business forums", text: "Deloitte Fast 50 and commerce forums add the business context behind engineering prioritization." }
-  ];
-  const leadershipJudgment = [
-    { title: "AI adoption judgment", text: "Separating useful enterprise adoption signals from event-stage excitement." },
-    { title: "Platform modernization", text: "Reading cloud, data, and developer ecosystem shifts before they become delivery pressure." },
-    { title: "Business context", text: "Connecting technology choices to growth, operating models, and stakeholder confidence." }
-  ];
+  const yearOf = (moment) => Number(String(moment.year || "").match(/\d{4}/)?.[0]) || 0;
+  const others = conferenceAssets
+    .filter((moment) => moment.title !== featuredMoment?.title)
+    .sort((a, b) => yearOf(b) - yearOf(a));
+  const years = conferenceAssets.map((m) => Number(String(m.year || "").match(/\d{4}/)?.[0])).filter(Boolean);
+  const facts = [
+    { value: String(conferenceAssets.length), label: "Industry events" },
+    { value: years.length ? `${Math.min(...years)}–${Math.max(...years)}` : "", label: "Years attended" },
+    { value: "3", label: "Topics: AI, cloud and data, business" },
+    { value: "1", label: "GenAI hackathon (dentsu, 2023)" }
+  ].filter((fact) => fact.value);
 
   return (
     <div data-theme="conferences">
-    <PageFrame
-      eyebrow="Public presence"
-      title="Market exposure translated into engineering judgment."
-      intro="Selected industry forums that sharpen perspective on AI adoption, cloud modernization, data platforms, and the business context behind technical decisions."
-      className="conferences-page-hero"
-    >
-      <ConferenceSignalLedger signals={conferenceSignals} />
-      {featuredMoment ? <ConferenceFeature moment={featuredMoment} /> : null}
-      <ConferenceArchiveIntro count={archiveEvents.length} groups={conferenceSignalGroups} />
-      <MotionGroup className="conference-grid" id="event-archive">
-        {archiveEvents.map((moment, index) => (
-          <ConferenceCard moment={moment} index={index + 1} priority={index === 0} key={moment.title} />
-        ))}
-      </MotionGroup>
-      <ConferenceJudgmentBlock items={leadershipJudgment} />
-    </PageFrame>
+      <PageFrame
+        eyebrow="Conferences"
+        title="Industry events on AI, cloud and data."
+        intro="Forums I attend to keep up with AI adoption, cloud modernisation and data platforms, and the business decisions behind them."
+        className="conferences-page-hero event-index-hero"
+      >
+        <div className="ledger-page">
+          {featuredMoment ? <ConferenceFeature moment={featuredMoment} /> : null}
+
+          <Reveal as={motion.section} className="home-section home-section--split" aria-labelledby="conf-why-title">
+            <header className="home-section__head">
+              <h2 id="conf-why-title">Why I go</h2>
+              <p>An early view of where platforms and client expectations are heading, before those changes reach our delivery work.</p>
+            </header>
+            <ol className="home-rules home-rules--numbered">
+              {whyIGo.map((item, index) => (
+                <li key={item.title}>
+                  <span className="home-rules__num">{String(index + 1).padStart(2, "0")}</span>
+                  <h3>{item.title}</h3>
+                  <p>{item.text}</p>
+                </li>
+              ))}
+            </ol>
+          </Reveal>
+
+          <Reveal as={motion.section} className="home-section" id="event-archive" aria-labelledby="conf-all-title">
+            <header className="home-section__head">
+              <h2 id="conf-all-title">Other events</h2>
+              <p>Newest first. Select a photo to view it full size.</p>
+            </header>
+            <ol className="ledger-rows ledger-rows--events">
+              {others.map((moment) => (
+                <li key={moment.title} id={projectSlug(moment.title)}>
+                  <div className="ledger-rows__row">
+                    <span className="ledger-rows__date">
+                      {moment.year}
+                      {moment.eventType ? <span className="ledger-rows__sub">{moment.eventType}</span> : null}
+                    </span>
+                    <span className="ledger-rows__main">
+                      <strong>{moment.title}</strong>
+                      <span>{moment.theme}</span>
+                      {moment.takeaway ? <span className="ledger-rows__takeaway">Takeaway: {moment.takeaway}</span> : null}
+                    </span>
+                    <span className="ledger-rows__strip">
+                      {moment.images.slice(0, 3).map((image) => (
+                        <span className="ledger-rows__thumb" key={imageSrc(image)}>
+                          <ProofImage src={imageSrc(image)} alt={imageAlt(image, `${moment.title} photo`)} caption={imageCaption(image, moment.theme)} />
+                        </span>
+                      ))}
+                    </span>
+                  </div>
+                </li>
+              ))}
+            </ol>
+            <p className="also-attended">
+              Also: dentsu&apos;s{" "}
+              <a href="https://www.linkedin.com/posts/sharma-prawal_chatgpt-generativeai-artificialintelligence-activity-7137813697678168065-F-03" target="_blank" rel="noreferrer">
+                “Building Generative AI Solutions” hackathon
+              </a>{" "}
+              (December 2023).
+            </p>
+          </Reveal>
+          <dl className="home-facts" aria-label="Events at a glance">
+            {facts.map((fact) => (
+              <div className="home-facts__item" key={fact.label}>
+                <dt>{fact.label}</dt>
+                <dd>{fact.value}</dd>
+              </div>
+            ))}
+          </dl>
+
+        </div>
+      </PageFrame>
     </div>
   );
 }

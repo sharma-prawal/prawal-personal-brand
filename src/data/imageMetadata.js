@@ -18,8 +18,8 @@ export function createImageMeta(src, options = {}) {
     title,
     date: options.date || "Date available in source proof",
     category: options.category || "Proof asset",
-    alt: options.alt || `${title} proof image`,
-    caption: options.caption || `${title} proof image ${index + 1}.`,
+    alt: options.alt || title,
+    caption: options.caption || title,
     featured: Boolean(options.featured),
     priority: Boolean(options.priority ?? options.featured)
   };
