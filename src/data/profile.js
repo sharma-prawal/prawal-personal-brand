@@ -257,7 +257,7 @@ export const profile = {
       featured: true,
       headline: "White-label ACH payments for a US bank, from enrollment to settlement.",
       preview: {
-        title: "Banking & payments platform",
+        title: "ACH payments platform",
         result: "160K+ daily transactions at 99.9% uptime.",
         diagram: "banking-payments"
       },
@@ -278,7 +278,7 @@ export const profile = {
         "Coordinate enrollment and fraud-control improvements across API, UI and QA teams with production-readiness reviews."
       ],
       outcome:
-        "Supports 160K+ daily banking transactions at 99.9% uptime, with event-driven settlement jobs now running on Azure."
+        "Supports 160K+ daily ACH transactions at 99.9% uptime, with event-driven settlement jobs now running on Azure."
     },
     {
       name: "Taxonomy",

@@ -31,7 +31,9 @@ function Hero() {
     <section className="home-hero" aria-labelledby="home-hero-title">
       <div className="home-hero__copy">
         <h1 id="home-hero-title">{profile.shortHeadline}</h1>
-        <p className="home-hero__summary">I lead engineering teams building banking and data platforms, and help them adopt AI in everyday delivery.</p>
+        <p className="home-hero__summary">
+          I’m an engineering manager with 10 years of experience delivering enterprise payment and advertising data platforms. I lead two client engagements across the US, UK and South Africa, from architecture and production releases to AI-assisted delivery.
+        </p>
         <div className="home-actions home-hero__actions">
           <a className="primary-link" href="#selected-work">
             View selected work <ArrowDown size={16} aria-hidden="true" />

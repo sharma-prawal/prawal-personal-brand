@@ -343,6 +343,7 @@ function AppShell() {
           <div className="footer-brand">
             <strong>{profile.name}</strong>
             <p>Engineering leader · {profile.location}</p>
+            <small>&copy; {CURRENT_YEAR} {profile.name}</small>
           </div>
           <nav className="footer-nav" aria-label="Footer">
             <div>
@@ -363,10 +364,6 @@ function AppShell() {
           <div className="footer-contact">
             <DirectContactPanel />
           </div>
-        </div>
-        <div className="site-footer__base">
-          <span>&copy; {CURRENT_YEAR} {profile.name}</span>
-          <a href={profile.contact.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
         </div>
       </footer>
 
