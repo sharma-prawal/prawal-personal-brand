@@ -144,19 +144,12 @@ export default function AIProjectsPage() {
     count: professionalCasesWithSlugs.filter((p) => group.domains.includes(p.domain)).length
   }));
 
-  const facts = [
-    { value: professionalCasesWithSlugs.length, label: "Client systems" },
-    { value: domains.length, label: "Industry domains" },
-    { value: aiBuilds.length, label: "AI builds" },
-    { value: productBuilds.length, label: "Product builds" }
-  ];
-
   return (
     <div data-theme="projects">
       <PageFrame
-        eyebrow="Projects"
-        title="Client systems first, then the AI I build on my own time."
-        intro={`${professionalCasesWithSlugs.length} systems from ten years of client delivery, led by two flagship platforms, followed by ${aiBuilds.length} AI builds and ${productBuilds.length} product builds.`}
+        className="projects-index-hero"
+        title="Projects"
+        intro="Client systems in banking, media and operations, alongside independent AI and product builds."
       >
         <ProofIndex
           label="On this page"
@@ -169,19 +162,9 @@ export default function AIProjectsPage() {
         />
 
         <div className="projects">
-          <dl className="home-facts projects-facts" aria-label="Portfolio at a glance">
-            {facts.map((fact) => (
-              <div className="home-facts__item" key={fact.label}>
-                <dt>{fact.label}</dt>
-                <dd>{fact.value}</dd>
-              </div>
-            ))}
-          </dl>
-
           <Reveal as={motion.section} className="home-section projects-section" id="professional-systems" aria-labelledby="projects-pro-title">
             <header className="home-section__head">
               <h2 id="projects-pro-title">Client systems</h2>
-              <p>Two platforms I have led for years, then earlier client work in short.</p>
             </header>
 
             <ol className="projects-cases">

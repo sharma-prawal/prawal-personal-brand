@@ -710,9 +710,7 @@ export default function AIBrandChatbot({ downloadResume, generateExecutiveProfil
             aria-label="Open AI Assistant"
             type="button"
           >
-            <span className="fab-glow" />
-            <StarMark size={20} className="fab-icon" aria-hidden="true" />
-            <span className="fab-badge">AI</span>
+            <MessageSquare size={19} aria-hidden="true" />
           </motion.button>
         )}
       </AnimatePresence>
@@ -730,7 +728,7 @@ export default function AIBrandChatbot({ downloadResume, generateExecutiveProfil
           >
             <div className="chatbot-header">
               <div className="header-identity">
-                <span className="header-avatar">PS</span>
+                <img className="header-avatar" src="/favicon.svg" alt="" width="34" height="34" />
                 <div>
                   <h3>Prawal AI Assistant</h3>
                   <span className={`connection-badge ${activeProvider}`}>

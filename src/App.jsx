@@ -72,18 +72,6 @@ function PageSuspenseFallback() {
   return <div className="page-suspense-fallback" aria-hidden="true" />;
 }
 
-function AIBrandChatbotFallback() {
-  return (
-    <div className="brand-chatbot is-collapsed" aria-hidden="true">
-      <button className="chatbot-fab" tabIndex={-1} type="button">
-        <span className="fab-glow" />
-        <span className="fab-monogram">PS</span>
-        <span className="fab-badge">AI</span>
-      </button>
-    </div>
-  );
-}
-
 function DirectContactPanel() {
   const [copied, setCopied] = useState(false);
   const { email } = getDirectContact();
@@ -240,8 +228,8 @@ function AppShell() {
       <ScrollToTop />
       <header className={`topbar${isScrolled ? " is-scrolled" : ""}`}>
         <Link className="brand-lockup" to="/" aria-label="Prawal Sharma home">
+          <img src="/favicon.svg" alt="" width="32" height="32" />
           <strong>{profile.name}</strong>
-          <small>Engineering leader</small>
         </Link>
         <nav aria-label="Primary navigation" className="topbar-nav" ref={topNavRef}>
           {topNavItems.map((item) => {
@@ -429,7 +417,7 @@ function AppShell() {
         </div>
       </footer>
 
-      <Suspense fallback={<AIBrandChatbotFallback />}>
+      <Suspense fallback={null}>
         <LazyAIBrandChatbot downloadResume={downloadResume} generateExecutiveProfile={generateExecutiveProfile} />
       </Suspense>
     </div>

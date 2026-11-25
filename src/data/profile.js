@@ -5,7 +5,7 @@ export const profile = {
   profileUrl: "https://www.linkedin.com/in/sharma-prawal/",
   headline:
     "Technology Manager | AI-Driven Engineering Leader | Cloud & Scalable Systems | AWS | Azure | GCP Certified | Node.js | React | GraphQL",
-  shortHeadline: "I lead engineering teams that ship faster with AI — without giving up reliability.",
+  shortHeadline: "Engineering leadership for reliable systems and practical AI.",
   summary:
     "Engineering leader who ships: 160K+ daily banking transactions at 99.9% uptime, 20–30% AI-assisted productivity gains across global teams, and a zero-escalation track record across 10 years at Successive Digital.",
   atsSummary:

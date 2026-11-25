@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "Geist";
+  src: url("/fonts/geist-variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ─── Custom scrollbar ───────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
@@ -10,7 +18,7 @@
 * { scrollbar-width: thin; scrollbar-color: rgba(var(--ink-soft-rgb), 0.35) transparent; }
 
 /* ─── Text selection colour ──────────────────────────────────────────────── */
-::selection { background: rgba(var(--accent-rgb), 0.35); color: inherit; }
+::selection { background: rgba(var(--accent-deep-rgb), 0.2); color: inherit; }
 
 /* ─── Global icon refinement — thin all Lucide icons from 2px to 1.25px ── */
 svg.lucide {
@@ -19,31 +27,29 @@ svg.lucide {
 
 :root {
   color-scheme: light;
-  /* ── Palette: warm paper, near-black ink, one green accent ───────────── */
-  --ink-rgb: 23, 21, 15;             /* primary text           */
-  --fg-rgb: 23, 21, 15;              /* tints, hairlines, overlays on paper */
-  --ink-soft-rgb: 84, 79, 71;        /* secondary text, labels */
-  --accent-deep-rgb: 26, 108, 90;    /* accent fill (buttons, active nav) */
-  --accent-rgb: 21, 94, 78;          /* accent hover / rules              */
-  --accent-text-rgb: 21, 94, 78;     /* accent as text on paper           */
+  --ink-rgb: 24, 28, 34;
+  --fg-rgb: var(--ink-rgb);
+  --ink-soft-rgb: 71, 79, 91;
+  --accent-deep-rgb: 35, 70, 196;
+  --accent-rgb: 27, 53, 155;
+  --accent-text-rgb: var(--accent-deep-rgb);
   --ink: rgb(var(--ink-rgb));
   --ink-soft: rgb(var(--ink-soft-rgb));
-  --ink-muted: #615c53;
-  --paper: #f4f1ea;
-  --paper-deep: #ebe7de;
-  --raised: #fbfaf6;                 /* cards and panels on paper */
-  /* Light surface tokens — for breathing-room sections */
-  --paper-light: #ebe6db;
-  --paper-light-mid: #e2ddd1;
-  --ink-on-light: #17150f;
-  --ink-soft-on-light: #4a463f;
-  --ink-muted-on-light: #615c53;
-  --line-on-light: rgba(23, 21, 15, 0.12);
-  --surface: rgba(23, 21, 15, 0.03);
-  --surface-strong: rgba(23, 21, 15, 0.06);
-  --panel: rgba(23, 21, 15, 0.04);
-  --line: rgba(23, 21, 15, 0.12);
-  --line-strong: rgba(23, 21, 15, 0.22);
+  --ink-muted: #545d6a;
+  --paper: #f7f7f2;
+  --paper-deep: #edeee9;
+  --raised: #fdfdfa;
+  --paper-light: #efefe9;
+  --paper-light-mid: #e5e7e3;
+  --ink-on-light: var(--ink);
+  --ink-soft-on-light: var(--ink-soft);
+  --ink-muted-on-light: var(--ink-muted);
+  --line-on-light: var(--line);
+  --surface: rgba(var(--ink-rgb), 0.03);
+  --surface-strong: rgba(var(--ink-rgb), 0.06);
+  --panel: rgba(var(--ink-rgb), 0.04);
+  --line: rgba(var(--ink-rgb), 0.15);
+  --line-strong: rgba(var(--ink-rgb), 0.25);
   --index-bg: var(--paper);
   --index-border: var(--line);
   --index-label: var(--theme-accent);
@@ -67,9 +73,10 @@ svg.lucide {
   --shadow-cinematic: 0 1px 2px rgba(23, 21, 15, 0.08);
   --radius: 6px;
   --max: 1440px;
-  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-sans: "Geist", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-body: var(--font-sans);
-  --font-display: "Newsreader", "Source Serif 4", Georgia, "Iowan Old Style", serif;
+  --font-display: var(--font-sans);
+  --font-quote: "Newsreader", Georgia, serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
   --type-hero: clamp(2.6rem, 6.2vw, 5.4rem);
   --type-page: clamp(2.4rem, 5.6vw, 4.9rem);
@@ -110,8 +117,6 @@ body {
   font-kerning: normal;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  /* Only 400/500 (Newsreader) and 400–600 (Plex) are loaded; heavier requests
-     snap to the heaviest loaded cut instead of being faux-bolded. */
   font-synthesis-weight: none;
 }
 
@@ -424,7 +429,7 @@ li {
 }
 
 :focus-visible {
-  outline: 3px solid rgba(var(--ink-soft-rgb), 0.74);
+  outline: 2px solid rgb(var(--accent-text-rgb));
   outline-offset: 4px;
 }
 
@@ -724,10 +729,11 @@ h1,
 
 .page-hero h1 {
   max-width: 900px;
-  font-size: clamp(3rem, 5.45vw, 4.75rem);
+  font-size: clamp(2.65rem, 4.8vw, 4.3rem);
+  font-weight: 580;
   line-height: 1.06;
   padding-bottom: 0.08em;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.035em;
   font-variant-numeric: lining-nums;
 }
 
@@ -1144,10 +1150,6 @@ a.recommendation-verification--link:hover {
     --type-cta: 3.9rem;
   }
 
-  .brand-chatbot.is-collapsed {
-    display: none;
-  }
-
   .highlights-page-hero .page-hero__inner {
     grid-template-columns: 1fr;
     gap: 28px;
@@ -1170,28 +1172,6 @@ a.recommendation-verification--link:hover {
     --type-cta: 2.85rem;
     --type-card-title: 1.18rem;
     --type-body-large: 1rem;
-  }
-
-  .brand-chatbot {
-    right: 14px;
-    bottom: calc(14px + env(safe-area-inset-bottom));
-  }
-
-  /* Show FAB on phones even when collapsed — users need a way to open the chatbot */
-  .brand-chatbot.is-collapsed {
-    display: flex;
-  }
-
-  .chatbot-fab {
-    width: 48px;
-    height: 48px;
-  }
-
-  .fab-badge {
-    top: -3px;
-    right: -3px;
-    font-size: 11px;
-    padding: 1px 5px;
   }
 
 main {
@@ -1270,109 +1250,40 @@ main {
    AI BRAND CHATBOT STYLING
    ========================================== */
 
-/* Floating trigger — minimal pill, not a WhatsApp bubble */
 .brand-chatbot {
   position: fixed;
-  bottom: 28px;
-  right: 28px;
+  bottom: calc(18px + env(safe-area-inset-bottom));
+  right: calc(18px + env(safe-area-inset-right));
   z-index: 999;
   font-family: var(--font-sans);
   pointer-events: auto;
 }
 
-@media (min-width: 1256px) {
-  .brand-chatbot {
-    right: auto;
-    left: 50%;
-    transform: translateX(calc(536px - 100%));
-  }
-}
-
-@media (min-width: 1380px) {
-  .brand-chatbot {
-    right: calc((100vw - 1200px) / 2 - 70px);
-    left: auto;
-    transform: none;
-  }
-}
-
 .chatbot-fab {
-  position: relative;
-  width: 54px;
-  height: 54px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  background: rgb(var(--accent-deep-rgb));
-  border: 1px solid transparent;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: var(--raised);
+  border: 1px solid var(--line-strong);
+  color: var(--ink);
   cursor: pointer;
-  box-shadow: 0 0 0 1px rgba(var(--ink-soft-rgb), 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  transition:
-    transform 300ms var(--ease),
-    border-color 300ms var(--ease),
-    box-shadow 300ms var(--ease),
-    background 300ms var(--ease);
-  outline: none;
-}
-
-.chatbot-fab::before {
-  content: "";
-  position: absolute;
-  inset: -6px;
-  border-radius: 50%;
-  border: 1px solid rgba(var(--ink-soft-rgb), 0.12);
-  box-shadow: 0 0 14px rgba(var(--ink-soft-rgb), 0.08);
-  pointer-events: none;
-  opacity: 0.8;
-  transition: inset 300ms var(--ease), opacity 300ms var(--ease), border-color 300ms var(--ease);
-}
-
-.chatbot-fab:hover::before {
-  inset: -8px;
-  border-color: rgba(var(--ink-soft-rgb), 0.26);
-  opacity: 1;
+  transition: color 150ms var(--ease), border-color 150ms var(--ease);
 }
 
 .chatbot-fab:hover {
-  border-color: rgba(var(--ink-soft-rgb), 0.65);
-  box-shadow: 0 0 0 1px rgba(var(--ink-soft-rgb), 0.22);
-  color: #fff;
-}
-
-.chatbot-fab:active {
-  transform: translateY(0) scale(0.98);
-}
-
-.fab-glow {
-  display: none;
-}
-
-.fab-badge {
-  position: absolute;
-  top: -2px;
-  right: -2px;
-  display: inline-flex;
-  align-items: center;
-  padding: 1px 5px;
-  border-radius: 4px;
-  border: 1px solid var(--line-strong);
-  background: var(--raised);
-  color: var(--ink);
-  font-size: 11px;
-  font-weight: 900;
-  letter-spacing: 0.05em;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  border-color: rgb(var(--accent-text-rgb));
+  color: rgb(var(--accent-text-rgb));
 }
 
 /* Chatbot Panel Wrapper */
 .chatbot-panel {
   position: absolute;
-  bottom: 74px;
+  bottom: 0;
   right: 0;
-  width: min(390px, calc(100vw - 28px));
-  height: min(580px, calc(100dvh - 112px));
+  width: min(390px, calc(100vw - 36px - env(safe-area-inset-right) - env(safe-area-inset-left)));
+  height: min(580px, calc(100dvh - 94px - env(safe-area-inset-bottom)));
   background: var(--raised);
   border: 1px solid rgba(var(--ink-soft-rgb), 0.26);
   border-radius: 8px;
@@ -1413,19 +1324,6 @@ main {
 }
 
 .header-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--raised);
-  color: var(--ink-soft);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 0.94rem;
-  letter-spacing: 0.04em;
-  border: 1.5px solid rgba(var(--ink-soft-rgb), 0.45);
-  box-shadow: 0 0 0 3px rgba(var(--ink-soft-rgb), 0.1), 0 0 12px rgba(var(--ink-soft-rgb), 0.12), var(--shadow-soft);
   flex-shrink: 0;
 }
 

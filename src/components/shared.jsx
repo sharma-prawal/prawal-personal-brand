@@ -437,7 +437,7 @@ export function PageFrame({ eyebrow, title, intro, children, className = "", her
       <motion.section className={heroClassName} initial="hidden" animate="visible" variants={stagger}>
         <motion.div className="page-hero__inner" variants={fadeUp} transition={{ duration: 0.72, ease: premiumEase }}>
           <div className="page-hero__copy">
-            <motion.span className="eyebrow" variants={itemReveal}>{eyebrow}</motion.span>
+            {eyebrow && <motion.span className="eyebrow" variants={itemReveal}>{eyebrow}</motion.span>}
             <motion.h1 variants={fadeUp} transition={{ duration: 0.82, ease: premiumEase, delay: 0.02 }}>{title}</motion.h1>
             <motion.p variants={itemReveal}>{intro}</motion.p>
           </div>
