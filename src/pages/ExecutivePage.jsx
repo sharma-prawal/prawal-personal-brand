@@ -27,13 +27,13 @@ const fieldPhotos = [
 
 const findAward = (title) => awardAssets.find((award) => award.title === title);
 
-// The two 2026 awards were presented together, so they share one card and one photo.
+// The two 2026 awards were presented at the same offsite, so they share one card.
 const awardGroups = [
   {
     titles: ["ESOP Ownership Achievement Award", "Outstanding Contribution Award"],
     label: "ESOP Ownership Achievement and Outstanding Contribution",
-    photo: { from: "ESOP Ownership Achievement Award", index: 1 },
-    alt: "The ESOP Ownership Achievement certificate and Outstanding Contribution trophy displayed together."
+    photo: { from: "ESOP Ownership Achievement Award", index: 0 },
+    alt: "Prawal Sharma receiving the ESOP Ownership Achievement Award at the 2026 Successive Digital leadership offsite."
   },
   {
     titles: ["Employee of the Year (2023)"],
