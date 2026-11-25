@@ -4,7 +4,7 @@ import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { PageFrame, ProofImage, ProofIndex, Reveal } from "../components/shared.jsx";
 import { imageAlt, imageCaption, imageSrc } from "../data/imageMetadata.js";
 import { aiProjectsWithSlugs, professionalCasesWithSlugs } from "../data/derived.js";
-import { CaseFlow } from "./ProfessionalCaseStudyPage.jsx";
+import SystemFlowPreview from "../components/SystemFlowPreview.jsx";
 
 // Domains are counted from the case data so the numbers always add up.
 const domainGroups = [
@@ -61,9 +61,8 @@ function FlagshipCase({ project }) {
       </div>
       <div className="projects-case__body">
         <h3>{project.name}</h3>
-        <p className="projects-case__headline">{project.headline}</p>
-        {project.flow ? <CaseFlow steps={project.flow} compact /> : null}
-        <p className="projects-case__outcome">{project.outcome}</p>
+        <p className="projects-case__headline">{project.preview?.result || project.headline}</p>
+        {project.preview && <SystemFlowPreview title={project.name} steps={project.preview.steps} />}
         <TextLink to={`/ai-projects/professional/${project.slug}`}>Read the case</TextLink>
       </div>
     </li>

@@ -2,13 +2,15 @@ import { motion } from "framer-motion";
 import { DiagArrow } from "../components/icons.jsx";
 import { ImageCarousel, PageFrame, ProofImage, Reveal } from "../components/shared.jsx";
 import { imageAlt, imageCaption, imageSrc } from "../data/imageMetadata.js";
+import { projectSlug } from "../data/derived.js";
 import { internationalExposure, professionalHighlights } from "../data/mediaAssets.js";
 
 function HighlightFeature({ highlight, reverse = false, priority = false }) {
   if (!highlight) return null;
+  const id = projectSlug(highlight.title);
   return (
-    <Reveal as={motion.section} className={["conf-feature", reverse ? "conf-feature--reverse" : ""].filter(Boolean).join(" ")} aria-labelledby={`hl-${highlight.title.replace(/\W+/g, "-")}`}>
-      <div className="conf-feature__media">
+    <Reveal as={motion.section} className={`conf-feature${reverse ? " conf-feature--reverse" : ""}`} id={id} aria-labelledby={`${id}-title`}>
+      <div className={`conf-feature__media${highlight.title === "Book Contributor" ? " conf-feature__media--publication" : ""}`}>
         <ImageCarousel
           images={highlight.images}
           onSlideClick={(e) => { const btn = e.currentTarget.querySelector(".proof-image-button"); if (btn) btn.click(); }}
@@ -25,7 +27,7 @@ function HighlightFeature({ highlight, reverse = false, priority = false }) {
       </div>
       <div className="conf-feature__copy">
         <p className="conf-feature__meta">{highlight.category}</p>
-        <h2 id={`hl-${highlight.title.replace(/\W+/g, "-")}`}>{highlight.title}</h2>
+        <h2 id={`${id}-title`}>{highlight.title}</h2>
         <p className="conf-feature__theme">{highlight.context}</p>
         <div className="conf-feature__takeaway">
           <span>Why it matters</span>
@@ -61,8 +63,8 @@ function GlobalRoutesMap() {
   const center = { x: 225, y: 135, label: "Delhi (HQ)" };
 
   return (
-    <div className="global-routes-container" aria-hidden="true">
-      <svg viewBox="0 0 380 260" width="100%" height="100%" className="global-routes-svg">
+    <div className="global-routes-container">
+      <svg aria-hidden="true" viewBox="-20 0 400 260" width="100%" height="100%" className="global-routes-svg">
         <defs>
           <radialGradient id="glow" cx="50%" cy="50%" r="50%">
             <stop offset="0%" stopColor="var(--gold)" stopOpacity="0.4" />
@@ -133,15 +135,18 @@ function GlobalRoutesMap() {
             </g>
           );
         })}
-        <circle cx={center.x} cy={center.y} r="14" fill="rgba(21, 94, 78, 0.14)" />
-        <circle cx={center.x} cy={center.y} r="4" fill="#fff" />
-        <circle cx={center.x} cy={center.y} r="2" fill="rgb(21, 94, 78)" />
-        <rect x={center.x - 32} y={center.y + 11} width={64} height={13} rx="3" fill="rgba(251, 250, 246, 0.96)" stroke="rgba(21, 94, 78, 0.35)" strokeWidth="0.5" />
-        <text x={center.x} y={center.y + 20} fill="rgb(23, 21, 15)" fontSize="10" fontWeight="600" fontFamily="var(--font-sans)" letterSpacing="0.08em" textAnchor="middle">{center.label}</text>
+        <g className="route-dot">
+          <circle cx={center.x} cy={center.y} r="14" fill="rgba(21, 94, 78, 0.14)" />
+          <circle cx={center.x} cy={center.y} r="4" fill="#fff" />
+          <circle cx={center.x} cy={center.y} r="2" fill="rgb(21, 94, 78)" />
+          <rect x={center.x - 32} y={center.y + 11} width={64} height={13} rx="3" fill="rgba(251, 250, 246, 0.96)" stroke="rgba(21, 94, 78, 0.35)" strokeWidth="0.5" />
+          <text x={center.x} y={center.y + 20} fill="rgb(23, 21, 15)" fontSize="10" fontWeight="600" fontFamily="var(--font-sans)" letterSpacing="0.08em" textAnchor="middle">{center.label}</text>
+        </g>
       </svg>
-      <div className="global-routes-legend" aria-hidden="true">
-        <span><i className="legend-dot legend-dot--professional" />Client delivery: US (onsite, B1/B2 visa), UK, South Africa</span>
-        <span><i className="legend-dot legend-dot--personal" />Travel: Phuket, Nepal, Vietnam, Dubai</span>
+      <div className="global-routes-legend">
+        <div><strong>Based in</strong><span>{center.label}</span></div>
+        <div><strong>Client delivery</strong><span>{professionalRoutes.map(({ label }) => label).join(", ")}</span></div>
+        <div><strong>Travel</strong><span>{personalRoutes.map(({ label }) => label).join(", ")}</span></div>
       </div>
     </div>
   );

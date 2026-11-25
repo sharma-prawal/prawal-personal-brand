@@ -1,7 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
-import { PageFrame, ProofImage, ProofIndex, Reveal } from "../components/shared.jsx";
+import { PageFrame, ProofImage, ProofIndex, RecoveryPage, Reveal } from "../components/shared.jsx";
 import { imageAlt, imageCaption, imageSrc } from "../data/imageMetadata.js";
 import { aiProjectsWithSlugs } from "../data/derived.js";
 
@@ -29,18 +29,7 @@ export default function ProjectCaseStudyPage() {
   const projectIndex = aiProjectsWithSlugs.findIndex((p) => p.slug === activeProjectSlug);
   const project = aiProjectsWithSlugs[projectIndex];
 
-  if (!project) {
-    return (
-      <div data-theme="projects">
-        <PageFrame eyebrow="Project" title="Case study not found." intro="Go back to Projects to see every case study.">
-          <Link className="projects-link" to="/ai-projects">
-            <ArrowLeft size={15} aria-hidden="true" />
-            <span>Back to Projects</span>
-          </Link>
-        </PageFrame>
-      </div>
-    );
-  }
+  if (!project) return <RecoveryPage />;
 
   const previousProject = aiProjectsWithSlugs[(projectIndex - 1 + aiProjectsWithSlugs.length) % aiProjectsWithSlugs.length];
   const nextProject = aiProjectsWithSlugs[(projectIndex + 1) % aiProjectsWithSlugs.length];
@@ -49,10 +38,26 @@ export default function ProjectCaseStudyPage() {
     { label: "Status", value: project.stage },
     { label: "Built with", value: project.stack.join(", ") }
   ];
+  const [leadImage, ...galleryImages] = project.images;
+  const isMobileApp = project.type === "Android app";
+  const leadCaption = imageCaption(leadImage, `${project.name} preview`);
 
   return (
     <div data-theme="projects">
-      <PageFrame eyebrow={`${project.type} · ${project.stage}`} title={project.name} intro={project.summary}>
+      <PageFrame
+        className="project-case-hero"
+        eyebrow={`${project.type} · ${project.stage}`}
+        title={project.name}
+        intro={project.summary}
+        heroAside={
+          <figure id={galleryImages.length ? "case-preview" : "case-gallery"} className={`case-lead${isMobileApp ? " case-lead--mobile" : ""}`}>
+            <div className="case-lead__media">
+              <ProofImage src={imageSrc(leadImage)} alt={imageAlt(leadImage, `${project.name} screenshot`)} caption={leadCaption} eager />
+            </div>
+            <figcaption>{leadCaption}</figcaption>
+          </figure>
+        }
+      >
         <ProofIndex
           label="On this page"
           backHref="/ai-projects"
@@ -60,12 +65,12 @@ export default function ProjectCaseStudyPage() {
             { id: "case-problem", label: "Problem" },
             { id: "case-built", label: "What I built" },
             { id: "case-outcome", label: "Outcome" },
-            { id: "case-gallery", label: "Screenshots" }
+            { id: "case-gallery", label: galleryImages.length ? "Screenshots" : "Screenshot" }
           ]}
         />
 
         <div className="case-page">
-          <dl className="case-facts">
+          <dl className="case-facts case-facts--project">
             {facts.map((fact) => (
               <div key={fact.label}>
                 <dt>{fact.label}</dt>
@@ -99,22 +104,22 @@ export default function ProjectCaseStudyPage() {
             <p className="case-outcome">{project.outcome}</p>
           </Section>
 
-          <Reveal as={motion.section} className="case-gallery-section" id="case-gallery" aria-labelledby="case-gallery-title">
-            <h2 id="case-gallery-title">Screenshots</h2>
-            <ul className={["case-gallery", project.type === "Android app" ? "case-gallery--mobile" : ""].filter(Boolean).join(" ")}>
-              {project.images.map((image, index) => (
-                <li key={imageSrc(image)} className={index === 0 ? "case-gallery__lead" : undefined}>
-                  <ProofImage
-                    src={imageSrc(image)}
-                    alt={imageAlt(image, `${project.name} screenshot ${index + 1}`)}
-                    caption={imageCaption(image, `${project.name} screenshot ${index + 1}`)}
-                    eager={index < 3}
-                    priority={index === 0}
-                  />
-                </li>
-              ))}
-            </ul>
-          </Reveal>
+          {galleryImages.length > 0 && (
+            <Reveal as={motion.section} className="case-gallery-section" id="case-gallery" aria-labelledby="case-gallery-title">
+              <h2 id="case-gallery-title">More screenshots</h2>
+              <ul className={`case-gallery${isMobileApp ? " case-gallery--mobile" : ""}`}>
+                {galleryImages.map((image, index) => (
+                  <li key={imageSrc(image)}>
+                    <ProofImage
+                      src={imageSrc(image)}
+                      alt={imageAlt(image, `${project.name} screenshot ${index + 2}`)}
+                      caption={imageCaption(image, `${project.name} screenshot ${index + 2}`)}
+                    />
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
+          )}
 
           <nav className="case-nav" aria-label="More projects">
             <Link to={`/ai-projects/${previousProject.slug}`}>

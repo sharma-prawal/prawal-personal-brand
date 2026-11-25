@@ -1,14 +1,13 @@
 import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { PageFrame, ProofIndex, Reveal } from "../components/shared.jsx";
+import { PageFrame, ProofIndex, RecoveryPage, Reveal } from "../components/shared.jsx";
 import { professionalCasesWithSlugs } from "../data/derived.js";
 
-// A system's data or transaction flow as a row of labelled steps. Used on the
-// case page and, in compact form, on the Projects page.
-export function CaseFlow({ steps, compact = false }) {
+// Detailed system flow for the client case study.
+function CaseFlow({ steps }) {
   return (
-    <ol className={["case-flow", compact ? "case-flow--compact" : ""].filter(Boolean).join(" ")} aria-label="System flow">
+    <ol className="case-flow" aria-label="System flow">
       {steps.map((step, index) => (
         <li key={step.label}>
           <span className="case-flow__no">{String(index + 1).padStart(2, "0")}</span>
@@ -34,18 +33,7 @@ export default function ProfessionalCaseStudyPage() {
   const caseIndex = professionalCasesWithSlugs.findIndex((p) => p.slug === caseSlug);
   const project = professionalCasesWithSlugs[caseIndex];
 
-  if (!project) {
-    return (
-      <div data-theme="projects">
-        <PageFrame eyebrow="Client system" title="Case study not found." intro="Go back to Projects to see every client system.">
-          <Link className="projects-link" to="/ai-projects">
-            <ArrowLeft size={15} aria-hidden="true" />
-            <span>Back to Projects</span>
-          </Link>
-        </PageFrame>
-      </div>
-    );
-  }
+  if (!project) return <RecoveryPage />;
 
   const previousCase = professionalCasesWithSlugs[(caseIndex - 1 + professionalCasesWithSlugs.length) % professionalCasesWithSlugs.length];
   const nextCase = professionalCasesWithSlugs[(caseIndex + 1) % professionalCasesWithSlugs.length];
@@ -56,9 +44,11 @@ export default function ProfessionalCaseStudyPage() {
     { label: "Domain", value: project.domain }
   ].filter((fact) => fact.value);
 
+  const showOutcome = Boolean(project.outcome && (project.headline ? project.headline !== project.outcome : project.context));
+
   return (
-    <div data-theme="projects">
-      <PageFrame eyebrow={`${project.name} · ${project.meta}`} title={project.headline || project.outcome} intro={project.context || ""}>
+    <div data-theme="projects" id={showOutcome ? undefined : "case-outcome"}>
+      <PageFrame eyebrow={project.headline ? `${project.name} · ${project.meta}` : project.meta} title={project.headline || project.name} intro={project.context || project.outcome}>
         <ProofIndex
           label="On this page"
           backHref="/ai-projects"
@@ -66,12 +56,12 @@ export default function ProfessionalCaseStudyPage() {
             { id: "case-role", label: "Role" },
             ...(project.flow ? [{ id: "case-design", label: "System design" }] : []),
             { id: "case-work", label: "What I did" },
-            { id: "case-outcome", label: "Outcome" }
+            ...(showOutcome ? [{ id: "case-outcome", label: "Outcome" }] : [])
           ]}
         />
 
         <div className="case-page">
-          <dl className="case-facts">
+          <dl id="case-role" className="case-facts" aria-label="Role and team">
             {facts.map((fact) => (
               <div key={fact.label}>
                 <dt>{fact.label}</dt>
@@ -79,14 +69,6 @@ export default function ProfessionalCaseStudyPage() {
               </div>
             ))}
           </dl>
-
-          <Section id="case-role" title="Role and team">
-            <p>
-              {project.role}
-              {project.tenure ? `, ${project.tenure}` : ""}.
-            </p>
-            {project.team ? <p className="case-modules"><span>Team</span> {project.team}</p> : null}
-          </Section>
 
           {project.flow ? (
             <Section id="case-design" title="System design">
@@ -104,9 +86,11 @@ export default function ProfessionalCaseStudyPage() {
             ) : null}
           </Section>
 
-          <Section id="case-outcome" title="Outcome">
-            <p className="case-outcome">{project.outcome}</p>
-          </Section>
+          {showOutcome && (
+            <Section id="case-outcome" title="Outcome">
+              <p className="case-outcome">{project.outcome}</p>
+            </Section>
+          )}
 
           <nav className="case-nav" aria-label="More client systems">
             <Link to={`/ai-projects/professional/${previousCase.slug}`}>

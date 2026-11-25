@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { ImageCarousel, PageFrame, ProofImage, Reveal } from "../components/shared.jsx";
 import { imageAlt, imageCaption, imageSrc } from "../data/imageMetadata.js";
+import { projectSlug } from "../data/derived.js";
 import { conferenceAssets } from "../data/mediaAssets.js";
 
 const whyIGo = [
@@ -59,21 +60,11 @@ export default function ConferencesPage() {
   return (
     <div data-theme="conferences">
       <PageFrame
-        eyebrow="Conferences"
-        title="Industry events on AI, cloud and data."
+        title="Conferences"
         intro="Forums I attend to keep up with AI adoption, cloud modernisation and data platforms, and the business decisions behind them."
-        className="conferences-page-hero"
+        className="conferences-page-hero event-index-hero"
       >
         <div className="ledger-page">
-          <dl className="home-facts" aria-label="Events at a glance">
-            {facts.map((fact) => (
-              <div className="home-facts__item" key={fact.label}>
-                <dt>{fact.label}</dt>
-                <dd>{fact.value}</dd>
-              </div>
-            ))}
-          </dl>
-
           {featuredMoment ? <ConferenceFeature moment={featuredMoment} /> : null}
 
           <Reveal as={motion.section} className="home-section home-section--split" aria-labelledby="conf-why-title">
@@ -99,7 +90,7 @@ export default function ConferencesPage() {
             </header>
             <ol className="ledger-rows ledger-rows--events">
               {others.map((moment) => (
-                <li key={moment.title}>
+                <li key={moment.title} id={projectSlug(moment.title)}>
                   <div className="ledger-rows__row">
                     <span className="ledger-rows__date">
                       {moment.year}
@@ -129,6 +120,15 @@ export default function ConferencesPage() {
               (December 2023).
             </p>
           </Reveal>
+          <dl className="home-facts" aria-label="Events at a glance">
+            {facts.map((fact) => (
+              <div className="home-facts__item" key={fact.label}>
+                <dt>{fact.label}</dt>
+                <dd>{fact.value}</dd>
+              </div>
+            ))}
+          </dl>
+
         </div>
       </PageFrame>
     </div>

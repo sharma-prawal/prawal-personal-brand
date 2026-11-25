@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import { PageFrame, Reveal } from "../components/shared.jsx";
 import { imageSrc } from "../data/imageMetadata.js";
 import { awardAssets } from "../data/mediaAssets.js";
-import { premiumEase } from "../lib/motion.js";
+import OverlayDialog from "../components/OverlayDialog.jsx";
 
 const awardSignals = {
   "ESOP Ownership Achievement Award": { signal: "Ownership maturity", meaning: "Long-term commitment translated into trust, accountability, and organization-level contribution." },
@@ -23,41 +23,15 @@ function getSignal(award) {
   return awardSignals[award.title] || { signal: "Recognition", meaning: award.description };
 }
 
-function PremiumProofGalleryModal({ award, signal, onClose }) {
+function AwardProofViewer({ award, signal, onClose, returnFocusRef }) {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
-
-  useEffect(() => {
-    const handleKeyDown = (e) => { if (e.key === "Escape") onClose(); };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [onClose]);
-
-  useEffect(() => {
-    const scrollY = window.scrollY;
-    document.body.style.cssText = `overflow:hidden;position:fixed;top:-${scrollY}px;width:100%;`;
-    return () => {
-      document.body.style.cssText = "";
-      window.scrollTo({ top: scrollY, behavior: "instant" });
-    };
-  }, []);
-
   const activeImage = award.images?.[activeImageIndex];
 
   return createPortal(
-    <div className="award-modal-overlay" onClick={onClose} data-theme="awards">
-      <motion.div
-        className="award-modal"
-        initial={{ y: 18, opacity: 0, scale: 0.97 }}
-        animate={{ y: 0, opacity: 1, scale: 1 }}
-        exit={{ y: 18, opacity: 0, scale: 0.97 }}
-        transition={{ duration: 0.34, ease: premiumEase }}
-        onClick={(e) => e.stopPropagation()}
-        role="dialog"
-        aria-modal="true"
-        aria-label={`${award.title} proof viewer`}
-      >
+    <OverlayDialog className="award-modal-overlay proof-modal" label={`${award.title} proof viewer`} onDismiss={onClose} returnFocusRef={returnFocusRef}>
+      <div className="award-modal" data-theme="awards">
         <div className="award-modal__stage">
-          <button className="award-modal__close" type="button" onClick={onClose} aria-label="Close proof viewer">
+          <button className="award-modal__close" type="button" onClick={onClose} aria-label="Close proof viewer" data-dialog-initial-focus>
             <X size={17} />
           </button>
           <div className="award-artifact-stage award-artifact-stage--modal">
@@ -90,21 +64,28 @@ function PremiumProofGalleryModal({ award, signal, onClose }) {
                 key={img.src || idx}
                 onClick={() => setActiveImageIndex(idx)}
                 aria-label={`View proof image ${idx + 1}`}
+                aria-pressed={idx === activeImageIndex}
               >
                 <img src={imageSrc(img)} alt={`${award.title} proof thumbnail ${idx + 1}`} />
               </button>
             ))}
           </div>
         )}
-      </motion.div>
-    </div>,
+      </div>
+    </OverlayDialog>,
     document.body
   );
 }
 
 export default function AwardsPage() {
   const [selectedAward, setSelectedAward] = useState(null);
+  const awardTrigger = useRef(null);
+  const openAward = (event, award) => {
+    awardTrigger.current = event.currentTarget;
+    setSelectedAward(award);
+  };
   const recent = awardAssets.filter((award) => award.date?.includes("2026"));
+  const earlier = awardAssets.filter((award) => !recent.includes(award));
   const years = awardAssets.map((award) => Number((award.date || "").match(/\d{4}/)?.[0])).filter(Boolean);
   const facts = [
     { value: String(awardAssets.length), label: "Awards at Successive Digital" },
@@ -139,7 +120,7 @@ export default function AwardsPage() {
               <ul className="photo-pair">
                 {recent.map((award) => (
                   <li key={award.title}>
-                    <button type="button" onClick={() => setSelectedAward(award)} aria-label={`View ${award.title}`}>
+                    <button type="button" onClick={(event) => openAward(event, award)} aria-label={`View ${award.title}`}>
                       <span className="photo-pair__img">
                         {award.images?.[0] ? <img src={imageSrc(award.images[0])} alt={award.images[0].alt || award.title} /> : null}
                       </span>
@@ -155,15 +136,15 @@ export default function AwardsPage() {
 
           <Reveal as={motion.section} className="home-section" aria-labelledby="awards-all-title">
             <header className="home-section__head">
-              <h2 id="awards-all-title">All awards</h2>
+              <h2 id="awards-all-title">Earlier awards</h2>
               <p>Newest first.</p>
             </header>
             <ol className="ledger-rows">
-              {awardAssets.map((award) => {
+              {earlier.map((award) => {
                 const signal = getSignal(award);
                 return (
                   <li key={`${award.title}-${award.date}`}>
-                    <button type="button" onClick={() => setSelectedAward(award)}>
+                    <button type="button" onClick={(event) => openAward(event, award)}>
                       <span className="ledger-rows__date">{award.date}</span>
                       <span className="ledger-rows__main">
                         <strong>{award.title}</strong>
@@ -181,15 +162,14 @@ export default function AwardsPage() {
           </Reveal>
         </div>
 
-        <AnimatePresence>
-          {selectedAward && (
-            <PremiumProofGalleryModal
-              award={selectedAward}
-              signal={getSignal(selectedAward)}
-              onClose={() => setSelectedAward(null)}
-            />
-          )}
-        </AnimatePresence>
+        {selectedAward && (
+          <AwardProofViewer
+            award={selectedAward}
+            signal={getSignal(selectedAward)}
+            onClose={() => setSelectedAward(null)}
+            returnFocusRef={awardTrigger}
+          />
+        )}
       </PageFrame>
     </div>
   );

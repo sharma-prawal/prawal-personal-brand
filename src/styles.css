@@ -280,6 +280,30 @@ img {
   outline-offset: -6px;
 }
 
+.overlay-dialog {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  border: 0;
+  color: inherit;
+}
+
+.overlay-dialog::backdrop {
+  background: transparent;
+}
+
+html:has(.overlay-dialog[open]) {
+  overflow: hidden;
+}
+
+body:has(.proof-modal[open]) .brand-chatbot {
+  visibility: hidden;
+}
+
 .image-lightbox {
   position: fixed;
   inset: 0;
@@ -675,8 +699,16 @@ h1,
 #credential-library,
 #project-featured,
 #project-library,
+#professional-systems,
+#ai-builds,
+#product-builds,
+#case-study-model,
 #featured-event,
-#event-archive {
+#event-archive,
+.case-section[id],
+.case-facts[id],
+.case-gallery-section[id],
+.case-lead[id] {
   scroll-margin-top: 124px;
 }
 
@@ -855,21 +887,6 @@ li {
   line-height: 1.6;
 }
 
-.case-study-not-found {
-  border:1px solid rgba(var(--fg-rgb), 0.08);
-  border-radius: var(--radius);
-  background:
-    var(--surface);
-  box-shadow: none;
-}
-
-.case-study-not-found {
-  display: grid;
-  justify-items: start;
-  margin-top: 46px;
-  padding: 30px;
-}
-
 .conferences-page-hero {
   padding-bottom: clamp(42px, 4.4vw, 58px);
 }
@@ -892,7 +909,7 @@ li {
 .global-routes-svg {
   width: 100%;
   height: auto;
-  aspect-ratio: 380 / 260;
+  aspect-ratio: 400 / 260;
   overflow: visible;
 }
 
@@ -941,39 +958,38 @@ li {
 
 .global-routes-legend {
   width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 14px;
-  justify-content: center;
-  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  font-size: 0.95rem;
 }
 
-.global-routes-legend span {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color:var(--ink-soft);
-  font-size: 0.8rem;
-  font-weight: 500;
+.global-routes-legend div {
+  display: grid;
+  align-content: start;
+  gap: 4px;
 }
 
-.legend-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-}
+.global-routes-legend span { color: var(--ink-soft); }
 
 .global-map-card__body {
   width: 100%;
   max-width: 840px;
 }
 
-.legend-dot--professional {
-  background: var(--gold);
-}
+@media (max-width: 540px) {
+  .global-routes-svg text { display: none; }
+  .global-routes-svg .route-dot rect { display: none; }
 
-.legend-dot--personal {
-  background:var(--raised);
+  .global-routes-legend {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .global-routes-legend div {
+    grid-template-columns: minmax(84px, 1fr) minmax(0, 2fr);
+  }
 }
 
 .recommendation-avatar {

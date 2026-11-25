@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { ArrowDown, ArrowRight, ArrowUpRight } from "lucide-react";
+import SystemFlowPreview from "../components/SystemFlowPreview.jsx";
 import { DownloadMark } from "../components/icons.jsx";
 import {
   ExecutiveProfileDownloadButton,
@@ -12,28 +13,12 @@ import { professionalCasesWithSlugs } from "../data/derived.js";
 import { conferenceAssets, professionalHighlights, profilePortrait } from "../data/mediaAssets.js";
 import { profile } from "../data/profile.js";
 
-const featuredWork = [
-  {
-    projectName: "Data Refinery",
-    title: "Data Refinery",
-    result: "90+ media sources, onboarded in 1–2 days each.",
-    flow: ["Ingest", "Clean & enrich", "Deliver"]
-  },
-  {
-    projectName: "BIM / Enrollment & Transactions",
-    title: "Banking & payments platform",
-    result: "160K+ daily transactions at 99.9% uptime.",
-    flow: ["Enroll", "Process ACH", "Score & settle"]
-  }
-].map(({ projectName, ...preview }) => ({
-  ...preview,
-  project: professionalCasesWithSlugs.find(({ name }) => name === projectName)
-})).filter(({ project }) => project);
+const featuredWork = professionalCasesWithSlugs.filter(({ preview }) => preview);
 
 const fieldPhotos = [
-  { records: conferenceAssets, title: "AI Impact Summit", to: "/conferences", label: "AI Impact Summit" },
-  { records: professionalHighlights, title: "USA Client Business Visit", to: "/highlights", label: "Client visit, USA" },
-  { records: conferenceAssets, title: "Deloitte Fast 50", to: "/conferences", label: "Deloitte Fast 50" }
+  { records: conferenceAssets, title: "AI Impact Summit", to: "/conferences#featured-event", label: "AI Impact Summit" },
+  { records: professionalHighlights, title: "USA Client Business Visit", to: "/highlights#usa-client-business-visit", label: "Client visit, USA" },
+  { records: conferenceAssets, title: "Deloitte Fast 50", to: "/conferences#deloitte-fast-50", label: "Deloitte Fast 50" }
 ].map(({ records, title, ...photo }) => ({
   ...photo,
   image: records.find((record) => record.title === title)?.images?.[0]
@@ -79,26 +64,22 @@ function SelectedWork() {
         <Link className="home-link" to="/ai-projects">All projects <ArrowRight size={16} aria-hidden="true" /></Link>
       </header>
       <div className="home-work__grid">
-        {featuredWork.map(({ project, title, result, flow }) => (
-          <article className="home-case" key={project.slug}>
-            <div className="home-case__copy">
-              <h3>{title}</h3>
-              <p className="home-case__role">{project.role}</p>
-              <p className="home-case__result">{result}</p>
-            </div>
-            <ol className="home-case__flow" aria-label={`${title} system flow`}>
-              {flow.map((step, index) => (
-                <li key={step}>
-                  <span>{step}</span>
-                  {index < flow.length - 1 && <ArrowRight size={16} aria-hidden="true" />}
-                </li>
-              ))}
-            </ol>
-            <Link className="home-link" to={`/ai-projects/professional/${project.slug}`} aria-label={`Read the ${title} case study`}>
-              Read case study <ArrowRight size={16} aria-hidden="true" />
-            </Link>
-          </article>
-        ))}
+        {featuredWork.map((project) => {
+          const { title = project.name, result, steps } = project.preview;
+          return (
+            <article className="home-case" key={project.slug}>
+              <div className="home-case__copy">
+                <h3>{title}</h3>
+                <p className="home-case__role">{project.role}</p>
+                <p className="home-case__result">{result}</p>
+              </div>
+              <SystemFlowPreview title={title} steps={steps} />
+              <Link className="home-link" to={`/ai-projects/professional/${project.slug}`} aria-label={`Read the ${title} case study`}>
+                Read case study <ArrowRight size={16} aria-hidden="true" />
+              </Link>
+            </article>
+          );
+        })}
       </div>
     </section>
   );
@@ -115,7 +96,7 @@ function FieldStrip() {
             <Link to={to}>
               <figure>
                 <img src={encodeURI(image.src)} alt={image.alt || label} loading="lazy" decoding="async" />
-                <figcaption>{label} <ArrowUpRight size={16} aria-hidden="true" /></figcaption>
+                <figcaption>{label} <ArrowRight size={16} aria-hidden="true" /></figcaption>
               </figure>
             </Link>
           </li>
@@ -131,10 +112,12 @@ function PullQuote() {
     <section className="home-quote" aria-label="Recommendation">
       <blockquote><p>{featuredQuote.quote}</p></blockquote>
       <div className="home-quote__by">
-        {featuredQuote.photo ? <img src={featuredQuote.photo} alt="" loading="lazy" /> : null}
-        <div>
-          <strong>{featuredQuote.name}</strong>
-          <span>{featuredQuote.role}</span>
+        <div className="home-quote__person">
+          {featuredQuote.photo ? <img src={featuredQuote.photo} alt="" loading="lazy" /> : null}
+          <div>
+            <strong>{featuredQuote.name}</strong>
+            <span>{featuredQuote.role}</span>
+          </div>
         </div>
         <Link className="home-link" to="/recommendations">
           All recommendations <ArrowRight size={16} aria-hidden="true" />

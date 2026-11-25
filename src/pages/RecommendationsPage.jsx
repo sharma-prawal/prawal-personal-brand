@@ -92,16 +92,7 @@ export default function RecommendationsPage() {
         intro="LinkedIn recommendations from managers, peers and the engineers I have led."
       >
         <div className="ledger-page">
-          <dl className="home-facts" aria-label="Recommendations at a glance">
-            {facts.map((fact) => (
-              <div className="home-facts__item" key={fact.label}>
-                <dt>{fact.label}</dt>
-                <dd>{fact.value}</dd>
-              </div>
-            ))}
-          </dl>
-
-          <Reveal as={motion.section} className="home-section" aria-label="Featured recommendations">
+          <Reveal as={motion.section} className="home-section ledger-page__lead" aria-label="Featured recommendations">
             <ul className="quote-pair">
               {featured.map((rec) => (
                 <li key={rec.name}>
@@ -113,25 +104,9 @@ export default function RecommendationsPage() {
             </ul>
           </Reveal>
 
-          <Reveal as={motion.section} className="home-section home-section--split" aria-labelledby="recs-themes-title">
-            <header className="home-section__head">
-              <h2 id="recs-themes-title">The same qualities come up again and again</h2>
-              <p>Read together, the recommendations keep returning to four things.</p>
-            </header>
-            <ol className="home-rules home-rules--numbered">
-              {themes.map((theme, index) => (
-                <li key={theme.title}>
-                  <span className="home-rules__num">{String(index + 1).padStart(2, "0")}</span>
-                  <h3>{theme.title}</h3>
-                  <p>{theme.text}</p>
-                </li>
-              ))}
-            </ol>
-          </Reveal>
-
           <Reveal as={motion.section} className="home-section" aria-labelledby="recs-all-title">
             <header className="home-section__head">
-              <h2 id="recs-all-title">All recommendations</h2>
+              <h2 id="recs-all-title">More recommendations</h2>
               <p>
                 Taken from my public LinkedIn profile, where each one can be{" "}
                 <a className="inline-link" href={profile.profileUrl} target="_blank" rel="noreferrer">verified</a>.
@@ -152,6 +127,31 @@ export default function RecommendationsPage() {
               ))}
             </ol>
           </Reveal>
+          <dl className="home-facts" aria-label="Recommendations at a glance">
+            {facts.map((fact) => (
+              <div className="home-facts__item" key={fact.label}>
+                <dt>{fact.label}</dt>
+                <dd>{fact.value}</dd>
+              </div>
+            ))}
+          </dl>
+
+          <Reveal as={motion.section} className="home-section home-section--split" aria-labelledby="recs-themes-title">
+            <header className="home-section__head">
+              <h2 id="recs-themes-title">The same qualities come up again and again</h2>
+              <p>Read together, the recommendations keep returning to four things.</p>
+            </header>
+            <ol className="home-rules home-rules--numbered">
+              {themes.map((theme, index) => (
+                <li key={theme.title}>
+                  <span className="home-rules__num">{String(index + 1).padStart(2, "0")}</span>
+                  <h3>{theme.title}</h3>
+                  <p>{theme.text}</p>
+                </li>
+              ))}
+            </ol>
+          </Reveal>
+
         </div>
       </PageFrame>
     </div>

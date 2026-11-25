@@ -16,12 +16,12 @@ const roleTags = [
   ["Internal Tools", "Automation", "JavaScript"]
 ];
 
-const roleProofs = [
-  { summary: "Leads a direct engineering team while serving as cross-organizational technical lead across fintech and media programs spanning India, UK, and South Africa — zero-escalation delivery record and 20–30% productivity gain through structured AI adoption.", points: ["Reduced debugging and code review cycle time through AI-assisted workflows across three global teams.", "Maintains stakeholder trust across US, UK, and South Africa with zero formal escalations over 10 years."] },
-  { summary: "Converted technical ownership into enterprise-grade systems — payment platforms, data pipelines, and cloud infrastructure — trusted by banking and media clients for years.", points: ["Built a unified data platform connecting 90+ external sources, enabling self-service reporting without manual engineering.", "Delivered ACH payment and fraud detection systems processing 160K+ daily banking transactions with 99.9% uptime."] },
-  { summary: "Stepped into pod-level leadership across three parallel applications, delivering production-grade releases without losing hands-on engineering depth.", points: ["Led three application pods for a global advertising enterprise across Node.js, React, Redux, and GraphQL.", "Maintained release quality benchmarks while scaling from individual contributor to team lead."] },
-  { summary: "Built the early ownership pattern: small-team leadership, reliability improvements, and independent delivery across client-critical systems.", points: ["Led four engineers while independently owning end-to-end project delivery.", "Improved customer satisfaction by approximately 50% through performance and reliability enhancements."] },
-  { summary: "Started with operational tools and automation, establishing a bias toward practical systems that solve real problems efficiently.", points: ["Developed internal meeting booking and HR automation tools.", "Built early delivery habits across JavaScript and internal systems."] }
+const roleResults = [
+  "Improved engineering productivity by about 20–30% through structured AI adoption.",
+  "Built a data platform that connected 90+ sources and enabled self-service reporting.",
+  "Led three application pods for a global advertising enterprise.",
+  "Improved customer satisfaction by approximately 50% through performance and reliability work.",
+  "Built internal tools for meeting bookings and HR document automation."
 ];
 
 function formatRoleYears(period) {
@@ -47,6 +47,35 @@ export default function JourneyPage() {
         intro="How hands-on engineering grew into owning systems, leading global delivery and building an AI-assisted way of working."
       >
         <div className="ledger-page">
+          <Reveal as={motion.section} className="home-section ledger-page__lead" aria-labelledby="journey-roles-title">
+            <header className="home-section__head">
+              <h2 id="journey-roles-title">Successive Digital, {successive.location}</h2>
+            </header>
+            <ol className="role-ledger">
+              {successive.roles.map((role, idx) => (
+                <li key={role.title}>
+                  <div className="role-ledger__when">
+                    <span>{formatRoleYears(role.period)}</span>
+                    {idx === 0 ? <span className="role-ledger__current">Current role</span> : null}
+                  </div>
+                  <div className="role-ledger__what">
+                    <h3>{role.title}</h3>
+                    {roleResults[idx] && <p className="role-ledger__summary">{roleResults[idx]}</p>}
+                    <details className="role-ledger__details">
+                      <summary>Role details</summary>
+                      <ul>
+                        {role.details.map((detail) => <li key={detail}>{detail}</li>)}
+                      </ul>
+                      {roleTags[idx]?.length ? (
+                        <p className="role-ledger__focus"><span>Focus</span> {roleTags[idx].join(" · ")}</p>
+                      ) : null}
+                    </details>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </Reveal>
+
           <dl className="home-facts" aria-label="Career at a glance">
             {facts.map((fact) => (
               <div className="home-facts__item" key={fact.label}>
@@ -67,33 +96,6 @@ export default function JourneyPage() {
                   <span className="stage-cols__no">{String(index + 1).padStart(2, "0")} · {item.label}</span>
                   <h3>{item.title}</h3>
                   <p>{item.text}</p>
-                </li>
-              ))}
-            </ol>
-          </Reveal>
-
-          <Reveal as={motion.section} className="home-section" aria-labelledby="journey-roles-title">
-            <header className="home-section__head">
-              <h2 id="journey-roles-title">Successive Digital, {successive.location}</h2>
-              <p>Most of my career has been at one company: five roles in ten years, each earned through delivery rather than time served.</p>
-            </header>
-            <ol className="role-ledger">
-              {successive.roles.map((role, idx) => (
-                <li key={role.title}>
-                  <div className="role-ledger__when">
-                    <span>{formatRoleYears(role.period)}</span>
-                    {idx === 0 ? <span className="role-ledger__current">Current role</span> : null}
-                  </div>
-                  <div className="role-ledger__what">
-                    <h3>{role.title}</h3>
-                    {roleProofs[idx]?.summary ? <p className="role-ledger__summary">{roleProofs[idx].summary}</p> : null}
-                    <ul>
-                      {role.details.map((detail) => <li key={detail}>{detail}</li>)}
-                    </ul>
-                    {roleTags[idx]?.length ? (
-                      <p className="role-ledger__focus"><span>Focus</span> {roleTags[idx].join(" · ")}</p>
-                    ) : null}
-                  </div>
                 </li>
               ))}
             </ol>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
@@ -18,6 +18,7 @@ import { CheckCircleMark, DiagArrow, DocMark, DownloadMark, NodeMark, StarMark, 
 import { getDirectContact, profile } from "../data/profile.js";
 import { imageAlt, imageCaption, imageSrc } from "../data/imageMetadata.js";
 import { Button } from "./ui/button.jsx";
+import OverlayDialog from "./OverlayDialog.jsx";
 import { fadeUp,
   itemReveal,
   premiumEase,
@@ -257,6 +258,7 @@ export function Magnetic({ children, strength = 10 }) {
 export function ProofImage({ src, alt, caption, priority = false, eager = false, zoomable = true, width = 800, height = 600 }) {
   const shouldReduceMotion = useReducedMotion();
   const [isZoomed, setIsZoomed] = useState(false);
+  const zoomTrigger = useRef(null);
   const [zoomScale, setZoomScale] = useState(1);
   const frameStyle = { "--proof-image": `url("${src.replaceAll("\"", "\\\"")}")` };
   const zoomImageStyle =
@@ -264,75 +266,41 @@ export function ProofImage({ src, alt, caption, priority = false, eager = false,
       ? { width: "auto", maxWidth: "100%", maxHeight: "calc(100dvh - 194px)" }
       : { width: `${Math.round(zoomScale * 100)}%`, maxWidth: "none", maxHeight: "none" };
   const pageTheme = typeof document !== "undefined" ? document.querySelector("[data-theme]")?.dataset.theme : undefined;
-  const lightbox =
-    zoomable && typeof document !== "undefined"
-      ? createPortal(
-          <AnimatePresence>
-            {isZoomed ? (
-              <motion.div
-                className="image-lightbox"
-                data-theme={pageTheme}
-                role="dialog"
-                aria-modal="true"
-                aria-label={alt}
-                initial={shouldReduceMotion ? false : { opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={shouldReduceMotion ? undefined : { opacity: 0 }}
-                transition={{ duration: shouldReduceMotion ? 0 : 0.24, ease: premiumEase }}
-                onClick={() => setIsZoomed(false)}
-              >
-                <motion.div
-                  className="image-lightbox__panel"
-                  initial={shouldReduceMotion ? false : { opacity: 0, scale: 0.975, y: 18 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={shouldReduceMotion ? undefined : { opacity: 0, scale: 0.985, y: 10 }}
-                  transition={{ duration: shouldReduceMotion ? 0 : 0.38, ease: premiumEase }}
-                  onClick={(event) => event.stopPropagation()}
-                >
-                  <button className="image-lightbox__close" type="button" aria-label="Close zoomed image" onClick={() => setIsZoomed(false)}>
-                    <X size={18} />
-                  </button>
-                  <div className="image-lightbox__toolbar" onClick={(event) => event.stopPropagation()}>
-                    <span>Fit</span>
-                    <ZoomOut size={16} aria-hidden="true" />
-                    <input
-                      type="range"
-                      min="1"
-                      max="3"
-                      step="0.1"
-                      value={zoomScale}
-                      aria-label="Image zoom level"
-                      onInput={(event) => setZoomScale(Number(event.currentTarget.value))}
-                      onChange={(event) => setZoomScale(Number(event.target.value))}
-                    />
-                    <ZoomIn size={16} aria-hidden="true" />
-                    <output>{Math.round(zoomScale * 100)}%</output>
-                  </div>
-                  <div className="image-lightbox__viewport">
-                    <img src={src} alt={alt} style={zoomImageStyle} />
-                  </div>
-                  <p>{caption || alt}</p>
-                </motion.div>
-              </motion.div>
-            ) : null}
-          </AnimatePresence>,
-          document.body
-        )
-      : null;
-
-  useEffect(() => {
-    if (!zoomable || !isZoomed) return undefined;
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    function handleKeyDown(event) {
-      if (event.key === "Escape") setIsZoomed(false);
-    }
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [isZoomed, zoomable]);
+  const lightbox = zoomable && isZoomed && createPortal(
+    <OverlayDialog
+      className="image-lightbox proof-modal"
+      label={alt}
+      returnFocusRef={zoomTrigger}
+      onDismiss={() => setIsZoomed(false)}
+    >
+      <div className="image-lightbox__panel" data-theme={pageTheme}>
+        <button className="image-lightbox__close" type="button" aria-label="Close zoomed image" data-dialog-initial-focus onClick={() => setIsZoomed(false)}>
+          <X size={18} />
+        </button>
+        <div className="image-lightbox__toolbar">
+          <span>Fit</span>
+          <ZoomOut size={16} aria-hidden="true" />
+          <input
+            type="range"
+            min="1"
+            max="3"
+            step="0.1"
+            value={zoomScale}
+            aria-label="Image zoom level"
+            onInput={(event) => setZoomScale(Number(event.currentTarget.value))}
+            onChange={(event) => setZoomScale(Number(event.target.value))}
+          />
+          <ZoomIn size={16} aria-hidden="true" />
+          <output>{Math.round(zoomScale * 100)}%</output>
+        </div>
+        <div className="image-lightbox__viewport">
+          <img src={src} alt={alt} style={zoomImageStyle} />
+        </div>
+        <p>{caption || alt}</p>
+      </div>
+    </OverlayDialog>,
+    document.body
+  );
 
   return (
     <>
@@ -345,6 +313,7 @@ export function ProofImage({ src, alt, caption, priority = false, eager = false,
       >
         {zoomable ? (
           <button
+            ref={zoomTrigger}
             className="proof-image-button"
             type="button"
             aria-label={`Zoom ${alt}`}
@@ -430,7 +399,16 @@ export function ReflectionBlock({ eyebrow, title, text }) {
 }
 
 export function PageFrame({ eyebrow, title, intro, children, className = "", heroAside = null }) {
+  const { hash } = useLocation();
   const heroClassName = ["page-hero", className].filter(Boolean).join(" ");
+
+  useEffect(() => {
+    if (!hash) return;
+    const frame = requestAnimationFrame(() => {
+      document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: "instant" });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [hash]);
 
   return (
     <>
@@ -439,13 +417,26 @@ export function PageFrame({ eyebrow, title, intro, children, className = "", her
           <div className="page-hero__copy">
             {eyebrow && <motion.span className="eyebrow" variants={itemReveal}>{eyebrow}</motion.span>}
             <motion.h1 variants={fadeUp} transition={{ duration: 0.82, ease: premiumEase, delay: 0.02 }}>{title}</motion.h1>
-            <motion.p variants={itemReveal}>{intro}</motion.p>
+            {intro && <motion.p variants={itemReveal}>{intro}</motion.p>}
           </div>
           {heroAside}
         </motion.div>
       </motion.section>
       {children}
     </>
+  );
+}
+
+export function RecoveryPage({ title = "Case study not found", description = "Browse Projects to find the case study you were looking for.", to = "/ai-projects", label = "Back to Projects" }) {
+  return (
+    <section className="recovery-page">
+      <h1>{title}</h1>
+      <p>{description}</p>
+      <Link className="primary-link" to={to}>
+        <ChevronLeft size={16} aria-hidden="true" />
+        {label}
+      </Link>
+    </section>
   );
 }
 
@@ -797,10 +788,10 @@ export function ExecutiveProfileDownloadButton({ variant = "secondary" }) {
   const isPrimary = variant === "primary";
   return (
     <Button asChild variant={variant} className={isPrimary ? "primary-link download-link" : "secondary-link download-link"}>
-      <button onClick={generateExecutiveProfile}>
+      <a href="/prawal-sharma-executive-profile.pdf" download>
         <DownloadMark size={18} />
         <span>Download executive profile</span>
-      </button>
+      </a>
     </Button>
   );
 }

@@ -28,10 +28,17 @@ const flagshipTitles = [
   "Microsoft Certified: Azure AI Fundamentals"
 ];
 
+const featuredCertificateDates = {
+  "Claude Certified Architect – Foundations": "Issued Aug 4, 2026 · Printed expiry Aug 4, 2027",
+  "AWS Certified Solutions Architect – Associate": "Issued Sep 27, 2021 · Shown certificate expired Sep 27, 2024",
+  "AWS Certified AI Practitioner": "Issued May 20, 2025 · Printed expiry May 20, 2028",
+  "Microsoft Certified: Azure AI Fundamentals": "Earned Feb 10, 2022 · No expiry shown"
+};
+
 const credentialSignals = {
   "Claude Certified Architect – Foundations": { signal: "AI solution architecture", text: "Proctored Anthropic exam for building production-grade systems on Claude, MCP, and the Agent SDK." },
   "AWS Certified Solutions Architect – Associate": { signal: "Cloud architecture", text: "Validated architecture judgment for resilient, scalable AWS system design." },
-  "AWS Certified AI Practitioner": { signal: "AI adoption fluency", text: "A current AI credential tied to practical enterprise adoption." },
+  "AWS Certified AI Practitioner": { signal: "AI adoption fluency", text: "AWS credential in AI fundamentals and practical adoption." },
   "Microsoft Certified: Azure AI Fundamentals": { signal: "AI platform grounding", text: "Microsoft AI fundamentals proof across workloads, responsible AI, and Azure services." },
   "Google Cloud Certified – Cloud Digital Leader": { signal: "Multi-cloud perspective", text: "Business and platform fluency across Google Cloud transformation concepts." },
   "AWS Certified Developer – Associate": { signal: "Cloud engineering", text: "Developer-level AWS implementation credibility beyond architecture theory." },
@@ -153,8 +160,9 @@ export default function CertificationsPage() {
                 return (
                   <li key={cert.id}>
                     <div className="cert-grid__img"><ProofImage src={cert.src} alt={cert.alt} caption={cert.caption} eager /></div>
-                    <span className="photo-pair__meta">{cert.provider}{credentialYears[cert.title] ? ` · ${credentialYears[cert.title]}` : ""}</span>
+                    <span className="photo-pair__meta">{cert.provider}</span>
                     <strong>{cert.title}</strong>
+                    <span className="cert-grid__dates">{featuredCertificateDates[cert.title]}</span>
                     <span className="photo-pair__text">{signal.text}</span>
                   </li>
                 );

@@ -1,8 +1,9 @@
 import React, { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Link, NavLink, Navigate, Route, Routes, useLocation } from "react-router-dom";
-import { Check, ChevronDown, ChevronLeft, ChevronRight, Copy, Linkedin, Menu, X } from "lucide-react";
-import { ExecutiveProfileDownloadButton, LinkedInButton, ResumeDownloadButton, ScrollToTop, downloadResume, generateExecutiveProfile } from "./components/shared.jsx";
+import { Check, ChevronDown, ChevronRight, Copy, Linkedin, Menu, X } from "lucide-react";
+import { ExecutiveProfileDownloadButton, LinkedInButton, RecoveryPage, ResumeDownloadButton, ScrollToTop, downloadResume, generateExecutiveProfile } from "./components/shared.jsx";
+import OverlayDialog from "./components/OverlayDialog.jsx";
 import { getDirectContact, profile } from "./data/profile.js";
 import { pageEntrance, exitEase, premiumEase } from "./lib/motion.js";
 
@@ -48,23 +49,7 @@ const topNavItems = [
 
 function NotFoundPage() {
   return (
-    <div data-theme="not-found">
-      <section className="page-hero">
-        <div className="page-hero__inner">
-          <div className="page-hero__copy">
-            <span className="eyebrow">404</span>
-            <h1>Page not found.</h1>
-            <p>This page doesn&apos;t exist. Head back to the homepage or pick a page from the menu.</p>
-          </div>
-        </div>
-        <div className="case-study-not-found">
-          <Link to="/" className="secondary-link" style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
-            <ChevronLeft size={18} />
-            <span>Back to executive summary</span>
-          </Link>
-        </div>
-      </section>
-    </div>
+    <RecoveryPage title="Page not found" description="Head back to the homepage or pick a page from the menu." to="/" label="Back to Home" />
   );
 }
 
@@ -125,6 +110,7 @@ function AppShell() {
   const location = useLocation();
   const shouldReduceMotion = useReducedMotion();
   const topNavRef = useRef(null);
+  const mobileNavTrigger = useRef(null);
   const topNavPointerTypeRef = useRef("mouse");
   const topNavCloseTimerRef = useRef(null);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -152,36 +138,9 @@ function AppShell() {
   };
 
   useEffect(() => {
-    isNavigatingRef.current = true;
     setMobileNavOpen(false);
     closeTopMenu();
-    window.scrollTo({ top: 0, behavior: "instant" });
   }, [location.pathname]);
-
-  const mobileNavRef = useRef(null);
-  const isNavigatingRef = useRef(false);
-
-  useEffect(() => {
-    if (mobileNavOpen) {
-      const scrollY = window.scrollY;
-      document.body.style.cssText = `overflow:hidden;position:fixed;top:-${scrollY}px;width:100%;`;
-      return () => {
-        document.body.style.cssText = "";
-        window.scrollTo({ top: isNavigatingRef.current ? 0 : scrollY, behavior: "instant" });
-        isNavigatingRef.current = false;
-      };
-    }
-  }, [mobileNavOpen]);
-
-  useEffect(() => {
-    if (mobileNavOpen && mobileNavRef.current) {
-      mobileNavRef.current.scrollTop = 0;
-    }
-    if (!mobileNavOpen) return undefined;
-    const onKey = (event) => { if (event.key === "Escape") setMobileNavOpen(false); };
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [mobileNavOpen]);
 
   useEffect(() => () => { cancelTopMenuClose(); }, []);
 
@@ -292,6 +251,7 @@ function AppShell() {
         <div className="topbar-actions">
           <LinkedInButton compact />
           <button
+            ref={mobileNavTrigger}
             className="hamburger-btn"
             type="button"
             aria-label={mobileNavOpen ? "Close navigation" : "Open navigation"}
@@ -303,56 +263,49 @@ function AppShell() {
         </div>
       </header>
 
-      <AnimatePresence>
-        {mobileNavOpen && (
-          <motion.div
-            className="mobile-nav-overlay"
-            initial={shouldReduceMotion ? false : { opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={shouldReduceMotion ? undefined : { opacity: 0 }}
-            transition={{ duration: 0.22, ease: premiumEase }}
-            onClick={() => setMobileNavOpen(false)}
+      {mobileNavOpen && (
+        <OverlayDialog
+          className="mobile-nav-overlay"
+          label="Site menu"
+          returnFocusRef={mobileNavTrigger}
+          onDismiss={() => setMobileNavOpen(false)}
+        >
+          <motion.nav
+            className="mobile-nav"
+            aria-label="Mobile navigation"
+            initial={shouldReduceMotion ? false : { x: "100%" }}
+            animate={{ x: 0 }}
+            transition={{ duration: 0.34, ease: premiumEase }}
           >
-            <motion.nav
-              ref={mobileNavRef}
-              className="mobile-nav"
-              aria-label="Mobile navigation"
-              initial={shouldReduceMotion ? false : { x: "100%" }}
-              animate={{ x: 0 }}
-              exit={shouldReduceMotion ? undefined : { x: "100%" }}
-              transition={{ duration: 0.34, ease: premiumEase }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="mobile-nav-header">
-                <strong className="mobile-nav-name">{profile.name}</strong>
-                <button type="button" aria-label="Close navigation" onClick={() => setMobileNavOpen(false)}>
-                  <X size={20} />
-                </button>
-              </div>
-              <div className="mobile-nav-section">
-                {topNavItems.filter((item) => !item.children).map((item) => (
-                  <NavLink end={item.path === "/"} className={({ isActive }) => (isActive ? "mobile-nav-link active" : "mobile-nav-link")} to={item.path} key={item.path}>
-                    {item.label}
+            <div className="mobile-nav-header">
+              <strong className="mobile-nav-name">{profile.name}</strong>
+              <button type="button" aria-label="Close navigation" data-dialog-initial-focus onClick={() => setMobileNavOpen(false)}>
+                <X size={20} />
+              </button>
+            </div>
+            <div className="mobile-nav-section">
+              {topNavItems.filter((item) => !item.children).map((item) => (
+                <NavLink end={item.path === "/"} className={({ isActive }) => (isActive ? "mobile-nav-link active" : "mobile-nav-link")} to={item.path} key={item.path} onClick={() => setMobileNavOpen(false)}>
+                  {item.label}
+                </NavLink>
+              ))}
+            </div>
+            {topNavItems.filter((item) => item.children).map((group) => (
+              <div className="mobile-nav-section" key={group.label}>
+                <span>{group.label}</span>
+                {group.children.map((route) => (
+                  <NavLink className={({ isActive }) => (isActive ? "mobile-nav-link active" : "mobile-nav-link")} to={route.path} key={route.path} onClick={() => setMobileNavOpen(false)}>
+                    {route.label}
                   </NavLink>
                 ))}
               </div>
-              {topNavItems.filter((item) => item.children).map((group) => (
-                <div className="mobile-nav-section" key={group.label}>
-                  <span>{group.label}</span>
-                  {group.children.map((route) => (
-                    <NavLink className={({ isActive }) => (isActive ? "mobile-nav-link active" : "mobile-nav-link")} to={route.path} key={route.path}>
-                      {route.label}
-                    </NavLink>
-                  ))}
-                </div>
-              ))}
-              <div className="mobile-nav-cta">
-                <LinkedInButton />
-              </div>
-            </motion.nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            ))}
+            <div className="mobile-nav-cta">
+              <LinkedInButton />
+            </div>
+          </motion.nav>
+        </OverlayDialog>
+      )}
 
       <main aria-label="Main content">
         <AnimatePresence mode="wait" initial={false}>

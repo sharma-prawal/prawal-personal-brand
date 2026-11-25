@@ -149,6 +149,7 @@ const aiProjectRecords = [
     outcome: "Working local prototype with deterministic incident scenarios and read-only evidence providers for Loki, Prometheus, Datadog, Azure Monitor and AWS CloudWatch (CloudWatch tested against a synthetic fixture only).",
     stack: ["LangGraph", "MCP", "pgvector", "Ollama", "PostgreSQL", "Next.js"],
     repo: "https://github.com/sharma-prawal/opspilot-ai",
+    previewCaption: "System overview showing incident signals and service health.",
     images: ["/media/projects/github/opspilot-ai.jpg"]
   },
   {
@@ -164,6 +165,7 @@ const aiProjectRecords = [
     outcome: "Runs locally with per-service health checks, retries and fixture tests that never touch live accounts.",
     stack: ["Python", "FastAPI", "Playwright", "Groq"],
     repo: "https://github.com/sharma-prawal/personal-assistant",
+    previewCaption: "The dashboard that brings the daily briefing and follow-ups together.",
     images: ["/media/projects/github/personal-assistant.jpg"]
   },
   {
@@ -178,6 +180,7 @@ const aiProjectRecords = [
     outcome: "Live on every page of this site.",
     stack: ["React", "Groq API", "Llama 4 Scout", "RAG"],
     repo: "https://github.com/sharma-prawal/prawal-personal-brand",
+    previewCaption: "The live assistant opens with suggested questions and shortcuts.",
     images: ["/media/projects/github/ai-brand-assistant.jpg"]
   },
   {
@@ -194,6 +197,7 @@ const aiProjectRecords = [
     link: "https://prawal-the-series.vercel.app",
     linkLabel: "Watch the series",
     repo: "https://github.com/sharma-prawal/prawal-the-series",
+    previewCaption: "Cover artwork for the streaming-style portfolio.",
     images: ["/media/projects/github/prawal-the-series.jpg"]
   },
   {
@@ -209,6 +213,7 @@ const aiProjectRecords = [
     stack: ["Web", "Responsive UI", "Content design"],
     link: "https://sunriseschoolkandi.org/",
     linkLabel: "Live school site",
+    previewCaption: "The school homepage introduces Sunrise and gives parents an admissions starting point.",
     images: [
       "/media/projects/Sun Rise School/Screenshot 2026-05-25 at 7.35.43-PM.png",
       "/media/projects/Sun Rise School/Screenshot 2026-05-25 at 7.36.08-PM.png",
@@ -230,6 +235,7 @@ const aiProjectRecords = [
     stack: ["Firebase", "React", "Interactive storytelling"],
     link: "https://praashi-lovebook.web.app/",
     linkLabel: "Open lovebook",
+    previewCaption: "The opening page of the interactive storybook.",
     images: [
       "/media/projects/Lovebook/Screenshot 2026-05-25 at 7.37.25-PM.png",
       "/media/projects/Lovebook/Screenshot 2026-05-25 at 7.37.39-PM.png",
@@ -250,6 +256,7 @@ const aiProjectRecords = [
     stack: ["Game design", "Web", "Narrative UX"],
     link: "https://praashi.fun/",
     linkLabel: "Play RPG",
+    previewCaption: "The opening screen where players begin the anniversary story.",
     images: [
       "/media/projects/Love RPG/Screenshot 2026-05-25 at 7.40.24-PM.png",
       "/media/projects/Love RPG/Screenshot 2026-05-25 at 7.41.03-PM.png",
@@ -272,6 +279,7 @@ const aiProjectRecords = [
     stack: ["Visual novel", "Game publishing", "Narrative design"],
     link: "https://prawalsharma.itch.io/praashi",
     linkLabel: "View on itch.io",
+    previewCaption: "The main menu includes access to chapters, keepsakes and settings.",
     images: [
       "/media/projects/Anime VN/01-main-menu.jpg",
       "/media/projects/Anime VN/02-first-meeting.jpg",
@@ -294,9 +302,10 @@ const aiProjectRecords = [
     stack: ["Android", "Notes UX", "Mobile app"],
     link: "https://drive.google.com/file/d/1Fql6-zff4SuhVoESSZxk-Afdp_qLAiqX/view?usp=drive_link",
     linkLabel: "View app file",
+    previewCaption: "The Android notes list, with quick access to notes and folders.",
     images: [
-      "/media/projects/Notes App/06-settings.png",
       "/media/projects/Notes App/04-notes-list.png",
+      "/media/projects/Notes App/06-settings.png",
       "/media/projects/Notes App/01-notes-empty.png",
       "/media/projects/Notes App/02-speed-dial.png",
       "/media/projects/Notes App/03-editor.png",
@@ -317,6 +326,7 @@ const aiProjectRecords = [
     stack: ["React", "Vite", "Tailwind", "Framer Motion", "Visual QA"],
     link: "/",
     linkLabel: "View homepage",
+    previewCaption: "The redesigned homepage pairs an executive introduction with selected client work.",
     images: [
       "/media/projects/Personal Branding Site/01-executive-hero.png",
       "/media/projects/Personal Branding Site/02-awards-page.png",
@@ -335,6 +345,7 @@ const aiProjectRecords = [
     aiUsage: "Machine-learning model experimentation, feature thinking, and AI-assisted documentation of insights.",
     outcome: "Visual POC proof showing the data intelligence workflow and model-driven outputs.",
     stack: ["XGBoost", "Explainable ML", "MCP", "POC"],
+    previewCaption: "Architecture sketch showing how pipeline telemetry feeds risk predictions.",
     images: [
       "/media/projects/POC - AI-Driven Datastream Intelligence/1773333444521.jpeg",
       "/media/projects/POC - AI-Driven Datastream Intelligence/1773333445241.jpeg",
@@ -353,7 +364,7 @@ export const aiProjects = aiProjectRecords.map((project) => ({
       date: "Project proof archive",
       category: project.type,
       alt: `${project.name} screenshot proof ${index + 1}`,
-      caption: index === 0 ? project.summary : `${project.name} supporting screenshot ${index + 1}.`,
+      caption: index === 0 ? project.previewCaption : `${project.name} supporting screenshot ${index + 1}.`,
       featured: index === 0,
       priority: index === 0
     })

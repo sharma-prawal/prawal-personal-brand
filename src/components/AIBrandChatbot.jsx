@@ -725,6 +725,7 @@ export default function AIBrandChatbot({ downloadResume, generateExecutiveProfil
             transition={{ duration: 0.36, ease: premiumEase }}
             role="dialog"
             aria-modal="true"
+            aria-label="Prawal AI Assistant"
           >
             <div className="chatbot-header">
               <div className="header-identity">

@@ -225,6 +225,10 @@ export const profile = {
       team: "Connectors team of 11",
       featured: true,
       headline: "90+ media data sources, each onboarded in 1–2 days.",
+      preview: {
+        result: "90+ media sources, onboarded in 1–2 days each.",
+        steps: ["Ingest", "Clean & enrich", "Deliver"]
+      },
       context:
         "Dentsu International's media teams pulled advertising data from dozens of platforms, and every new source meant manual engineering before anyone could report on it.",
       systems: ["Connectors App", "Trifacta Recipes", "Data Serve UI"],
@@ -252,6 +256,11 @@ export const profile = {
       team: "API, UI and QA teams",
       featured: true,
       headline: "White-label ACH payments for a US bank, from enrollment to settlement.",
+      preview: {
+        title: "Banking & payments platform",
+        result: "160K+ daily transactions at 99.9% uptime.",
+        steps: ["Enroll", "Process ACH", "Score & settle"]
+      },
       context:
         "A US bank needed white-label ACH debit payments for merchant, mobile and web commerce, with identity checks, fraud controls and compliance reporting built in.",
       systems: ["Enrollments", "Transactions", "Reporting", "Authentication", "Scoring", "Fraud Detection", "Client Boarding Wizard"],
