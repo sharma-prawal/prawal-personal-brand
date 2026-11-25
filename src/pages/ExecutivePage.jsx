@@ -33,15 +33,18 @@ const awardGroups = [
     titles: ["ESOP Ownership Achievement Award", "Outstanding Contribution Award"],
     label: "ESOP Ownership Achievement and Outstanding Contribution",
     photo: { from: "ESOP Ownership Achievement Award", index: 0 },
+    to: "/awards#awards-recent-title",
     alt: "Prawal Sharma receiving the ESOP Ownership Achievement Award at the 2026 Successive Digital leadership offsite."
   },
   {
     titles: ["Employee of the Year (2023)"],
+    to: "/awards#employee-of-the-year-2023",
     label: "Employee of the Year",
     photo: { from: "Employee of the Year (2023)", index: 0 }
   },
   {
     titles: ["Key Contributor Award"],
+    to: "/awards#key-contributor-award",
     label: "Key Contributor Award",
     photo: { from: "Key Contributor Award", index: 0 }
   }
@@ -122,12 +125,12 @@ function Recognition() {
         <Link className="home-link" to="/awards">All {awardAssets.length} awards <ArrowRight size={16} aria-hidden="true" /></Link>
       </header>
       <p className="home-recognition__intro">
-        {awardAssets.length} awards in ten years at Successive Digital, for delivery, client work and long-term ownership.
+        {awardAssets.length} awards at Successive Digital since 2018, for delivery, client work and long-term ownership.
       </p>
       <ul className="home-recognition__list">
         {awardGroups.map((group) => (
           <li key={group.label}>
-            <Link to="/awards">
+            <Link to={group.to}>
               <span className="home-recognition__img">
                 <img src={encodeURI(group.src)} alt={group.alt} loading="lazy" decoding="async" />
               </span>

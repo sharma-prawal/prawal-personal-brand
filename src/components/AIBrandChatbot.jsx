@@ -314,7 +314,7 @@ function getSandboxResponse(inputText) {
   // ── Experience / Career ────────────────────────────────────────────────────
   if (intents.includes('experience')) {
     return {
-      text: "Ten years at Successive Digital, five promotions — the only company he's worked at.\n\n- Technology Manager (Nov 2024–now): 20+ engineers across India, UK, South Africa — 20–30% AI productivity lift, zero escalations\n- Technology Lead (2021–2024): Connectors Platform (90+ data sources), ACH banking (160K daily transactions, 99.9% uptime)\n- Senior & Software Engineer (2018–2021): Full-stack delivery, Node.js/React/GraphQL\n- Trainee → early roles (2015–2018): Foundation years, Successive Digital",
+      text: "Ten years in engineering: nine at Successive Digital (since August 2017) across five roles, after early roles at GirnarSoft, NIIT Technologies and Aptech.\n\n- Technology Manager (Nov 2024–now): leads two client engagements of 5–12 contributors each for US, UK and South Africa clients; 20–30% AI-assisted productivity lift\n- Technology Lead (2021–2024): Connectors Platform (90+ data sources) and ACH payments (160K+ daily transactions, 99.9% uptime)\n- Software Engineer and Associate Software Engineer (2018–2021): full-stack delivery with Node.js, React and GraphQL\n- Software Engineer Trainee (2017–2018): internal tools for meeting bookings and HR documents",
       actions: [
         { label: "Major projects", query: "What are his major engineering projects?" },
         { label: "Tech stack", query: "What is his technical stack?" },
@@ -326,7 +326,7 @@ function getSandboxResponse(inputText) {
   // ── Skills / Tech Stack ───────────────────────────────────────────────────
   if (intents.includes('skill')) {
     return {
-      text: "Cloud-first, AI-forward, full-stack across engineering and leadership:\n\n- AI/LLM: integrations, workflow automation, intelligent systems\n- Backend: Node.js, NestJS, GraphQL, REST, PHP, Laravel\n- Frontend: React, Next.js, TypeScript, TailwindCSS\n- Cloud: AWS (Certified), Azure (AZ-900), GCP (Cloud Digital Leader), Docker, CI/CD\n- Data: MongoDB, Snowflake, PostgreSQL, Redis, DynamoDB",
+      text: "Cloud-first, AI-forward, full-stack across engineering and leadership:\n\n- AI/LLM: AI-assisted delivery, RAG, LLM and MCP proofs of concept\n- Backend: Node.js, GraphQL (Apollo), REST, PHP, Laravel, Python\n- Frontend: React, Redux, TypeScript, JavaScript\n- Cloud: AWS, Azure (Functions, Service Bus), GCP, Docker, serverless and event-driven architecture\n- Data: MySQL, MongoDB, PostgreSQL, Snowflake",
       actions: [
         { label: "Cloud certifications", query: "What cloud certifications does he have?" },
         { label: "AI projects", query: "What AI projects has he built?" },
@@ -349,7 +349,7 @@ function getSandboxResponse(inputText) {
   // ── Certifications ────────────────────────────────────────────────────────
   if (intents.includes('certification')) {
     return {
-      text: "**93+ credentials** — the flagship proctored certificates:\n\n- **AWS Certified AI Practitioner** (2024 — reflects current focus)\n![AWS AI Practitioner](/media/certifications/AWS/AWS Certified AI Practitioner.png)\n- **AWS Certified Developer – Associate**\n![AWS Developer Associate](/media/certifications/AWS/AWS Certified Developer - Associate.png)\n- **Google Cloud Certified: Cloud Digital Leader**\n![GCP Cloud Digital Leader](/media/certifications/GCP/Google Cloud Certified Cloud Digital Leader.png)\n- **Microsoft Certified: Azure Fundamentals (AZ-900)**\n![Azure Fundamentals](/media/certifications/Azure/Microsoft-Certified-AZ-900.png.png)\n- **Certified Agile Leadership Essentials (Scrum Alliance)**\n![SAFe Agile Leadership](/media/certifications/ScrumAlliance/Prawal Sharma-ScrumAlliance_CALESS_Certificate.png)\n\nAll three major cloud platforms covered. The AI Practitioner cert is the most recent and reflects where his delivery focus sits.",
+      text: "**93 credentials** — the flagship proctored certificates:\n\n- **Claude Certified Architect – Foundations** (Anthropic, Aug 2026 — the most recent)\n![Claude Certified Architect – Foundations](/media/certifications/Anthropic/Claude Certified Architect - Foundations.png)\n- **AWS Certified AI Practitioner** (May 2025)\n![AWS AI Practitioner](/media/certifications/AWS/AWS Certified AI Practitioner.png)\n- **AWS Certified Developer – Associate**\n![AWS Developer Associate](/media/certifications/AWS/AWS Certified Developer - Associate.png)\n- **Google Cloud Certified: Cloud Digital Leader**\n![GCP Cloud Digital Leader](/media/certifications/GCP/Google Cloud Certified Cloud Digital Leader.png)\n- **Microsoft Certified: Azure Fundamentals (AZ-900)**\n![Azure Fundamentals](/media/certifications/Azure/Microsoft-Certified-AZ-900.png.png)\n- **Certified Agile Leadership Essentials (Scrum Alliance)**\n![Certified Agile Leadership Essentials](/media/certifications/ScrumAlliance/Prawal Sharma-ScrumAlliance_CALESS_Certificate.png)\n\nAll three major cloud platforms covered. The Claude and AWS AI certifications reflect where his delivery focus sits now.",
       actions: [
         { label: "View all 93 credentials", url: "/certifications" },
         { label: "Technical stack", query: "What is his technical stack?" }
@@ -427,7 +427,7 @@ function getSandboxResponse(inputText) {
   // ── AI-specific queries ("what has he done in AI world") ──────────────────
   if (/\b(ai world|done in ai|ai work|ai contribution|what.*ai|how.*ai|ai career|ai adoption|ai framework|llm integration|xgboost)\b/i.test(query)) {
     return {
-      text: "Two tracks — enterprise delivery and independent builds:\n\nAt Successive Digital (2023–2025): ran a structured AI adoption program — code review acceleration, AI-assisted debugging, documentation automation. Result: 20–30% team productivity lift. Built LLM integrations into client products. Created the AI Engineering Leadership Framework (clarify leverage → protect judgment → operationalize → prove outcomes).\n\nPersonally: XGBoost ML POC for datastream intelligence, this personal brand site (built AI-first), plus an RPG game, lovebook, visual novel, and notes app — all using AI as a genuine collaborator throughout design and build.",
+      text: "Two tracks — enterprise delivery and independent builds:\n\nAt Successive Digital (2023–2025): ran a structured AI adoption program — code review acceleration, AI-assisted debugging, documentation automation. Result: 20–30% team productivity lift. Guided schedule-intelligence, LLM and MCP integrations as proofs of concept. Created the AI Engineering Leadership Framework (clarify leverage → protect judgment → operationalize → prove outcomes).\n\nPersonally: XGBoost ML POC for datastream intelligence, this personal brand site (built AI-first), plus an RPG game, lovebook, visual novel, and notes app — all using AI as a genuine collaborator throughout design and build.",
       actions: [
         { label: "View AI projects", url: "/ai-projects" },
         { label: "Download AI Framework PDF", url: "/ai-engineering-leadership-framework.pdf" },
@@ -450,7 +450,7 @@ function getSandboxResponse(inputText) {
   // ── Identity / Summary / Bio ──────────────────────────────────────────────
   if (intents.includes('identity') || /\b(summary|summarize|bio|profile|about|prawal|who is|background|headline|recruiter)\b/.test(query)) {
     return {
-      text: `**Prawal Sharma** — Technology Manager, 10 years at Successive Digital, five role promotions. The short version for a recruiter:\n\n- **Scale:** 160K+ daily banking transactions at 99.9% uptime through systems he architected\n- **Leadership:** 20+ engineers across India, UK, South Africa — zero formal escalations in 10 years\n- **AI adoption:** 20–30% team productivity lift from structured AI tooling — measurable, not claimed\n- **Credentials:** Claude Certified Architect, plus AWS, Azure, and GCP certified — 93+ total\n- **Recognition:** 10 awards, ${profile.recommendations.length} LinkedIn recommendations, B1/B2 visa with US onsite delivery experience\n- **Current focus:** LLM integrations, intelligent automation, and AI-enabled delivery at enterprise scale`,
+      text: `**Prawal Sharma** — Technology Manager with 10 years in engineering, nine at Successive Digital across five roles. The short version for a recruiter:\n\n- **Scale:** 160K+ daily ACH transactions at 99.9% uptime on the payments platform he leads\n- **Leadership:** two client engagements of 5–12 contributors each, for US, UK and South Africa clients\n- **AI adoption:** 20–30% team productivity lift from structured AI tooling — measurable, not claimed\n- **Credentials:** Claude Certified Architect, plus AWS, Azure, and GCP certified — 93 in total\n- **Recognition:** 10 awards, ${profile.recommendations.length} LinkedIn recommendations, B1/B2 visa with US onsite delivery experience\n- **Current focus:** AI-assisted delivery, plus LLM and MCP proofs of concept`,
       actions: [
         { label: "Full experience", query: "What is his career experience?" },
         { label: "Major projects", query: "What are his major engineering projects?" },
@@ -472,8 +472,42 @@ function getSandboxResponse(inputText) {
   };
 }
 
+// On phones the launcher sits over the first screen's links and the footer's
+// controls, so it only appears once the reader is past the hero and before the footer.
+function useCompactLauncherHidden() {
+  const [hidden, setHidden] = useState(false);
+  useEffect(() => {
+    const compact = window.matchMedia("(max-width: 760px)");
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      if (!compact.matches) {
+        setHidden(false);
+        return;
+      }
+      const footerTop = document.querySelector(".site-footer")?.getBoundingClientRect().top ?? Infinity;
+      setHidden(window.scrollY < window.innerHeight * 0.6 || footerTop < window.innerHeight);
+    };
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    compact.addEventListener("change", schedule);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      compact.removeEventListener("change", schedule);
+    };
+  }, []);
+  return hidden;
+}
+
 export default function AIBrandChatbot({ downloadResume, generateExecutiveProfile }) {
   const [isOpen, setIsOpen] = useState(false);
+  const launcherHidden = useCompactLauncherHidden();
   const [messages, setMessages] = useState([
     {
       id: "welcome",
@@ -482,7 +516,7 @@ export default function AIBrandChatbot({ downloadResume, generateExecutiveProfil
       actions: [
         { label: "Executive summary", query: "Summarize Prawal's engineering leadership and delivery experience.", icon: "briefcase" },
         { label: "AI and cloud projects", query: "Show Prawal's AI and cloud project proof.", icon: "sparkles" },
-        { label: "Download resume", type: "download_exec", icon: "file" },
+        { label: "Download resume", type: "download_ats", icon: "file" },
         { label: "Send a message", type: "email_form", icon: "mail" },
         { label: "LinkedIn profile", url: "https://www.linkedin.com/in/sharma-prawal/", icon: "linkedin" }
       ]
@@ -699,7 +733,7 @@ export default function AIBrandChatbot({ downloadResume, generateExecutiveProfil
   return (
     <div className={`brand-chatbot ${isOpen ? "is-expanded" : "is-collapsed"}`} aria-label="Virtual Assistant">
       <AnimatePresence>
-        {!isOpen && (
+        {!isOpen && !launcherHidden && (
           <motion.button
             className="chatbot-fab"
             onClick={() => setIsOpen(true)}

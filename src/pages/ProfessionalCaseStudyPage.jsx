@@ -73,7 +73,7 @@ export default function ProfessionalCaseStudyPage() {
           {project.flow ? (
             <Section id="case-design" title="System design">
               <CaseFlow steps={project.flow} />
-              <p className="case-note">Client names, source code and screenshots stay private; this is the system's shape.</p>
+              <p className="case-note">Source code and screenshots stay private; this is the system's shape.</p>
             </Section>
           ) : null}
 

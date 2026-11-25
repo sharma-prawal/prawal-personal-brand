@@ -7,7 +7,7 @@ export const profile = {
     "Technology Manager | AI-Driven Engineering Leader | Cloud & Scalable Systems | AWS | Azure | GCP Certified | Node.js | React | GraphQL",
   shortHeadline: "I lead engineering teams that ship faster with AI — without giving up reliability.",
   summary:
-    "Engineering leader who ships: 160K+ daily banking transactions at 99.9% uptime, 20–30% AI-assisted productivity gains across global teams, and a zero-escalation track record across 10 years at Successive Digital.",
+    "Engineering leader who ships: 160K+ daily banking transactions at 99.9% uptime, 20–30% AI-assisted productivity gains across global teams, and a zero-escalation track record across nine years at Successive Digital.",
   atsSummary:
     "Technology Manager with 10 years of experience building and leading engineering teams delivering scalable, cloud-native, and AI-enabled systems for global clients across Media and Banking domains (US, UK, South Africa). Proven track record of 100% client satisfaction, zero escalations, and multi-year client retention. Strong hands-on expertise in distributed systems, microservices, LLM integrations, and full-stack development. AWS, Azure, and GCP certified. B1/B2 visa holder with onsite US client engagement experience.",
   focus:
@@ -126,7 +126,7 @@ export const profile = {
     {
       company: "Successive Digital",
       location: "Noida",
-      duration: "10 years",
+      duration: "9 years",
       roles: [
         {
           title: "Technology Manager",

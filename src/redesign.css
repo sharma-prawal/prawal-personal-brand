@@ -1531,6 +1531,9 @@
   margin-top: 28px;
 }
 
+.photo-pair li[id],
+.ledger-rows li[id],
+.home-section__head h2[id],
 .conf-feature[id],
 .ledger-rows--events li[id],
 #case-outcome[data-theme] {

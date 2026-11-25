@@ -33,7 +33,7 @@ function formatRoleYears(period) {
 export default function JourneyPage() {
   const successive = profile.experience[0];
   const facts = [
-    { value: "10", label: "Years at Successive Digital" },
+    { value: "9", label: "Years at Successive Digital" },
     { value: String(successive.roles.length), label: "Roles, trainee to technology manager" },
     { value: "3", label: "Client regions: US, UK, South Africa" },
     { value: "10", label: "Awards along the way" }
@@ -43,7 +43,7 @@ export default function JourneyPage() {
     <div data-theme="journey">
       <PageFrame
         eyebrow="Career"
-        title="From trainee to technology manager in ten years."
+        title="From trainee to technology manager in seven years."
         intro="How hands-on engineering grew into owning systems, leading global delivery and building an AI-assisted way of working."
       >
         <div className="ledger-page">

@@ -6,6 +6,11 @@ import { PageFrame, Reveal } from "../components/shared.jsx";
 import { imageSrc } from "../data/imageMetadata.js";
 import { awardAssets } from "../data/mediaAssets.js";
 import OverlayDialog from "../components/OverlayDialog.jsx";
+import { projectSlug } from "../data/derived.js";
+
+const titleCounts = awardAssets.reduce((counts, award) => counts.set(award.title, (counts.get(award.title) || 0) + 1), new Map());
+// Anchor id for an award; repeated titles (e.g. Star Performer of the Month) also carry their date.
+const awardId = (award) => projectSlug(titleCounts.get(award.title) > 1 ? `${award.title} ${award.date}` : award.title);
 
 const awardSignals = {
   "ESOP Ownership Achievement Award": { signal: "Ownership maturity", meaning: "Long-term commitment translated into trust, accountability, and organization-level contribution." },
@@ -98,7 +103,7 @@ export default function AwardsPage() {
     <div data-theme="awards">
       <PageFrame
         eyebrow="Awards"
-        title="Ten awards in ten years at Successive Digital."
+        title="Ten awards at Successive Digital since 2018."
         intro="For delivery milestones, client work and long-term contribution. Select any award to see the certificate or photos."
       >
         <div className="ledger-page">
@@ -119,7 +124,7 @@ export default function AwardsPage() {
               </header>
               <ul className="photo-pair">
                 {recent.map((award) => (
-                  <li key={award.title}>
+                  <li key={award.title} id={awardId(award)}>
                     <button type="button" onClick={(event) => openAward(event, award)} aria-label={`View ${award.title}`}>
                       <span className="photo-pair__img">
                         {award.images?.[0] ? <img src={imageSrc(award.images[0])} alt={award.images[0].alt || award.title} /> : null}
@@ -143,7 +148,7 @@ export default function AwardsPage() {
               {earlier.map((award) => {
                 const signal = getSignal(award);
                 return (
-                  <li key={`${award.title}-${award.date}`}>
+                  <li key={`${award.title}-${award.date}`} id={awardId(award)}>
                     <button type="button" onClick={(event) => openAward(event, award)}>
                       <span className="ledger-rows__date">{award.date}</span>
                       <span className="ledger-rows__main">
