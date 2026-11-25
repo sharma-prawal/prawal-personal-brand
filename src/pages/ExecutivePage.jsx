@@ -27,7 +27,7 @@ const fieldPhotos = [
 
 const recentAwards = ["ESOP Ownership Achievement Award", "Outstanding Contribution Award", "Employee of the Year (2023)", "Key Contributor Award"]
   .map((title) => awardAssets.find((award) => award.title === title))
-  .filter(Boolean);
+  .filter((award) => award?.images?.[0]?.src);
 
 const featuredQuote = profile.recommendations.find(({ name }) => name === "Preet Saxena") || profile.recommendations[0];
 
@@ -105,8 +105,13 @@ function Recognition() {
       <ul className="home-recognition__list">
         {recentAwards.map((award) => (
           <li key={award.title}>
-            <strong>{award.title.replace(/ \(\d{4}\)$/, "")}</strong>
-            <span>{award.date}</span>
+            <Link to="/awards">
+              <span className="home-recognition__img">
+                <img src={encodeURI(award.images[0].src)} alt={award.images[0].alt || award.title} loading="lazy" decoding="async" />
+              </span>
+              <strong>{award.title.replace(/ \(\d{4}\)$/, "")}</strong>
+              <span>{award.date}</span>
+            </Link>
           </li>
         ))}
       </ul>
