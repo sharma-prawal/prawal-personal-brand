@@ -156,66 +156,9 @@ function DirectContactPanel() {
   );
 }
 
-function usePremiumCursor() {
-  const shouldReduceMotion = useReducedMotion();
-  useEffect(() => {
-    if (shouldReduceMotion || window.matchMedia("(hover: none)").matches) return;
-    const dot = document.createElement("div");
-    dot.className = "cursor-dot";
-    const ring = document.createElement("div");
-    ring.className = "cursor-ring";
-    document.body.append(dot, ring);
-
-    let dotX = 0, dotY = 0, ringX = 0, ringY = 0;
-    let rafId;
-
-    const lerp = (a, b, t) => a + (b - a) * t;
-
-    const tick = () => {
-      ringX = lerp(ringX, dotX, 0.1);
-      ringY = lerp(ringY, dotY, 0.1);
-      ring.style.transform = `translate(${ringX}px, ${ringY}px)`;
-      rafId = requestAnimationFrame(tick);
-    };
-    rafId = requestAnimationFrame(tick);
-
-    const onMove = (e) => {
-      dotX = e.clientX;
-      dotY = e.clientY;
-      dot.style.transform = `translate(${dotX}px, ${dotY}px)`;
-    };
-    const onOver = (e) => {
-      if (e.target.closest("a, button, [role='button'], label")) ring.classList.add("is-hovering");
-    };
-    const onOut = (e) => {
-      if (e.target.closest("a, button, [role='button'], label")) ring.classList.remove("is-hovering");
-    };
-    const onLeave = () => { dot.style.opacity = "0"; ring.style.opacity = "0"; };
-    const onEnter = () => { dot.style.opacity = "1"; ring.style.opacity = "1"; };
-
-    document.addEventListener("mousemove", onMove);
-    document.addEventListener("mouseover", onOver);
-    document.addEventListener("mouseout", onOut);
-    document.addEventListener("mouseleave", onLeave);
-    document.addEventListener("mouseenter", onEnter);
-
-    return () => {
-      cancelAnimationFrame(rafId);
-      document.removeEventListener("mousemove", onMove);
-      document.removeEventListener("mouseover", onOver);
-      document.removeEventListener("mouseout", onOut);
-      document.removeEventListener("mouseleave", onLeave);
-      document.removeEventListener("mouseenter", onEnter);
-      dot.remove();
-      ring.remove();
-    };
-  }, [shouldReduceMotion]);
-}
-
 function AppShell() {
   const location = useLocation();
   const shouldReduceMotion = useReducedMotion();
-  usePremiumCursor();
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
@@ -320,7 +263,6 @@ function AppShell() {
 
   return (
     <div className="site-shell" data-theme={currentTheme}>
-      <div aria-hidden="true" className="site-noise-overlay" />
       <motion.div className="scroll-progress-bar" style={{ scaleX }} />
       <ScrollToTop />
       <header className={`topbar${isScrolled ? " is-scrolled" : ""}`}>
