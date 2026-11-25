@@ -27,7 +27,7 @@ const fieldPhotos = [
 
 const findAward = (title) => awardAssets.find((award) => award.title === title);
 
-// Each group shares one photo of the awards together, so related awards read as one moment.
+// The two 2026 awards were presented together, so they share one card and one photo.
 const awardGroups = [
   {
     titles: ["ESOP Ownership Achievement Award", "Outstanding Contribution Award"],
@@ -36,15 +36,19 @@ const awardGroups = [
     alt: "The ESOP Ownership Achievement certificate and Outstanding Contribution trophy displayed together."
   },
   {
-    titles: ["Employee of the Year (2023)", "Key Contributor Award", "Longevity Award"],
-    label: "Employee of the Year, Key Contributor and Longevity",
-    photo: { from: "Key Contributor Award", index: 0 },
-    alt: "The Employee of the Year trophy with the Key Contributor and Longevity awards on one table."
+    titles: ["Employee of the Year (2023)"],
+    label: "Employee of the Year",
+    photo: { from: "Employee of the Year (2023)", index: 0 }
+  },
+  {
+    titles: ["Key Contributor Award"],
+    label: "Key Contributor Award",
+    photo: { from: "Key Contributor Award", index: 0 }
   }
 ].map((group) => {
   const awards = group.titles.map(findAward).filter(Boolean);
-  const src = findAward(group.photo.from)?.images?.[group.photo.index]?.src;
-  return { ...group, awards, src, date: awards[0]?.date };
+  const image = findAward(group.photo.from)?.images?.[group.photo.index];
+  return { ...group, awards, src: image?.src, alt: group.alt || image?.alt || group.label, date: awards[0]?.date };
 }).filter((group) => group.src && group.awards.length);
 
 const featuredQuote = profile.recommendations.find(({ name }) => name === "Preet Saxena") || profile.recommendations[0];
@@ -128,7 +132,7 @@ function Recognition() {
                 <img src={encodeURI(group.src)} alt={group.alt} loading="lazy" decoding="async" />
               </span>
               <strong>{group.label}</strong>
-              <span>{group.date} · {group.awards.length} awards</span>
+              <span>{group.awards.length > 1 ? `${group.date} · ${group.awards.length} awards` : group.date}</span>
             </Link>
           </li>
         ))}
