@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { QuoteMark, VerifyCircle } from "../components/icons.jsx";
-import { MotionCard, MotionGroup, Reveal, handleCardMouseMove } from "../components/shared.jsx";
+import { MotionCard, MotionGroup, Reveal } from "../components/shared.jsx";
 import { profile } from "../data/profile.js";
 import { itemReveal } from "../lib/motion.js";
 
@@ -103,7 +103,6 @@ export default function RecommendationsPage() {
           className="reference-lead-quote glass-card spotlight-card"
           priority
           immediate
-          onMouseMove={handleCardMouseMove}
         >
           <div className="recommendation-card-header">
             <RecommenderAvatar rec={leadRecommendation} senior={isSeniorRole(leadRecommendation.role)} />
@@ -134,7 +133,6 @@ export default function RecommendationsPage() {
         {sapnaRecommendation && (
           <MotionCard
             className="reference-lead-quote glass-card spotlight-card"
-            onMouseMove={handleCardMouseMove}
           >
             <div className="recommendation-card-header">
               <RecommenderAvatar rec={sapnaRecommendation} senior={isSeniorRole(sapnaRecommendation.role)} />
@@ -154,7 +152,6 @@ export default function RecommendationsPage() {
             <motion.article
               className="reference-supporting-quote glass-card spotlight-card"
               variants={itemReveal}
-              onMouseMove={handleCardMouseMove}
               key={rec.name}
             >
               <QuoteMark className="recommendation-quote-icon" size={36} />
@@ -184,7 +181,6 @@ export default function RecommendationsPage() {
               <motion.article
                 className="glass-card spotlight-card"
                 variants={itemReveal}
-                onMouseMove={handleCardMouseMove}
                 key={signal.label}
               >
                 <strong>{signal.value}</strong>
@@ -227,7 +223,6 @@ export default function RecommendationsPage() {
               isSeniorRole(rec.role) ? "reference-archive-row--highlighted" : ""
             ].filter(Boolean).join(" ")}
             variants={itemReveal}
-            onMouseMove={handleCardMouseMove}
             key={rec.name}
           >
             <div className="reference-archive-row__meta">

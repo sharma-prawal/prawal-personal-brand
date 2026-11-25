@@ -18,9 +18,7 @@ import { CheckCircleMark, DiagArrow, DocMark, DownloadMark, NodeMark, StarMark, 
 import { getDirectContact, profile } from "../data/profile.js";
 import { imageAlt, imageCaption, imageSrc } from "../data/imageMetadata.js";
 import { Button } from "./ui/button.jsx";
-import {
-  cardHover,
-  fadeUp,
+import { fadeUp,
   itemReveal,
   premiumEase,
   stagger,
@@ -208,7 +206,6 @@ export function MotionCard({ className, children, priority = false, immediate = 
       variants={shouldReduceMotion || priority || immediate ? undefined : variant}
       initial={immediate ? false : undefined}
       transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.56, ease: premiumEase }}
-      whileHover={shouldReduceMotion ? undefined : cardHover}
       whileTap={shouldReduceMotion ? undefined : tapPress}
       {...props}
     >
@@ -474,7 +471,7 @@ export function LinkedInButton({ compact = false }) {
     </Button>
   );
 
-  return compact ? button : <Magnetic>{button}</Magnetic>;
+  return button;
 }
 
 export function EmailLinkButton() {

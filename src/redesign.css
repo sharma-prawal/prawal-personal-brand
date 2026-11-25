@@ -747,3 +747,175 @@
   border-left-color: rgb(var(--accent-text-rgb));
   color: var(--ink);
 }
+
+/* ─── Site footer ────────────────────────────────────────────────────────── */
+.site-footer {
+  width: min(1200px, calc(100vw - 40px));
+  margin: clamp(80px, 10vw, 128px) auto 0;
+  border-top: 1px solid var(--line);
+  color: var(--ink-soft);
+}
+
+.site-footer__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 1.1fr);
+  gap: clamp(32px, 5vw, 72px);
+  padding-block: 56px;
+}
+
+.footer-brand strong {
+  display: block;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 500;
+}
+
+.footer-brand p {
+  margin: 6px 0 0;
+  font-size: 0.92rem;
+}
+
+.footer-nav {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.footer-nav h2,
+.direct-contact-panel__header {
+  margin: 0 0 12px;
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.footer-nav a {
+  display: block;
+  width: fit-content;
+  padding: 4px 0;
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+  transition: color 0.15s var(--ease);
+}
+
+.footer-nav a:hover {
+  color: var(--ink);
+}
+
+.direct-contact-panel__note {
+  margin: 0 0 14px;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.direct-contact-panel__form {
+  display: grid;
+  gap: 10px;
+}
+
+.direct-contact-panel__form label {
+  display: grid;
+  gap: 4px;
+}
+
+.direct-contact-panel__form label span {
+  font-size: 0.82rem;
+}
+
+.direct-contact-panel__form input {
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--ink);
+  font: 400 0.92rem var(--font-sans);
+}
+
+.direct-contact-panel__form input::placeholder {
+  color: var(--ink-muted);
+}
+
+.direct-contact-panel__form input:focus-visible {
+  outline: 2px solid rgb(var(--accent-text-rgb));
+  outline-offset: 1px;
+  border-color: transparent;
+}
+
+.direct-contact-panel__form button,
+.direct-contact-panel__row button {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--ink);
+  font: 500 0.88rem var(--font-sans);
+  cursor: pointer;
+  transition: background-color 0.15s var(--ease);
+}
+
+.direct-contact-panel__form button:hover:not(:disabled),
+.direct-contact-panel__row button:hover {
+  background: var(--surface-strong);
+}
+
+.direct-contact-panel__form button:disabled {
+  color: var(--ink-muted);
+  cursor: not-allowed;
+}
+
+.direct-contact-panel__revealed {
+  display: grid;
+  gap: 8px;
+}
+
+.direct-contact-panel__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--ink);
+  font-size: 0.92rem;
+}
+
+.direct-contact-panel__row button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 10px;
+}
+
+.direct-contact-panel__revealed small {
+  font-size: 0.82rem;
+}
+
+.site-footer__base {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 0 32px;
+  border-top: 1px solid var(--line);
+  font-size: 0.85rem;
+}
+
+.site-footer__base a:hover {
+  color: var(--ink);
+}
+
+@media (max-width: 900px) {
+  .site-footer__inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* keep the LinkedIn link clear of the floating chat button */
+  .site-footer__base {
+    padding-right: 76px;
+    padding-bottom: 40px;
+  }
+}

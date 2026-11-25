@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Grid2X2, List, Plus, Search } from "lucide-react";
 import { VerifyCircle } from "../components/icons.jsx";
-import { MotionCard, MotionGroup, PageFrame, ProofImage, Reveal, proxyToProofImage, handleCardMouseMove } from "../components/shared.jsx";
+import { MotionCard, MotionGroup, PageFrame, ProofImage, Reveal, proxyToProofImage } from "../components/shared.jsx";
 import { certificationAssets, featuredCertificationAssets } from "../data/certificationAssets.js";
 import { itemReveal, premiumEase } from "../lib/motion.js";
 
@@ -60,7 +60,6 @@ function OfficialCredentialCard({ cert }) {
       role="button"
       tabIndex={0}
       onClick={proxyToProofImage}
-      onMouseMove={handleCardMouseMove}
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") {
           event.preventDefault();
@@ -96,7 +95,6 @@ function CertificationCard({ cert, index, mode }) {
       className={`certificate-card certificate-card--${mode} glass-card spotlight-card`}
       immediate
       onClick={(event) => { const btn = event.currentTarget.querySelector(".proof-image-button"); if (btn) btn.click(); }}
-      onMouseMove={handleCardMouseMove}
       role="button"
       tabIndex={0}
     >

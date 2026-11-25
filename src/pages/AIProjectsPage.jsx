@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { DocCheck, DiagArrow, WorkMark, CheckCircleMark, NodeMark, VerifyCircle, StarMark } from "../components/icons.jsx";
-import { MiniCase, MotionCard, MotionGroup, PageFrame, ProofImage, ProofIndex, Reveal, MotionRouterLink, handleCardMouseMove } from "../components/shared.jsx";
+import { MiniCase, MotionCard, MotionGroup, PageFrame, ProofImage, ProofIndex, Reveal, MotionRouterLink } from "../components/shared.jsx";
 import { imageAlt, imageCaption, imageSrc } from "../data/imageMetadata.js";
 import { aiProjects } from "../data/showcase.js";
 import { aiProjectsWithSlugs, professionalCasesWithSlugs } from "../data/derived.js";
@@ -22,7 +22,6 @@ function ProjectFeaturedBuild({ project }) {
       className="project-featured-build glass-card spotlight-card"
       priority
       immediate
-      onMouseMove={handleCardMouseMove}
     >
       <div className="project-featured-copy">
         <div className="project-masthead">
@@ -37,12 +36,12 @@ function ProjectFeaturedBuild({ project }) {
           <strong>{project.problem}</strong>
         </div>
         <div className="project-actions">
-          <MotionRouterLink className="project-link project-link--case" to={`/ai-projects/${project.slug}`} whileHover={{ y: -2, scale: 1.01 }} whileTap={tapPress} transition={{ duration: 0.22, ease: premiumEase }}>
+          <MotionRouterLink className="project-link project-link--case" to={`/ai-projects/${project.slug}`} whileTap={tapPress} transition={{ duration: 0.22, ease: premiumEase }}>
             <DocCheck size={15} />
             <span>Read case study</span>
           </MotionRouterLink>
           {project.link ? (
-            <motion.a className="project-link" href={project.link} target={project.link.startsWith("/") ? undefined : "_blank"} rel={project.link.startsWith("/") ? undefined : "noreferrer"} whileHover={{ y: -2, scale: 1.01 }} whileTap={tapPress} transition={{ duration: 0.22, ease: premiumEase }}>
+            <motion.a className="project-link" href={project.link} target={project.link.startsWith("/") ? undefined : "_blank"} rel={project.link.startsWith("/") ? undefined : "noreferrer"} whileTap={tapPress} transition={{ duration: 0.22, ease: premiumEase }}>
               <DiagArrow size={15} />
               <span>{project.linkLabel || "Open evidence"}</span>
             </motion.a>
@@ -67,7 +66,6 @@ function ProjectPortfolioCard({ project, index }) {
     <MotionCard
       className={["project-portfolio-card glass-card spotlight-card", isMobileApp ? "project-portfolio-card--mobile" : ""].filter(Boolean).join(" ")}
       immediate
-      onMouseMove={handleCardMouseMove}
     >
       <div className="project-portfolio-media">
         {isMobileApp ? (
@@ -99,12 +97,12 @@ function ProjectPortfolioCard({ project, index }) {
           <span>{project.outcome}</span>
         </div>
         <div className="project-actions">
-          <MotionRouterLink className="project-link project-link--case" to={`/ai-projects/${project.slug}`} whileHover={{ y: -2, scale: 1.01 }} whileTap={tapPress} transition={{ duration: 0.22, ease: premiumEase }}>
+          <MotionRouterLink className="project-link project-link--case" to={`/ai-projects/${project.slug}`} whileTap={tapPress} transition={{ duration: 0.22, ease: premiumEase }}>
             <DocCheck size={15} />
             <span>Case study</span>
           </MotionRouterLink>
           {project.link ? (
-            <motion.a className="project-link" href={project.link} target={project.link.startsWith("/") ? undefined : "_blank"} rel={project.link.startsWith("/") ? undefined : "noreferrer"} whileHover={{ y: -2, scale: 1.01 }} whileTap={tapPress} transition={{ duration: 0.22, ease: premiumEase }}>
+            <motion.a className="project-link" href={project.link} target={project.link.startsWith("/") ? undefined : "_blank"} rel={project.link.startsWith("/") ? undefined : "noreferrer"} whileTap={tapPress} transition={{ duration: 0.22, ease: premiumEase }}>
               <DiagArrow size={15} />
               <span>{project.linkLabel || "Open"}</span>
             </motion.a>
@@ -122,7 +120,6 @@ function CareerCaseStudyCard({ project, featured = false }) {
   return (
     <article
       className={["career-case-card glass-card spotlight-card", featured ? "career-case-card--featured" : ""].filter(Boolean).join(" ")}
-      onMouseMove={handleCardMouseMove}
     >
       <div className="career-case-card__top">
         <span>{project.evidenceMode}</span>
@@ -151,7 +148,7 @@ function CareerCaseStudyCard({ project, featured = false }) {
           <p>{project.outcome}</p>
         </div>
       ) : null}
-      <MotionRouterLink className="professional-case-link" to={`/ai-projects/professional/${project.slug}`} whileHover={{ y: -2, scale: 1.01 }} whileTap={tapPress} transition={{ duration: 0.22, ease: premiumEase }}>
+      <MotionRouterLink className="professional-case-link" to={`/ai-projects/professional/${project.slug}`} whileTap={tapPress} transition={{ duration: 0.22, ease: premiumEase }}>
         <DocCheck size={15} />
         <span>Open dossier</span>
       </MotionRouterLink>
@@ -243,7 +240,6 @@ export default function AIProjectsPage() {
           <motion.article
             className="project-domain-card glass-card spotlight-card"
             variants={itemReveal}
-            onMouseMove={handleCardMouseMove}
             key={domain.label}
           >
             <strong>{domain.value}</strong>

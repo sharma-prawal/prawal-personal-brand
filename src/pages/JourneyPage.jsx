@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { animate, motion, useInView, useReducedMotion } from "framer-motion";
-import { MotionGroup, Reveal, handleCardMouseMove } from "../components/shared.jsx";
+import { MotionGroup, Reveal } from "../components/shared.jsx";
 import { profile } from "../data/profile.js";
-import { cardHover, itemReveal, premiumEase, slideLeft, slideRight, splitStagger, tapPress } from "../lib/motion.js";
+import { itemReveal, premiumEase, slideLeft, slideRight, splitStagger, tapPress } from "../lib/motion.js";
 
 // Helper to format metric display strings by wrapping symbols for precise CSS spacing
 function formatDisplay(str) {
@@ -190,10 +190,8 @@ export default function JourneyPage() {
                     <motion.article
                       className={["successive-role glass-card spotlight-card", isCurrent ? "successive-role--current" : ""].filter(Boolean).join(" ")}
                       variants={itemReveal}
-                      whileHover={cardHover}
                       whileTap={tapPress}
                       transition={{ duration: 0.42, ease: premiumEase }}
-                      onMouseMove={handleCardMouseMove}
                     >
                       <div className="successive-role-header">
                         <div>

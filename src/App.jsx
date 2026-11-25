@@ -1,8 +1,7 @@
 import React, { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Link, NavLink, Navigate, Route, Routes, useLocation } from "react-router-dom";
-import { Check, ChevronDown, ChevronLeft, ChevronRight, Copy, Linkedin, LockKeyhole, Menu, X } from "lucide-react";
-import { LocationDot } from "./components/icons.jsx";
+import { Check, ChevronDown, ChevronLeft, ChevronRight, Copy, Linkedin, Menu, X } from "lucide-react";
 import { LinkedInButton, ScrollToTop, downloadResume, generateExecutiveProfile } from "./components/shared.jsx";
 import { getDirectContact, profile } from "./data/profile.js";
 import { pageEntrance, exitEase, premiumEase } from "./lib/motion.js";
@@ -98,10 +97,8 @@ function DirectContactPanel() {
 
   return (
     <div className="direct-contact-panel" aria-label="Protected direct contact panel">
-      <div className="direct-contact-panel__header">
-        <LockKeyhole size={14} aria-hidden="true" />
-        <span>Direct contact</span>
-      </div>
+      <h2 className="direct-contact-panel__header">Email or phone</h2>
+      <p className="direct-contact-panel__note">Add your name and a line of context to see my details.</p>
       {!revealed ? (
         <form
           className="direct-contact-panel__form"
@@ -415,38 +412,35 @@ function AppShell() {
       </main>
 
       <footer className="site-footer">
-        <div className="footer-brand">
-          <span className="footer-name">{profile.name}</span>
-          <span className="footer-title">Engineering Leader · AI-Enabled Engineering</span>
-          <p className="footer-thesis">Shaping the intersection of software craftsmanship and machine intelligence.</p>
-          <div className="footer-location">
-            <LocationDot size={13} />
-            <span>{profile.location}</span>
+        <div className="site-footer__inner">
+          <div className="footer-brand">
+            <strong>{profile.name}</strong>
+            <p>Engineering leader · {profile.location}</p>
+          </div>
+          <nav className="footer-nav" aria-label="Footer">
+            <div>
+              <h2>About</h2>
+              <Link to="/">Home</Link>
+              <Link to="/journey">Career</Link>
+              <Link to="/recommendations">Recommendations</Link>
+            </div>
+            <div>
+              <h2>Work</h2>
+              <Link to="/ai-projects">Projects</Link>
+              <Link to="/awards">Awards</Link>
+              <Link to="/certifications">Certifications</Link>
+              <Link to="/conferences">Conferences</Link>
+              <Link to="/highlights">Highlights</Link>
+            </div>
+          </nav>
+          <div className="footer-contact">
+            <DirectContactPanel />
           </div>
         </div>
-        <div className="footer-nav-cols">
-          <div className="footer-nav-col">
-            <span className="footer-col-label">Narrative</span>
-            <Link to="/">Executive</Link>
-            <Link to="/journey">Journey</Link>
-            <Link to="/recommendations">Recommendations</Link>
-          </div>
-          <div className="footer-nav-col">
-            <span className="footer-col-label">Portfolio</span>
-            <Link to="/awards">Awards</Link>
-            <Link to="/certifications">Certifications</Link>
-            <Link to="/ai-projects">Projects</Link>
-            <Link to="/conferences">Conferences</Link>
-            <Link to="/highlights">Highlights</Link>
-          </div>
-        </div>
-        <div className="footer-contact">
-          <DirectContactPanel />
-        </div>
-        <small className="footer-copy">
+        <div className="site-footer__base">
           <span>&copy; {CURRENT_YEAR} {profile.name}</span>
-          <span>Engineering Leader · AI-Enabled Delivery</span>
-        </small>
+          <a href={profile.contact.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
+        </div>
       </footer>
 
       <Suspense fallback={<AIBrandChatbotFallback />}>

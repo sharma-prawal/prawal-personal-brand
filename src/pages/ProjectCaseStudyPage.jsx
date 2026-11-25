@@ -99,7 +99,7 @@ export default function ProjectCaseStudyPage() {
             <ProjectEvidence project={project} />
             <div className="project-actions">
               {project.link ? (
-                <motion.a className="project-link" href={project.link} target={project.link.startsWith("/") ? undefined : "_blank"} rel={project.link.startsWith("/") ? undefined : "noreferrer"} whileHover={{ y: -2, scale: 1.01 }} whileTap={tapPress} transition={{ duration: 0.22, ease: premiumEase }}>
+                <motion.a className="project-link" href={project.link} target={project.link.startsWith("/") ? undefined : "_blank"} rel={project.link.startsWith("/") ? undefined : "noreferrer"} whileTap={tapPress} transition={{ duration: 0.22, ease: premiumEase }}>
                   <DiagArrow size={15} />
                   <span>{project.linkLabel || "Open evidence"}</span>
                 </motion.a>

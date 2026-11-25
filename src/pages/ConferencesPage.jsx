@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ImageCarousel, MotionCard, MotionGroup, PageFrame, ProofImage, Reveal, handleCardMouseMove } from "../components/shared.jsx";
+import { ImageCarousel, MotionCard, MotionGroup, PageFrame, ProofImage, Reveal } from "../components/shared.jsx";
 import { imageAlt, imageCaption, imageSrc } from "../data/imageMetadata.js";
 import { conferenceAssets } from "../data/mediaAssets.js";
 import { itemReveal } from "../lib/motion.js";
@@ -89,7 +89,6 @@ function ConferenceCard({ moment, index, priority }) {
         "glass-card spotlight-card"
       ].join(" ")}
       priority={priority}
-      onMouseMove={handleCardMouseMove}
     >
       <div className="conference-media-gallery">
         <ImageCarousel
@@ -138,7 +137,6 @@ function ConferenceJudgmentBlock({ items }) {
           <article
             key={item.title}
             className="glass-card spotlight-card"
-            onMouseMove={handleCardMouseMove}
           >
             <strong>{item.title}</strong>
             <span>{item.text}</span>

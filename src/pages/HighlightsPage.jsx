@@ -111,8 +111,8 @@ function GlobalRoutesMap() {
             <stop offset="100%" stopColor="var(--gold)" stopOpacity="0" />
           </radialGradient>
           <radialGradient id="glowPersonal" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="rgba(180,210,230,0.35)" stopOpacity="1" />
-            <stop offset="100%" stopColor="rgba(180,210,230,0)" stopOpacity="0" />
+            <stop offset="0%" stopColor="rgba(163, 158, 149, 0.35)" stopOpacity="1" />
+            <stop offset="100%" stopColor="rgba(163, 158, 149, 0)" stopOpacity="0" />
           </radialGradient>
           <linearGradient id="routeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="var(--gold)" />
@@ -120,8 +120,8 @@ function GlobalRoutesMap() {
             <stop offset="100%" stopColor="rgba(255,255,255,0.4)" />
           </linearGradient>
           <linearGradient id="routeGradPersonal" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="rgba(180,210,230,0.85)" />
-            <stop offset="100%" stopColor="rgba(180,210,230,0.35)" />
+            <stop offset="0%" stopColor="rgba(163, 158, 149, 0.85)" />
+            <stop offset="100%" stopColor="rgba(163, 158, 149, 0.35)" />
           </linearGradient>
         </defs>
         <g stroke="rgba(255,255,255,0.03)" strokeWidth="0.5">
@@ -156,8 +156,8 @@ function GlobalRoutesMap() {
             <g key={`dot-${r.id}`} className="route-dot route-dot--professional">
               <circle cx={r.x} cy={r.y} r="10" fill="url(#glow)" className="pulse-glow" />
               <circle cx={r.x} cy={r.y} r="3.5" fill="var(--gold)" />
-              <rect x={rx - 3} y={ry} width={textWidth + 6} height={textHeight} rx="3" fill="rgba(40, 30, 14, 0.75)" stroke="rgba(209,176,106,0.42)" strokeWidth="0.5" />
-              <text x={r.x + r.dx} y={r.y + r.dy} fill="rgba(209,176,106,0.92)" fontSize="9" fontWeight="900" fontFamily="var(--font-sans)" letterSpacing="0.04em" textAnchor={r.dx < 0 ? "end" : "start"}>{r.label}</text>
+              <rect x={rx - 3} y={ry} width={textWidth + 6} height={textHeight} rx="3" fill="rgba(22, 21, 20, 0.75)" stroke="rgba(127, 194, 173, 0.42)" strokeWidth="0.5" />
+              <text x={r.x + r.dx} y={r.y + r.dy} fill="rgba(127, 194, 173, 0.92)" fontSize="9" fontWeight="900" fontFamily="var(--font-sans)" letterSpacing="0.04em" textAnchor={r.dx < 0 ? "end" : "start"}>{r.label}</text>
             </g>
           );
         })}
@@ -169,16 +169,16 @@ function GlobalRoutesMap() {
           return (
             <g key={`dot-${r.id}`} className="route-dot route-dot--personal">
               <circle cx={r.x} cy={r.y} r="9" fill="url(#glowPersonal)" className="pulse-glow" />
-              <circle cx={r.x} cy={r.y} r="2.5" fill="rgba(190,215,235,0.9)" />
-              <rect x={rx - 3} y={ry} width={textWidth + 6} height={textHeight} rx="3" fill="rgba(14, 22, 30, 0.72)" stroke="rgba(180,210,230,0.32)" strokeWidth="0.5" />
-              <text x={r.x + r.dx} y={r.y + r.dy} fill="rgba(210,230,245,0.88)" fontSize="9" fontWeight="600" fontFamily="var(--font-sans)" letterSpacing="0.03em" textAnchor={r.dx < 0 ? "end" : "start"}>{r.label}</text>
+              <circle cx={r.x} cy={r.y} r="2.5" fill="rgba(163, 158, 149, 0.9)" />
+              <rect x={rx - 3} y={ry} width={textWidth + 6} height={textHeight} rx="3" fill="rgba(22, 21, 20, 0.72)" stroke="rgba(163, 158, 149, 0.32)" strokeWidth="0.5" />
+              <text x={r.x + r.dx} y={r.y + r.dy} fill="rgba(236, 232, 225, 0.88)" fontSize="9" fontWeight="600" fontFamily="var(--font-sans)" letterSpacing="0.03em" textAnchor={r.dx < 0 ? "end" : "start"}>{r.label}</text>
             </g>
           );
         })}
-        <circle cx={center.x} cy={center.y} r="14" fill="rgba(209, 176, 106, 0.18)" />
+        <circle cx={center.x} cy={center.y} r="14" fill="rgba(127, 194, 173, 0.18)" />
         <circle cx={center.x} cy={center.y} r="4" fill="#fff" />
         <circle cx={center.x} cy={center.y} r="2" fill="var(--gold)" />
-        <rect x={center.x - 32} y={center.y + 11} width={64} height={13} rx="3" fill="rgba(15, 20, 18, 0.82)" stroke="rgba(209, 176, 106, 0.2)" strokeWidth="0.5" />
+        <rect x={center.x - 32} y={center.y + 11} width={64} height={13} rx="3" fill="rgba(22, 21, 20, 0.82)" stroke="rgba(127, 194, 173, 0.2)" strokeWidth="0.5" />
         <text x={center.x} y={center.y + 20} fill="var(--gold)" fontSize="10" fontWeight="900" fontFamily="var(--font-sans)" letterSpacing="0.08em" textAnchor="middle">{center.label}</text>
       </svg>
       <div className="global-routes-legend" aria-hidden="true">
