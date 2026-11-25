@@ -39,5 +39,5 @@ export const professionalCasesWithSlugs = profile.projects.map((project, index) 
   evidenceMode: project.evidence || "Resume-backed",
   access: project.access || "NDA-safe summary",
   signal: `${project.domain} | ${project.meta}`,
-  slug: projectSlug(project.name)
+  slug: project.slug || projectSlug(project.name)
 }));

@@ -1,5 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Prawal Sharma favicon">
-  <rect width="64" height="64" rx="13" fill="#2346c4" />
-  <path d="M13 46V18h9a7 7 0 0 1 0 14h-9" fill="none" stroke="#fff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" />
-  <path d="M50 18h-7a7 7 0 0 0 0 14h2a7 7 0 0 1 0 14h-8" fill="none" stroke="#fff" stroke-width="5.5" stroke-linecap="round" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Prawal Sharma">
+  <rect width="64" height="64" rx="14" fill="#1a6c5a" />
+  <text x="32" y="46" fill="#f4f1ea" font-family="Georgia, 'Times New Roman', serif" font-size="40" text-anchor="middle">P</text>
 </svg>

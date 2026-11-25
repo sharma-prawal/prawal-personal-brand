@@ -1,9 +1,4 @@
-@font-face {
-  font-family: Geist;
-  src: url("fonts/geist-variable.woff2") format("woff2");
-  font-weight: 100 900;
-  font-display: swap;
-}
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap");
 
 @page {
   size: A4;
@@ -12,13 +7,14 @@
 
 :root {
   color-scheme: light;
-  --ink: #181c22;
-  --muted: #474f5b;
-  --paper: #f7f7f2;
-  --accent: #2346c4;
-  --tint: #e9edf9;
-  --line: #d5d9dd;
-  font: 16px/1.5 Geist, system-ui, sans-serif;
+  --ink: #17150f;
+  --muted: #4f4a42;
+  --paper: #f4f1ea;
+  --accent: #155e4e;
+  --tint: #e5ece6;
+  --line: #d8d2c6;
+  --display: "Newsreader", Georgia, serif;
+  font: 16px/1.5 "IBM Plex Sans", system-ui, sans-serif;
 }
 
 * { box-sizing: border-box; }
@@ -38,26 +34,27 @@ main {
 h1, h2, h3, p, ul { margin: 0; }
 
 h1, h2, h3 {
+  font-family: var(--display);
   line-height: 1.12;
   text-wrap: balance;
 }
 
 h1 {
   max-width: 17ch;
-  font-size: clamp(1.85rem, 6.2vw, 3.5rem);
-  font-weight: 640;
-  letter-spacing: -0.04em;
+  font-size: clamp(2rem, 6.2vw, 3.6rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
 }
 
 h2 {
-  font-size: 1.35rem;
-  font-weight: 620;
-  letter-spacing: -0.025em;
+  font-size: 1.5rem;
+  font-weight: 400;
+  letter-spacing: -0.01em;
 }
 
 h3 {
-  font-size: 1rem;
-  font-weight: 620;
+  font-size: 1.15rem;
+  font-weight: 500;
 }
 
 p, li { color: var(--muted); }
@@ -75,7 +72,7 @@ a:focus-visible {
 .eyebrow, .label {
   color: var(--accent);
   font-size: 0.84rem;
-  font-weight: 620;
+  font-weight: 600;
 }
 
 .eyebrow {
@@ -166,7 +163,9 @@ footer {
 .metric strong {
   display: block;
   color: var(--accent);
-  font-size: 1.25rem;
+  font-family: var(--display);
+  font-size: 1.6rem;
+  font-weight: 400;
   font-variant-numeric: tabular-nums;
 }
 

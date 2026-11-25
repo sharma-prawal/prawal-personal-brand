@@ -5,12 +5,13 @@ import SystemFlowPreview from "../components/SystemFlowPreview.jsx";
 import { DownloadMark } from "../components/icons.jsx";
 import {
   ExecutiveProfileDownloadButton,
+  KeepRanges,
   LinkedInButton,
   ProofImage,
   ResumeDownloadButton
 } from "../components/shared.jsx";
 import { professionalCasesWithSlugs } from "../data/derived.js";
-import { conferenceAssets, professionalHighlights, profilePortrait } from "../data/mediaAssets.js";
+import { awardAssets, conferenceAssets, professionalHighlights, profilePortrait } from "../data/mediaAssets.js";
 import { profile } from "../data/profile.js";
 
 const featuredWork = professionalCasesWithSlugs.filter(({ preview }) => preview);
@@ -23,6 +24,10 @@ const fieldPhotos = [
   ...photo,
   image: records.find((record) => record.title === title)?.images?.[photoIndex]
 })).filter(({ image }) => image);
+
+const recentAwards = ["ESOP Ownership Achievement Award", "Outstanding Contribution Award", "Employee of the Year (2023)", "Key Contributor Award"]
+  .map((title) => awardAssets.find((award) => award.title === title))
+  .filter(Boolean);
 
 const featuredQuote = profile.recommendations.find(({ name }) => name === "Preet Saxena") || profile.recommendations[0];
 
@@ -38,9 +43,7 @@ function Hero() {
           <a className="primary-link" href="#selected-work">
             View selected work <ArrowDown size={16} aria-hidden="true" />
           </a>
-          <a className="home-link" href={profile.contact.linkedin} target="_blank" rel="noreferrer">
-            LinkedIn <ArrowUpRight size={16} aria-hidden="true" />
-          </a>
+          <ResumeDownloadButton />
         </div>
       </div>
       <figure className="home-hero__portrait">
@@ -67,13 +70,14 @@ function SelectedWork() {
       </header>
       <div className="home-work__grid">
         {featuredWork.map((project) => {
-          const { title = project.name, result, diagram } = project.preview;
+          const { result, diagram } = project.preview;
+          const title = project.name;
           return (
             <article className="home-case" key={project.slug}>
               <div className="home-case__copy">
                 <h3>{title}</h3>
                 <p className="home-case__role">{project.role}</p>
-                <p className="home-case__result">{result}</p>
+                <p className="home-case__result"><KeepRanges text={result} /></p>
               </div>
               <SystemFlowPreview diagram={diagram} />
               <Link className="home-link" to={`/ai-projects/professional/${project.slug}`} aria-label={`Read the ${title} case study`}>
@@ -83,6 +87,29 @@ function SelectedWork() {
           );
         })}
       </div>
+    </section>
+  );
+}
+
+function Recognition() {
+  if (!recentAwards.length) return null;
+  return (
+    <section className="home-recognition" aria-labelledby="home-recognition-title">
+      <header className="home-heading">
+        <h2 id="home-recognition-title">Recognition</h2>
+        <Link className="home-link" to="/awards">All {awardAssets.length} awards <ArrowRight size={16} aria-hidden="true" /></Link>
+      </header>
+      <p className="home-recognition__intro">
+        {awardAssets.length} awards in ten years at Successive Digital, for delivery, client work and long-term ownership.
+      </p>
+      <ul className="home-recognition__list">
+        {recentAwards.map((award) => (
+          <li key={award.title}>
+            <strong>{award.title.replace(/ \(\d{4}\)$/, "")}</strong>
+            <span>{award.date}</span>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }
@@ -196,6 +223,7 @@ export default function ExecutivePage() {
       <Hero />
       <SelectedWork />
       <PullQuote />
+      <Recognition />
       <FieldStrip />
       <Framework />
       <Writing />

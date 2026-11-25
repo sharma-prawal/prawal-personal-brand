@@ -1,7 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { PageFrame, ProofIndex, RecoveryPage, Reveal } from "../components/shared.jsx";
+import { KeepRanges, PageFrame, ProofIndex, RecoveryPage, Reveal } from "../components/shared.jsx";
 import { professionalCasesWithSlugs } from "../data/derived.js";
 
 // Detailed system flow for the client case study.
@@ -82,13 +82,13 @@ export default function ProfessionalCaseStudyPage() {
               {project.points.map((point) => <li key={point}>{point}</li>)}
             </ul>
             {project.systems?.length ? (
-              <p className="case-modules"><span>Modules</span> {project.systems.join(" · ")}</p>
+              <p className="case-modules case-modules--after-list"><span>Modules</span> {project.systems.join(" · ")}</p>
             ) : null}
           </Section>
 
           {showOutcome && (
             <Section id="case-outcome" title="Outcome">
-              <p className="case-outcome">{project.outcome}</p>
+              <p className="case-outcome"><KeepRanges text={project.outcome} /></p>
             </Section>
           )}
 

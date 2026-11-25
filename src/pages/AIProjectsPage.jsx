@@ -60,10 +60,15 @@ function FlagshipCase({ project }) {
         {project.team ? <span>{project.team}</span> : null}
       </div>
       <div className="projects-case__body">
-        <h3>{project.preview?.title || project.name}</h3>
+        <h3>{project.name}</h3>
         <p className="projects-case__headline">{project.preview?.result || project.headline}</p>
-        {project.preview && <SystemFlowPreview diagram={project.preview.diagram} />}
-        <TextLink to={`/ai-projects/professional/${project.slug}`}>Read the case</TextLink>
+        <div className="projects-case__proof">
+          {project.preview && <SystemFlowPreview diagram={project.preview.diagram} />}
+          <div className="projects-case__outcome-wrap">
+            {project.outcome ? <p className="projects-case__outcome">{project.outcome}</p> : null}
+            <TextLink to={`/ai-projects/professional/${project.slug}`}>Read the case</TextLink>
+          </div>
+        </div>
       </div>
     </li>
   );
@@ -147,7 +152,8 @@ export default function AIProjectsPage() {
     <div data-theme="projects">
       <PageFrame
         className="projects-index-hero"
-        title="Projects"
+        eyebrow="Projects"
+        title="Client systems first, then the AI I build on my own time."
         intro="Client systems across payments, media, banking and operations, alongside independent AI and product builds."
       >
         <ProofIndex

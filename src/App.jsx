@@ -187,8 +187,8 @@ function AppShell() {
       <ScrollToTop />
       <header className={`topbar${isScrolled ? " is-scrolled" : ""}`}>
         <Link className="brand-lockup" to="/" aria-label="Prawal Sharma home">
-          <img src="/favicon.svg" alt="" width="32" height="32" />
           <strong>{profile.name}</strong>
+          <small>Engineering leader</small>
         </Link>
         <nav aria-label="Primary navigation" className="topbar-nav" ref={topNavRef}>
           {topNavItems.map((item) => {

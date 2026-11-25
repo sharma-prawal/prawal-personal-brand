@@ -5,7 +5,7 @@ export const profile = {
   profileUrl: "https://www.linkedin.com/in/sharma-prawal/",
   headline:
     "Technology Manager | AI-Driven Engineering Leader | Cloud & Scalable Systems | AWS | Azure | GCP Certified | Node.js | React | GraphQL",
-  shortHeadline: "Engineering leadership for reliable systems and practical AI.",
+  shortHeadline: "I lead engineering teams that ship faster with AI — without giving up reliability.",
   summary:
     "Engineering leader who ships: 160K+ daily banking transactions at 99.9% uptime, 20–30% AI-assisted productivity gains across global teams, and a zero-escalation track record across 10 years at Successive Digital.",
   atsSummary:
@@ -248,7 +248,8 @@ export const profile = {
         "Media teams get self-service reporting from 90+ sources without manual engineering, and a new source is live in 1–2 days."
     },
     {
-      name: "BIM / Enrollment & Transactions",
+      name: "ACH Payments Platform",
+      slug: "bim-enrollment-and-transactions",
       domain: "Fintech / banking",
       meta: "ACH payments, fraud workflows",
       role: "Team Lead to Engineering Manager",
@@ -257,7 +258,6 @@ export const profile = {
       featured: true,
       headline: "White-label ACH payments for a US bank, from enrollment to settlement.",
       preview: {
-        title: "ACH payments platform",
         result: "160K+ daily transactions at 99.9% uptime.",
         diagram: "banking-payments"
       },

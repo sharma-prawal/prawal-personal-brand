@@ -60,7 +60,8 @@ export default function ConferencesPage() {
   return (
     <div data-theme="conferences">
       <PageFrame
-        title="Conferences"
+        eyebrow="Conferences"
+        title="Industry events on AI, cloud and data."
         intro="Forums I attend to keep up with AI adoption, cloud modernisation and data platforms, and the business decisions behind them."
         className="conferences-page-hero event-index-hero"
       >

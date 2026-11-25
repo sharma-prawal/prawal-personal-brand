@@ -2,14 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-  font-family: "Geist";
-  src: url("/fonts/geist-variable.woff2") format("woff2");
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
-}
-
 /* ─── Custom scrollbar ───────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
@@ -27,20 +19,21 @@ svg.lucide {
 
 :root {
   color-scheme: light;
-  --ink-rgb: 24, 28, 34;
-  --fg-rgb: var(--ink-rgb);
-  --ink-soft-rgb: 71, 79, 91;
-  --accent-deep-rgb: 35, 70, 196;
-  --accent-rgb: 27, 53, 155;
-  --accent-text-rgb: var(--accent-deep-rgb);
+  /* ── Palette: warm paper, near-black ink, one green accent ───────────── */
+  --ink-rgb: 23, 21, 15;             /* primary text           */
+  --fg-rgb: var(--ink-rgb);          /* tints, hairlines, overlays on paper */
+  --ink-soft-rgb: 84, 79, 71;        /* secondary text, labels */
+  --accent-deep-rgb: 26, 108, 90;    /* accent fill (buttons, active nav) */
+  --accent-rgb: 21, 94, 78;          /* accent hover / rules              */
+  --accent-text-rgb: 21, 94, 78;     /* accent as text on paper           */
   --ink: rgb(var(--ink-rgb));
   --ink-soft: rgb(var(--ink-soft-rgb));
-  --ink-muted: #545d6a;
-  --paper: #f7f7f2;
-  --paper-deep: #edeee9;
-  --raised: #fdfdfa;
-  --paper-light: #efefe9;
-  --paper-light-mid: #e5e7e3;
+  --ink-muted: #615c53;
+  --paper: #f4f1ea;
+  --paper-deep: #ebe7de;
+  --raised: #fbfaf6;                 /* cards and panels on paper */
+  --paper-light: #ebe6db;
+  --paper-light-mid: #e2ddd1;
   --ink-on-light: var(--ink);
   --ink-soft-on-light: var(--ink-soft);
   --ink-muted-on-light: var(--ink-muted);
@@ -48,8 +41,8 @@ svg.lucide {
   --surface: rgba(var(--ink-rgb), 0.03);
   --surface-strong: rgba(var(--ink-rgb), 0.06);
   --panel: rgba(var(--ink-rgb), 0.04);
-  --line: rgba(var(--ink-rgb), 0.15);
-  --line-strong: rgba(var(--ink-rgb), 0.25);
+  --line: rgba(var(--ink-rgb), 0.13);
+  --line-strong: rgba(var(--ink-rgb), 0.24);
   --index-bg: var(--paper);
   --index-border: var(--line);
   --index-label: var(--theme-accent);
@@ -73,10 +66,10 @@ svg.lucide {
   --shadow-cinematic: 0 1px 2px rgba(23, 21, 15, 0.08);
   --radius: 6px;
   --max: 1440px;
-  --font-sans: "Geist", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-body: var(--font-sans);
-  --font-display: var(--font-sans);
-  --font-quote: "Newsreader", Georgia, serif;
+  --font-display: "Newsreader", "Source Serif 4", Georgia, "Iowan Old Style", serif;
+  --font-quote: var(--font-display);
   --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
   --type-hero: clamp(2.6rem, 6.2vw, 5.4rem);
   --type-page: clamp(2.4rem, 5.6vw, 4.9rem);
@@ -761,11 +754,11 @@ h1,
 
 .page-hero h1 {
   max-width: 900px;
-  font-size: clamp(2.65rem, 4.8vw, 4.3rem);
-  font-weight: 580;
+  font-size: clamp(2.75rem, 5.2vw, 4.6rem);
+  font-weight: 400;
   line-height: 1.06;
   padding-bottom: 0.08em;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.02em;
   font-variant-numeric: lining-nums;
 }
 

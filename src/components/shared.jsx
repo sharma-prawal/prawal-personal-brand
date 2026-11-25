@@ -398,6 +398,13 @@ export function ReflectionBlock({ eyebrow, title, text }) {
   );
 }
 
+/** Keeps numeric ranges such as "1–2 days" or "20–30%" on one line. */
+export function KeepRanges({ text }) {
+  if (typeof text !== "string") return text;
+  const parts = text.split(/(\d[\d.,+]*\s?[–-]\s?\d[\d.,+%]*(?:\s(?:days?|years?|weeks?))?)/);
+  return parts.map((part, index) => (index % 2 ? <span className="nowrap" key={index}>{part}</span> : part));
+}
+
 export function PageFrame({ eyebrow, title, intro, children, className = "", heroAside = null }) {
   const { hash } = useLocation();
   const heroClassName = ["page-hero", className].filter(Boolean).join(" ");
