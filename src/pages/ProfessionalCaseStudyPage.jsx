@@ -1,127 +1,125 @@
 import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ChevronRight } from "lucide-react";
-import { Button } from "../components/ui/button.jsx";
-import { MiniCase, MotionGroup, PageFrame, ProofIndex, Reveal } from "../components/shared.jsx";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { PageFrame, ProofIndex, Reveal } from "../components/shared.jsx";
 import { professionalCasesWithSlugs } from "../data/derived.js";
-import { itemReveal } from "../lib/motion.js";
+
+// A system's data or transaction flow as a row of labelled steps. Used on the
+// case page and, in compact form, on the Projects page.
+export function CaseFlow({ steps, compact = false }) {
+  return (
+    <ol className={["case-flow", compact ? "case-flow--compact" : ""].filter(Boolean).join(" ")} aria-label="System flow">
+      {steps.map((step, index) => (
+        <li key={step.label}>
+          <span className="case-flow__no">{String(index + 1).padStart(2, "0")}</span>
+          <strong>{step.label}</strong>
+          {step.detail ? <span className="case-flow__detail">{step.detail}</span> : null}
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+function Section({ id, title, children }) {
+  return (
+    <Reveal as={motion.section} className="case-section" id={id} aria-labelledby={`${id}-title`}>
+      <h2 id={`${id}-title`}>{title}</h2>
+      <div className="case-section__body">{children}</div>
+    </Reveal>
+  );
+}
 
 export default function ProfessionalCaseStudyPage() {
   const { caseSlug } = useParams();
   const caseIndex = professionalCasesWithSlugs.findIndex((p) => p.slug === caseSlug);
   const project = professionalCasesWithSlugs[caseIndex];
-  const previousCase = professionalCasesWithSlugs[(caseIndex - 1 + professionalCasesWithSlugs.length) % professionalCasesWithSlugs.length];
-  const nextCase = professionalCasesWithSlugs[(caseIndex + 1) % professionalCasesWithSlugs.length];
 
   if (!project) {
     return (
       <div data-theme="projects">
-        <PageFrame eyebrow="Professional case study" title="Professional case study not found." intro="Return to the project dossier to browse the available NDA-safe systems.">
-          <div className="case-study-not-found">
-            <Button asChild variant="secondary" className="secondary-link">
-              <Link to="/ai-projects">
-                <ChevronRight size={18} />
-                <span>Back to project dossier</span>
-              </Link>
-            </Button>
-          </div>
+        <PageFrame eyebrow="Client system" title="Case study not found." intro="Go back to Projects to see every client system.">
+          <Link className="projects-link" to="/ai-projects">
+            <ArrowLeft size={15} aria-hidden="true" />
+            <span>Back to Projects</span>
+          </Link>
         </PageFrame>
       </div>
     );
   }
 
+  const previousCase = professionalCasesWithSlugs[(caseIndex - 1 + professionalCasesWithSlugs.length) % professionalCasesWithSlugs.length];
+  const nextCase = professionalCasesWithSlugs[(caseIndex + 1) % professionalCasesWithSlugs.length];
+  const facts = [
+    { label: "Role", value: project.role },
+    { label: "Period", value: project.tenure },
+    { label: "Team", value: project.team },
+    { label: "Domain", value: project.domain }
+  ].filter((fact) => fact.value);
+
   return (
     <div data-theme="projects">
-    <PageFrame
-      eyebrow={`${project.domain} | ${project.evidenceMode}`}
-      title={project.name}
-      intro={project.outcome || "NDA-safe professional system summary from resume-backed delivery evidence."}
-    >
-      <ProofIndex
-        label="Dossier index"
-        meta={`Professional case ${project.caseNo}`}
-        backHref="/ai-projects"
-        items={[
-          { id: "professional-overview", label: "Overview" },
-          { id: "professional-systems", label: "Systems" },
-          { id: "professional-breakdown", label: "Breakdown" },
-          { id: "professional-next", label: "Cases" }
-        ]}
-      />
+      <PageFrame eyebrow={`${project.name} · ${project.meta}`} title={project.headline || project.outcome} intro={project.context || ""}>
+        <ProofIndex
+          label="On this page"
+          backHref="/ai-projects"
+          items={[
+            { id: "case-role", label: "Role" },
+            ...(project.flow ? [{ id: "case-design", label: "System design" }] : []),
+            { id: "case-work", label: "What I did" },
+            { id: "case-outcome", label: "Outcome" }
+          ]}
+        />
 
-      <Reveal as={motion.section} className="professional-case-hero" id="professional-overview">
-        <div className="professional-case-hero__copy">
-          <div className="project-masthead">
-            <span>{project.domain} | {project.meta}</span>
-            <strong>Case {project.caseNo}</strong>
-          </div>
-          <h2>NDA-safe {project.domain.charAt(0).toLowerCase() + project.domain.slice(1)} brief.</h2>
-          <p>{project.outcome}</p>
-          <div className={["professional-case-meta", project.tenure ? "professional-case-meta--tenure" : ""].filter(Boolean).join(" ")} aria-label={`${project.name} professional evidence`}>
-            <span><strong>{project.role}</strong>Role</span>
-            {project.tenure ? <span><strong>{project.tenure}</strong>Management tenure</span> : null}
-            <span><strong>{project.evidenceMode}</strong>Evidence mode</span>
-            <span><strong>{project.access}</strong>Access boundary</span>
-          </div>
-          <div className="project-actions">
-            <Button asChild variant="secondary" className="secondary-link">
-              <Link to="/ai-projects">
-                <ChevronRight size={18} />
-                <span>Back to project dossier</span>
-              </Link>
-            </Button>
-          </div>
+        <div className="case-page">
+          <dl className="case-facts">
+            {facts.map((fact) => (
+              <div key={fact.label}>
+                <dt>{fact.label}</dt>
+                <dd>{fact.value}</dd>
+              </div>
+            ))}
+          </dl>
+
+          <Section id="case-role" title="Role and team">
+            <p>
+              {project.role}
+              {project.tenure ? `, ${project.tenure}` : ""}.
+            </p>
+            {project.team ? <p className="case-modules"><span>Team</span> {project.team}</p> : null}
+          </Section>
+
+          {project.flow ? (
+            <Section id="case-design" title="System design">
+              <CaseFlow steps={project.flow} />
+              <p className="case-note">Client names, source code and screenshots stay private; this is the system's shape.</p>
+            </Section>
+          ) : null}
+
+          <Section id="case-work" title="What I did">
+            <ul className="case-points">
+              {project.points.map((point) => <li key={point}>{point}</li>)}
+            </ul>
+            {project.systems?.length ? (
+              <p className="case-modules"><span>Modules</span> {project.systems.join(" · ")}</p>
+            ) : null}
+          </Section>
+
+          <Section id="case-outcome" title="Outcome">
+            <p className="case-outcome">{project.outcome}</p>
+          </Section>
+
+          <nav className="case-nav" aria-label="More client systems">
+            <Link to={`/ai-projects/professional/${previousCase.slug}`}>
+              <span><ArrowLeft size={14} aria-hidden="true" /> Previous</span>
+              <strong>{previousCase.name}</strong>
+            </Link>
+            <Link to={`/ai-projects/professional/${nextCase.slug}`}>
+              <span>Next <ArrowRight size={14} aria-hidden="true" /></span>
+              <strong>{nextCase.name}</strong>
+            </Link>
+          </nav>
         </div>
-        <div className="professional-case-hero__panel" aria-label="NDA-safe project dossier">
-          <div className="professional-case-hero__panel-top">
-            <span className="eyebrow">Confidential delivery dossier</span>
-            <strong>{project.domain}</strong>
-            <p>Client names, internal URLs, source code, screenshots, and implementation details are intentionally withheld. Scope, system shape, role, and delivery signal remain visible.</p>
-          </div>
-          {project.points?.length > 0 && (
-            <div className="professional-case-contributions">
-              {project.points.map((pt, i) => <blockquote key={i}>{pt}</blockquote>)}
-            </div>
-          )}
-          <div className="professional-case-hero__chips">
-            {(project.systems || []).map((sys) => <span key={sys}>{sys}</span>)}
-          </div>
-        </div>
-      </Reveal>
-
-      <MotionGroup className="professional-system-ledger" id="professional-systems" immediate>
-        {(project.systems || []).map((system, index) => (
-          <motion.article className="professional-system-ledger__item" variants={itemReveal} key={system}>
-            <span>{String(index + 1).padStart(2, "0")}</span>
-            <strong>{system}</strong>
-          </motion.article>
-        ))}
-      </MotionGroup>
-
-      <Reveal as={motion.section} className="professional-breakdown-header" id="professional-breakdown">
-        <span className="eyebrow">Case breakdown</span>
-        <p>Scope, role, evidence access, and system contribution — in four dimensions.</p>
-      </Reveal>
-
-      <MotionGroup className={`project-case-breakdown professional-case-breakdown${!project.tenure ? " professional-case-breakdown--no-tenure" : ""}`}>
-        <MiniCase title="Business context" text={project.signal} />
-        <MiniCase title="Role" text={project.role || "Professional delivery contributor with NDA-safe public summary."} />
-        {project.tenure ? <MiniCase title="Management tenure" text={project.tenure} /> : null}
-        <MiniCase title="Evidence boundary" text={`${project.evidenceMode}. ${project.access}.`} />
-        <MiniCase title="System contribution" text={project.points.join(" ")} className="mini-case--wide" />
-      </MotionGroup>
-
-      <Reveal as={motion.section} className="case-study-nav" id="professional-next">
-        <Link to={`/ai-projects/professional/${previousCase.slug}`}>
-          <span>Previous professional case</span>
-          <strong>{previousCase.name}</strong>
-        </Link>
-        <Link to={`/ai-projects/professional/${nextCase.slug}`}>
-          <span>Next professional case</span>
-          <strong>{nextCase.name}</strong>
-        </Link>
-      </Reveal>
-    </PageFrame>
+      </PageFrame>
     </div>
   );
 }

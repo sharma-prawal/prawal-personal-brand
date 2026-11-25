@@ -72,7 +72,7 @@ export default function RecommendationsPage() {
   const referenceLedger = [
     { value: String(profile.recommendations.length), label: "LinkedIn recommendations" },
     { value: "5 yrs", label: "Consistent over" },
-    { value: "5", label: "Repeated signals" }
+    { value: "5", label: "Recurring themes" }
   ];
   const referenceVoices = [
     { label: "Managerial voice", text: "Leadership, ownership, and client-facing calm." },
@@ -84,9 +84,9 @@ export default function RecommendationsPage() {
     <div data-theme="references">
       <Reveal as={motion.section} className="reference-hero">
         <div className="reference-hero__copy">
-          <span className="eyebrow">What colleagues say</span>
-          <h1>How the work is experienced by others.</h1>
-          <p>The strongest signal is the pattern — the same qualities repeating across managers, peers, technical collaborators, and team members.</p>
+          <span className="eyebrow">Recommendations</span>
+          <h1>What colleagues say about working with me.</h1>
+          <p>LinkedIn recommendations from managers, peers and the engineers I have led.</p>
         </div>
         <div className="reference-hero__ledger" aria-label="Reference proof ledger">
           {referenceLedger.map((item) => (
@@ -118,8 +118,8 @@ export default function RecommendationsPage() {
 
         <div className="reference-dossier__analysis">
           <span className="eyebrow">What stands out</span>
-          <h2>The same qualities repeat across every relationship.</h2>
-          <p>The recommendations point to the same operating qualities from different angles: ownership under pressure, technical usefulness, team steadiness, and the ability to learn quickly without creating noise.</p>
+          <h2>The same qualities come up again and again.</h2>
+          <p>Ownership under pressure, real technical help, a steady team and learning fast without creating noise.</p>
           <div className="reference-voice-list">
             {referenceVoices.map((voice) => (
               <div className="reference-voice-item" key={voice.label}>
@@ -172,9 +172,9 @@ export default function RecommendationsPage() {
       <Reveal as={motion.section} className="reference-signal-map-container">
         <div className="reference-signal-map">
           <div className="reference-signal-map__lead">
-            <span className="eyebrow">Reference signal map</span>
-            <h2>What the testimonials validate.</h2>
-            <p>The strongest recommendations do more than praise performance. They confirm how the work feels to people around it: calm under pressure, technically useful, and reliable for teams.</p>
+            <span className="eyebrow">In numbers</span>
+            <h2>What the recommendations confirm.</h2>
+            <p>Beyond praise, they describe what it is like to work alongside me: calm under pressure, technically useful and reliable for the team.</p>
           </div>
           <MotionGroup className="reference-signal-map__grid">
             {referenceSignals.map((signal) => (
@@ -195,8 +195,8 @@ export default function RecommendationsPage() {
       <Reveal className="recommendation-themes-container">
         <div className="recommendation-themes">
           <div>
-            <span className="eyebrow">Leadership themes</span>
-            <h2>Patterns that show up across the recommendations.</h2>
+            <span className="eyebrow">Themes</span>
+            <h2>Themes across the recommendations.</h2>
           </div>
           <div className="recommendation-theme-list">
             {recommendationThemes.map((theme) => (

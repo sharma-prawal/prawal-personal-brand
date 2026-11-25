@@ -8,16 +8,6 @@ import { imageAlt, imageCaption, imageSrc } from "../data/imageMetadata.js";
 import { aiProjectsWithSlugs } from "../data/derived.js";
 import { itemReveal, tapPress, premiumEase } from "../lib/motion.js";
 
-function ProjectEvidence({ project }) {
-  return (
-    <div className="project-evidence" aria-label={`${project.name} evidence summary`}>
-      <span><strong>{project.images.length}</strong> proof image{project.images.length === 1 ? "" : "s"}</span>
-      <span><strong>{project.link ? "Live" : "Proof"}</strong>{project.link ? " external evidence" : " local evidence"}</span>
-      <span><strong>{project.stack.length}</strong> capability tags</span>
-    </div>
-  );
-}
-
 export default function ProjectCaseStudyPage() {
   const { projectSlug: activeProjectSlug } = useParams();
   const projectIndex = aiProjectsWithSlugs.findIndex((p) => p.slug === activeProjectSlug);
@@ -28,7 +18,7 @@ export default function ProjectCaseStudyPage() {
   if (!project) {
     return (
       <div data-theme="projects">
-        <PageFrame eyebrow="Project case study" title="Project case study not found." intro="Return to the project proof library to browse the available work.">
+        <PageFrame eyebrow="Project case study" title="Project case study not found." intro="Go back to Projects to see every case study.">
           <div className="case-study-not-found">
             <Button asChild variant="secondary" className="secondary-link">
               <Link to="/ai-projects">
@@ -46,7 +36,7 @@ export default function ProjectCaseStudyPage() {
     <div data-theme="projects">
     <PageFrame eyebrow={`${project.type} | ${project.stage}`} title={project.name} intro={project.summary}>
       <ProofIndex
-        label="Case study index"
+        label="On this page"
         meta={`Case ${String(projectIndex + 1).padStart(2, "0")}`}
         items={[
           { id: "case-overview", label: "Overview" },
@@ -96,13 +86,20 @@ export default function ProjectCaseStudyPage() {
             </div>
             <h2>{project.name}</h2>
             <p>{project.summary}</p>
-            <ProjectEvidence project={project} />
             <div className="project-actions">
               {project.link ? (
                 <motion.a className="project-link" href={project.link} target={project.link.startsWith("/") ? undefined : "_blank"} rel={project.link.startsWith("/") ? undefined : "noreferrer"} whileTap={tapPress} transition={{ duration: 0.22, ease: premiumEase }}>
                   <DiagArrow size={15} />
                   <span>{project.linkLabel || "Open evidence"}</span>
                 </motion.a>
+              ) : null}
+              {project.repo ? (
+                <Button asChild variant="secondary" className="secondary-link">
+                  <a href={project.repo} target="_blank" rel="noreferrer">
+                    <DiagArrow size={15} />
+                    <span>View the code</span>
+                  </a>
+                </Button>
               ) : null}
               <Button asChild variant="secondary" className="secondary-link">
                 <Link to="/ai-projects">

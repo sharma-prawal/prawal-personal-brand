@@ -21,11 +21,11 @@ function ConferenceArchiveIntro({ count, groups }) {
   return (
     <Reveal as={motion.section} className="conference-archive-intro">
       <div>
-        <span className="eyebrow">Supporting event archive</span>
-        <h2>Broader signals, grouped by what they sharpen.</h2>
+        <span className="eyebrow">More events</span>
+        <h2>Other conferences, grouped by topic.</h2>
       </div>
       <div className="conference-archive-intro__copy">
-        <p>The following {count} conferences cover AI adoption, cloud platforms, data architecture, and business strategy — grouped by what each sharpens.</p>
+        <p>The following {count} conferences cover AI adoption, cloud platforms, data architecture and business strategy.</p>
         <div aria-label="Supporting event signals">
           {groups.map((group) => (
             <article key={group.title}>
@@ -34,33 +34,19 @@ function ConferenceArchiveIntro({ count, groups }) {
             </article>
           ))}
         </div>
+        <p className="also-attended">
+          Also: dentsu&apos;s <a href="https://www.linkedin.com/posts/sharma-prawal_chatgpt-generativeai-artificialintelligence-activity-7137813697678168065-F-03" target="_blank" rel="noreferrer">“Building Generative AI Solutions” hackathon</a> (December 2023).
+        </p>
       </div>
     </Reveal>
   );
 }
 
 function ConferenceFeature({ moment }) {
+  const meta = ["Featured event", moment.eventType, moment.year].filter(Boolean).join(" · ");
   return (
-    <Reveal as={motion.section} className="conference-feature" id="featured-event">
-      <div className="conference-feature__copy">
-        <h2>{moment.title}</h2>
-        <p>{moment.theme}</p>
-        <div className="conference-feature__takeaway">
-          <span>Leadership takeaway</span>
-          <strong>{moment.takeaway}</strong>
-        </div>
-        <div className="conference-feature__signals">
-          <span>{moment.location}</span>
-          <span>Documented signal</span>
-          <span>AI adoption judgment</span>
-        </div>
-        <div className="conference-feature__meta-row">
-          <span className="eyebrow">Featured event</span>
-          {moment.eventType && <span className="conference-type-pill conference-type-pill--featured">{moment.eventType}</span>}
-          {moment.year && <span className="conference-year-badge">{moment.year}</span>}
-        </div>
-      </div>
-      <div className="conference-feature__media">
+    <Reveal as={motion.section} className="conf-feature" id="featured-event" aria-labelledby="conf-feature-title">
+      <div className="conf-feature__media">
         <ImageCarousel
           images={moment.images}
           onSlideClick={(e) => { const btn = e.currentTarget.querySelector(".proof-image-button"); if (btn) btn.click(); }}
@@ -74,6 +60,16 @@ function ConferenceFeature({ moment }) {
             />
           )}
         />
+      </div>
+      <div className="conf-feature__copy">
+        <p className="conf-feature__meta">{meta}</p>
+        <h2 id="conf-feature-title">{moment.title}</h2>
+        <p className="conf-feature__theme">{moment.theme}</p>
+        <div className="conf-feature__takeaway">
+          <span>What I took away</span>
+          <p>{moment.takeaway}</p>
+        </div>
+        {moment.location ? <p className="conf-feature__location">{moment.location}</p> : null}
       </div>
     </Reveal>
   );
@@ -128,9 +124,9 @@ function ConferenceJudgmentBlock({ items }) {
   return (
     <Reveal as={motion.section} className="conference-judgment-block">
       <div className="conference-judgment-block__copy">
-        <span className="eyebrow">Leadership judgment</span>
-        <h2>How the signal translates into operating perspective.</h2>
-        <p>The value is repeated exposure to where markets, platforms, and business expectations are moving — before those pressures arrive in delivery.</p>
+        <span className="eyebrow">Why I go</span>
+        <h2>What I bring back to the team.</h2>
+        <p>An early view of where platforms and client expectations are heading, before those changes reach our delivery work.</p>
       </div>
       <div className="conference-judgment-block__grid">
         {items.map((item) => (
@@ -157,11 +153,11 @@ export default function ConferencesPage() {
   ];
   const conferenceSignalGroups = [
     { title: "AI & emerging technology", text: "AI Impact Summit, Convergence India, and IAMAI keep the page anchored in current technology direction." },
-    { title: "Cloud & data platforms", text: "AWS and MongoDB events connect market signals to practical platform and architecture choices." },
+    { title: "Cloud & data platforms", text: "AWS and MongoDB events connect what the market is doing to practical platform and architecture choices." },
     { title: "Business forums", text: "Deloitte Fast 50 and commerce forums add the business context behind engineering prioritization." }
   ];
   const leadershipJudgment = [
-    { title: "AI adoption judgment", text: "Separating useful enterprise adoption signals from event-stage excitement." },
+    { title: "AI adoption judgment", text: "Separating what enterprises are really adopting from what only sounds good on stage." },
     { title: "Platform modernization", text: "Reading cloud, data, and developer ecosystem shifts before they become delivery pressure." },
     { title: "Business context", text: "Connecting technology choices to growth, operating models, and stakeholder confidence." }
   ];
@@ -169,9 +165,9 @@ export default function ConferencesPage() {
   return (
     <div data-theme="conferences">
     <PageFrame
-      eyebrow="Public presence"
-      title="Market exposure translated into engineering judgment."
-      intro="Selected industry forums that sharpen perspective on AI adoption, cloud modernization, data platforms, and the business context behind technical decisions."
+      eyebrow="Conferences"
+      title="Industry events on AI, cloud and data."
+      intro="Forums I attend to keep up with AI adoption, cloud modernisation and data platforms, and the business decisions behind them."
       className="conferences-page-hero"
     >
       <ConferenceSignalLedger signals={conferenceSignals} />

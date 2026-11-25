@@ -2,7 +2,7 @@ import { createImageMeta } from "./imageMetadata.js";
 
 export const profilePortrait = {
   title: "Prawal Sharma portrait",
-  src: "/media/profile/IMG_2574.JPG",
+  src: "/media/profile/portrait-1400.jpg",
   alt: "Prawal Sharma professional portrait",
   date: "Current profile asset",
   category: "Executive portrait",

@@ -1,49 +1,7 @@
-import { useEffect, useRef, useState } from "react";
-import { animate, motion, useInView, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import { MotionGroup, Reveal } from "../components/shared.jsx";
 import { profile } from "../data/profile.js";
 import { itemReveal, premiumEase, slideLeft, slideRight, splitStagger, tapPress } from "../lib/motion.js";
-
-// Helper to format metric display strings by wrapping symbols for precise CSS spacing
-function formatDisplay(str) {
-  if (typeof str !== "string") return str;
-  const parts = str.split(/([\+\-%K])/);
-  return parts.map((part, index) => {
-    if (part === "+") {
-      return <span key={index} className="metric-symbol metric-symbol--plus">+</span>;
-    } else if (part === "-") {
-      return <span key={index} className="metric-symbol metric-symbol--dash">-</span>;
-    } else if (part === "%") {
-      return <span key={index} className="metric-symbol metric-symbol--percent">%</span>;
-    } else if (part === "K") {
-      return <span key={index} className="metric-suffix">K</span>;
-    }
-    return part;
-  });
-}
-
-function CountUp({ value }) {
-  const shouldReduceMotion = useReducedMotion();
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-10% 0px" });
-  const [display, setDisplay] = useState(shouldReduceMotion ? value : "0");
-
-  useEffect(() => {
-    if (!inView || shouldReduceMotion) { setDisplay(value); return; }
-    const match = value.match(/^(\d+(?:\.\d+)?)(.*)/);
-    if (!match) { setDisplay(value); return; }
-    const target = parseFloat(match[1]);
-    const suffix = match[2];
-    const controls = animate(0, target, {
-      duration: 1.4,
-      ease: [0.16, 1, 0.3, 1],
-      onUpdate: (v) => setDisplay(Math.round(v) + suffix)
-    });
-    return () => controls.stop();
-  }, [inView, value, shouldReduceMotion]);
-
-  return <span ref={ref}>{formatDisplay(display)}</span>;
-}
 
 const journeyArc = [
   { label: "Foundation", title: "Built from implementation depth", text: "Started close to the code, delivery details, production constraints, and practical engineering habits." },
@@ -75,24 +33,23 @@ function formatRoleYears(period) {
 
 export default function JourneyPage() {
   const successive = profile.experience[0];
-  const earlierCompanies = profile.experience.slice(1);
 
   return (
     <div data-theme="journey">
       <Reveal as={motion.section} className="journey-hero">
         <div className="journey-hero__copy">
-          <span className="eyebrow">Full journey</span>
-          <h1>Ten years of delivery pressure, technical depth, and rising leadership accountability.</h1>
-          <p>An executive record of how hands-on engineering depth matured into systems ownership, global delivery, and AI-enabled technology management.</p>
+          <span className="eyebrow">Career</span>
+          <h1>From trainee to technology manager in ten years.</h1>
+          <p>How hands-on engineering grew into owning systems, leading global delivery and building an AI-assisted way of working.</p>
         </div>
         <div className="journey-hero__ledger" aria-label="Journey proof ledger">
           {[
             { value: "10", label: "Years in engineering" },
             { value: "5", label: "Role transitions" },
-            { value: "4", label: "Global delivery regions" }
+            { value: "3", label: "Client regions: US, UK, South Africa" }
           ].map((item) => (
             <div className="journey-hero__ledger-item" key={item.label}>
-              <strong><CountUp value={item.value} /></strong>
+              <strong>{item.value}</strong>
               <span>{item.label}</span>
             </div>
           ))}
@@ -101,9 +58,9 @@ export default function JourneyPage() {
 
       <Reveal as={motion.section} className="journey-arc">
         <div className="journey-arc__lead">
-          <span className="eyebrow">Career arc</span>
-          <h2>Three chapters behind the progression.</h2>
-          <p>The important signal is not title movement. It is the pattern of owning harder problems, larger systems, and higher-stakes delivery with increasing judgment.</p>
+          <span className="eyebrow">Three stages</span>
+          <h2>How the work changed.</h2>
+          <p>Titles changed along the way, but the bigger shift was the size of the problems: larger systems, higher stakes and more judgment calls.</p>
         </div>
         <MotionGroup className="journey-arc__grid">
           {journeyArc.map((item) => (
@@ -134,15 +91,15 @@ export default function JourneyPage() {
             variants={slideRight}
             transition={{ duration: 0.72, ease: premiumEase }}
           >
-            <span className="eyebrow">Executive progression dossier</span>
-            <h2>Successive Digital is the defining career chapter.</h2>
-            <p>Ten years in one organization signals more than tenure. The progression from trainee to technology manager came through delivery ownership, not title timing.</p>
+            <span className="eyebrow">Successive Digital</span>
+            <h2>Most of my career has been at one company.</h2>
+            <p>Ten years at Successive Digital, from trainee to technology manager, with each step earned through delivery rather than time served.</p>
           </motion.div>
         </Reveal>
         <div className="successive-flagship-layout">
           <aside className="successive-side-panel">
             <div className="successive-side-sticky">
-              <span className="eyebrow">Career dossier</span>
+              <span className="eyebrow">At a glance</span>
               <h2 className="successive-company-title">{successive.company}</h2>
               <span className="successive-company-loc">{successive.location}</span>
               <p className="successive-tagline">5 promotions in 10 years</p>
@@ -154,13 +111,13 @@ export default function JourneyPage() {
                   { value: "10yr", label: "At Successive", numeric: true }
                 ].map((s) => (
                   <div className="successive-side-stat" key={s.label}>
-                    <strong>{s.numeric ? <CountUp value={s.value} /> : s.value}</strong>
+                    <strong>{s.value}</strong>
                     <span>{s.label}</span>
                   </div>
                 ))}
               </div>
               <div className="progression-mini-rail">
-                <span className="eyebrow">Progression Path</span>
+                <span className="eyebrow">Roles</span>
                 <div className="progression-mini-rail__list">
                   {successive.roles.map((role, idx) => (
                     <div className={`progression-rail-item ${idx === 0 ? "active" : ""}`} key={role.title}>
@@ -222,32 +179,11 @@ export default function JourneyPage() {
         </div>
       </section>
 
-      <Reveal className="earlier-career">
-        <div className="earlier-career-header">
-          <div>
-            <span className="eyebrow">Earlier experience</span>
-            <h3>Earlier foundations before the defining chapter.</h3>
-          </div>
-          <p>Earlier engineering roles that built the technical foundation before the defining chapter began.</p>
-        </div>
-        <div className="earlier-career-list">
-          {earlierCompanies.map((company) => (
-            <div className="earlier-company" key={company.company}>
-              <div className="earlier-company-meta">
-                <strong>{company.company}</strong>
-                <span>{company.location} · {company.duration}</span>
-              </div>
-              <div className="earlier-roles">
-                {company.roles.map((role) => (
-                  <div className="earlier-role" key={role.title}>
-                    <span className="earlier-role-title">{role.title}</span>
-                    <p>{role.details[0]}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
+      <Reveal className="earlier-career earlier-career--compact">
+        <p>
+          <strong>Before Successive Digital:</strong> software trainee at GirnarSoft (CarDekho and BikeDekho, 2016),
+          and summer internships at NIIT Technologies (2015) and Aptech (2014).
+        </p>
       </Reveal>
 
       <Reveal className="education-block">

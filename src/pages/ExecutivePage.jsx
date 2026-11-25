@@ -10,26 +10,35 @@ import {
   Reveal
 } from "../components/shared.jsx";
 import { profile } from "../data/profile.js";
-import { profilePortrait } from "../data/mediaAssets.js";
+import { awardAssets, conferenceAssets, professionalHighlights, profilePortrait } from "../data/mediaAssets.js";
 import { executivePrinciples } from "../data/showcase.js";
 import { premiumEase } from "../lib/motion.js";
 
-// Headline figures shown under the hero. Picked so none repeats a row in the impact ledger.
-const heroFactLabels = ["Years", "Daily transactions", "Awards earned", "Cloud certified"];
-const heroFacts = heroFactLabels
-  .map((label) => profile.executiveSnapshot.find((item) => item.label === label))
-  .filter(Boolean)
-  .map((item) => ({ ...item, value: item.value.replaceAll(" / ", " · ") }));
-
-const recordLinks = [
-  { to: "/journey", title: "Career", text: "Roles and progression since 2014." },
-  { to: "/ai-projects", title: "Projects", text: "Enterprise case studies and independent AI builds." },
-  { to: "/awards", title: "Awards", text: "Ten awards for ownership, longevity and client trust." },
-  { to: "/certifications", title: "Certifications", text: "Cloud, AI, data and leadership certifications." },
-  { to: "/recommendations", title: "Recommendations", text: "What managers, peers and clients have said." },
-  { to: "/conferences", title: "Conferences", text: "Industry events on AI, cloud and data." },
-  { to: "/highlights", title: "Highlights", text: "Client visits, publications and other milestones." }
+// Headline figures shown under the hero. None repeats a row in the impact ledger.
+const heroFacts = [
+  { value: "10", label: "Years at Successive Digital" },
+  { value: "2 × 5–12", label: "Engineers across two teams" },
+  { value: "160K+", label: "Daily banking transactions" },
+  { value: String(awardAssets.length), label: "Awards earned" }
 ];
+
+const firstImage = (record) => record?.images?.[0]?.src;
+const pick = (list, title) => list.find((item) => item.title === title);
+
+// Real photos only, chosen to show the work happening in the room rather than more paragraphs.
+const fieldPhotos = [
+  { record: pick(conferenceAssets, "AI Impact Summit"), to: "/conferences", label: "AI Impact Summit" },
+  { record: pick(professionalHighlights, "USA Client Business Visit"), to: "/highlights", label: "Client visit, USA" },
+  { record: pick(conferenceAssets, "AWS Symposium"), to: "/conferences", label: "AWS Symposium" },
+  { record: pick(conferenceAssets, "Deloitte Fast 50"), to: "/conferences", label: "Deloitte Fast 50" }
+].filter((photo) => firstImage(photo.record));
+
+const awardPhotos = ["Employee of the Year (2023)", "Outstanding Contribution Award", "Key Contributor Award", "ESOP Ownership Achievement Award"]
+  .map((title) => pick(awardAssets, title))
+  .filter((award) => firstImage(award));
+
+const featuredQuote = profile.recommendations.find((item) => item.name === "Preet Saxena") || profile.recommendations[0];
+
 
 function SectionHead({ title, intro, children }) {
   return (
@@ -60,13 +69,9 @@ function Hero() {
         <motion.p className="home-hero__summary" {...enter(0.12)}>
           {profile.summary}
         </motion.p>
-        <motion.blockquote className="home-hero__thesis" {...enter(0.18)}>
-          AI-enabled teams that ship faster, break less, and don't need oversight to stay accountable — that's the
-          operating model I build.
-        </motion.blockquote>
         <motion.div className="home-actions" {...enter(0.24)}>
-          <ExecutiveProfileDownloadButton variant="primary" />
           <LinkedInButton />
+          <ResumeDownloadButton />
         </motion.div>
       </div>
 
@@ -83,6 +88,71 @@ function Hero() {
         ))}
       </dl>
     </section>
+  );
+}
+
+function FieldStrip() {
+  if (!fieldPhotos.length) return null;
+  return (
+    <section className="home-field" aria-label="In the field">
+      <ul className="home-field__grid">
+        {fieldPhotos.map((photo) => (
+          <li key={photo.label}>
+            <Link to={photo.to}>
+              <img src={encodeURI(firstImage(photo.record))} alt={photo.record.images[0].alt || photo.label} loading="lazy" decoding="async" />
+              <span>{photo.label}</span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+function PullQuote() {
+  if (!featuredQuote) return null;
+  return (
+    <Reveal as={motion.section} className="home-quote" aria-label="Recommendation">
+      <blockquote>
+        <p>{featuredQuote.quote}</p>
+      </blockquote>
+      <div className="home-quote__by">
+        {featuredQuote.photo ? <img src={featuredQuote.photo} alt="" loading="lazy" /> : null}
+        <div>
+          <strong>{featuredQuote.name}</strong>
+          <span>{featuredQuote.role}</span>
+        </div>
+        <Link className="home-quote__more" to="/recommendations">
+          Read all {profile.recommendations.length} recommendations
+          <ArrowUpRight size={15} aria-hidden="true" />
+        </Link>
+      </div>
+    </Reveal>
+  );
+}
+
+function Recognition() {
+  if (!awardPhotos.length) return null;
+  return (
+    <Reveal as={motion.section} className="home-section" aria-labelledby="home-awards-title">
+      <SectionHead
+        title={<span id="home-awards-title">Recognition</span>}
+        intro="Ten awards at Successive Digital, from Star Performer in 2018 to the ESOP Ownership award in 2026."
+      />
+      <ul className="home-awards">
+        {awardPhotos.map((award) => (
+          <li key={award.title}>
+            <Link to="/awards">
+              <span className="home-awards__img">
+                <img src={encodeURI(firstImage(award))} alt={award.images[0].alt || award.title} loading="lazy" decoding="async" />
+              </span>
+              <strong>{award.title}</strong>
+              <span>{award.date}</span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </Reveal>
   );
 }
 
@@ -130,7 +200,7 @@ function HowILead() {
 function Framework() {
   const framework = profile.signatureFramework;
   return (
-    <Reveal as={motion.section} className="home-section home-section--split" aria-labelledby="home-framework-title">
+    <Reveal as={motion.section} className="home-section home-section--split home-section--dark" aria-labelledby="home-framework-title">
       <SectionHead title={<span id="home-framework-title">{framework.title}</span>} intro={framework.subtitle}>
         <div className="home-text-links">
           <a href={framework.downloadHref} download>
@@ -156,24 +226,30 @@ function Framework() {
   );
 }
 
-function RecordIndex() {
+function Writing() {
   return (
-    <Reveal as={motion.section} className="home-section" aria-labelledby="home-record-title">
+    <Reveal as={motion.section} className="home-section" aria-labelledby="home-writing-title">
       <SectionHead
-        title={<span id="home-record-title">The full record</span>}
-        intro="Career, projects, awards and talks, each on its own page."
+        title={<span id="home-writing-title">Writing</span>}
+        intro="Notes on AI in engineering, shared with about 5,000 followers on LinkedIn."
       />
-      <ul className="home-index">
-        {recordLinks.map((item) => (
-          <li key={item.to}>
-            <Link to={item.to}>
-              <span className="home-index__title">{item.title}</span>
-              <span className="home-index__text">{item.text}</span>
-              <ArrowUpRight size={16} aria-hidden="true" />
-            </Link>
+      <ul className="home-writing">
+        {profile.writing.map((post) => (
+          <li key={post.url}>
+            <a href={post.url} target="_blank" rel="noreferrer">
+              <span className="home-writing__date">{post.date}</span>
+              <strong>{post.title}</strong>
+              <span className="home-writing__note">{post.note}</span>
+              <span className="home-writing__more">
+                Read on LinkedIn <ArrowUpRight size={14} aria-hidden="true" />
+              </span>
+            </a>
           </li>
         ))}
       </ul>
+      <a className="home-quote__more home-writing__all" href={profile.linkedinActivity} target="_blank" rel="noreferrer">
+        All posts <ArrowUpRight size={15} aria-hidden="true" />
+      </a>
     </Reveal>
   );
 }
@@ -198,10 +274,13 @@ export default function ExecutivePage() {
   return (
     <div className="home" data-theme="executive">
       <Hero />
+      <FieldStrip />
       <ImpactLedger />
+      <PullQuote />
       <HowILead />
       <Framework />
-      <RecordIndex />
+      <Recognition />
+      <Writing />
       <Contact />
     </div>
   );

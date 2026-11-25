@@ -12,7 +12,11 @@ function projectSlug(name) {
 export { projectSlug };
 
 const portfolioOrder = [
+  "OpsPilot AI",
   "AI-Driven Datastream Intelligence POC",
+  "J.A.R.V.I.S. Personal Assistant",
+  "AI Brand Assistant",
+  "The Series",
   "Personal Branding Site",
   "Sunrise Public School Website",
   "Anniversary RPG Web Game",
@@ -22,7 +26,7 @@ const portfolioOrder = [
 ];
 
 export const aiProjectsWithSlugs = aiProjects
-  .map((project) => ({ ...project, slug: projectSlug(project.name) }))
+  .map((project) => ({ ...project, slug: project.slug || projectSlug(project.name) }))
   .sort((a, b) => {
     const ai = portfolioOrder.indexOf(a.name);
     const bi = portfolioOrder.indexOf(b.name);

@@ -1,3 +1,4 @@
+import { profile } from "../data/profile.js";
 import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Grid2X2, List, Plus, Search } from "lucide-react";
@@ -11,7 +12,7 @@ const certificationBatchSize = 9;
 const credentialSignals = {
   "Claude Certified Architect – Foundations": { signal: "AI solution architecture", text: "Proctored Anthropic exam for building production-grade systems on Claude, MCP, and the Agent SDK." },
   "AWS Certified Solutions Architect – Associate": { signal: "Cloud architecture", text: "Validated architecture judgment for resilient, scalable AWS system design." },
-  "AWS Certified AI Practitioner": { signal: "AI adoption fluency", text: "Current AI credential signal tied to practical enterprise adoption awareness." },
+  "AWS Certified AI Practitioner": { signal: "AI adoption fluency", text: "A current AI credential tied to practical enterprise adoption." },
   "Microsoft Certified: Azure AI Fundamentals": { signal: "AI platform grounding", text: "Microsoft AI fundamentals proof across workloads, responsible AI, and Azure services." },
   "Google Cloud Certified – Cloud Digital Leader": { signal: "Multi-cloud perspective", text: "Business and platform fluency across Google Cloud transformation concepts." },
   "AWS Certified Developer – Associate": { signal: "Cloud engineering", text: "Developer-level AWS implementation credibility beyond architecture theory." },
@@ -190,10 +191,10 @@ export default function CertificationsPage() {
   const officialCredentialRows = supportingOfficialCredentials.map((cert) => ({ ...cert, ...getCredentialSignal(cert) }));
 
   const dossierSignals = [
-    { value: featuredCertificationAssets.length, label: "official credentials", text: "Proctored or official credentials are the executive signal." },
+    { value: featuredCertificationAssets.length, label: "official credentials", text: "Proctored or official credentials carry the most weight." },
     { value: "AWS / Azure / GCP", label: "cloud spread", text: "Credential evidence spans the major enterprise cloud ecosystems." },
-    { value: "AI + Cloud + Leadership", label: "capability terrain", text: "The strongest proof aligns with current engineering leadership demands." },
-    { value: libraryCertificationAssets.length, label: "archived learning records", text: "Course depth is available without overwhelming the primary credential story." }
+    { value: "CCA-F", label: "Claude Certified Architect", text: "Anthropic's Claude Certified Architect – Foundations, 2026." },
+    { value: libraryCertificationAssets.length, label: "courses completed", text: "Listed further down, filterable by provider." }
   ];
 
   const libraryCertificationProviders = useMemo(() => ["All", ...new Set(libraryCertificationAssets.map((cert) => cert.provider))], [libraryCertificationAssets]);
@@ -219,16 +220,20 @@ export default function CertificationsPage() {
   return (
     <div data-theme="certifications">
     <PageFrame
-      eyebrow="Credentials & Verification"
-      title="Official cloud architecture, engineering, and leadership certifications."
-      intro="Rigorous, proctored examinations and official credentials verifying cloud expertise, architecture capability, and agile leadership."
+      eyebrow="Certifications"
+      title="Cloud, AI and architecture certifications you can verify."
+      intro="Proctored exams and official credentials across cloud, AI, architecture and agile leadership, each linked to its proof."
     >
+      <p className="verify-links">
+        Verify them on <a href={profile.contact.credly} target="_blank" rel="noreferrer">Credly</a>, or see my 11 skill
+        certificates on <a href={profile.contact.hackerrank} target="_blank" rel="noreferrer">HackerRank</a>.
+      </p>
       <Reveal className="credential-dossier-panel-container" id="credential-dossier">
         <div className="credential-dossier-panel">
           <div className="credential-dossier-panel__lead">
-            <span className="eyebrow">Credential dossier</span>
-            <h2>Tested capability first. Learning depth second.</h2>
-            <p>Official credentials establish the credibility floor for cloud, AI, architecture, security, data, and leadership judgment. The course archive remains available as supporting learning discipline.</p>
+            <span className="eyebrow">Overview</span>
+            <h2>Exams first, courses second.</h2>
+            <p>Proctored certifications carry the most weight here. Course certificates are listed further down as a record of ongoing learning.</p>
           </div>
           <MotionGroup className="credential-dossier-ledger" aria-label="Credential dossier summary">
             {dossierSignals.map((item) => (
@@ -244,10 +249,10 @@ export default function CertificationsPage() {
 
       <div className="certifications-gallery-wrapper">
         <Reveal as={motion.section} className="credential-section-heading" id="featured-credentials">
-          <span className="eyebrow">Flagship credentials</span>
+          <span className="eyebrow">Featured</span>
           <div>
-            <h2>Official credentials.</h2>
-            <p>Four credentials carry the strongest executive signal: AI solution architecture, cloud architecture, AI adoption fluency, and Azure AI.</p>
+            <h2>Four key certifications.</h2>
+            <p>AI solution architecture, cloud architecture, AI adoption and Azure AI.</p>
           </div>
           <small>{flagshipCredentialCards.length} primary signals</small>
         </Reveal>
@@ -287,8 +292,8 @@ export default function CertificationsPage() {
         <Reveal as={motion.section} className="official-credential-ledger" id="official-credential-ledger">
           <div className="official-credential-ledger__header">
             <div>
-              <span className="eyebrow">Official credential ledger</span>
-              <h2>Supporting official credentials remain visible, but quieter.</h2>
+              <span className="eyebrow">More certifications</span>
+              <h2>Other official certifications.</h2>
             </div>
             <span>{officialCredentialRows.length} verified records</span>
           </div>
@@ -306,7 +311,7 @@ export default function CertificationsPage() {
             aria-expanded={archiveOpen}
             onClick={() => setArchiveOpen((v) => !v)}
           >
-            <span className="eyebrow">Continuous learning archive</span>
+            <span className="eyebrow">Courses</span>
             <strong>{libraryCertificationAssets.length} secondary learning records</strong>
             <small>{archiveOpen ? "Close archive" : "Open searchable course archive"}</small>
             <span className="archive-toggle" aria-hidden="true"><Plus size={14} strokeWidth={3} /></span>
@@ -347,7 +352,7 @@ export default function CertificationsPage() {
                 {visibleCertifications.length === 0 ? (
                   <div className="proof-empty-state" role="status">
                     <span>No matching credentials</span>
-                    <p>Adjust the provider filter or search term to return to the full proof library.</p>
+                    <p>No matches. Try another provider or search term.</p>
                   </div>
                 ) : null}
                 {!showGroupedLibrary && visibleCertifications.length > displayedCertifications.length ? (

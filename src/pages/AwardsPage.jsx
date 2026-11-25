@@ -12,7 +12,7 @@ const awardSignals = {
   "Outstanding Contribution Award": { signal: "Growth contribution", meaning: "Recognition for engineering initiatives, collaboration, and measurable contribution beyond assigned delivery." },
   "Employee of the Year (2023)": { signal: "Delivery excellence", meaning: "A peak annual recognition that reinforces consistency, execution quality, and organizational impact." },
   "Key Contributor Award": { signal: "Sustained leverage", meaning: "Proof of being relied on when delivery quality and engineering ownership mattered." },
-  "Longevity Award": { signal: "Staying power", meaning: "A durable contribution signal across changing teams, delivery demands, and organizational stages." },
+  "Longevity Award": { signal: "Staying power", meaning: "Steady contribution across changing teams, delivery demands and company stages." },
   "Exceptional Performer": { signal: "Performance bar", meaning: "A marker of consistently exceeding expectations during demanding delivery cycles." },
   "Extra Achiever's Award": { signal: "Resilience", meaning: "Recognition for extra effort and reliability through lockdown-era delivery pressure." },
   "Client Happiness Award": { signal: "Client trust", meaning: "Evidence that delivery quality was visible to stakeholders, not only internally appreciated." },
@@ -20,7 +20,7 @@ const awardSignals = {
 };
 
 function getSignal(award) {
-  return awardSignals[award.title] || { signal: "Recognition signal", meaning: award.description };
+  return awardSignals[award.title] || { signal: "Recognition", meaning: award.description };
 }
 
 function PremiumProofGalleryModal({ award, signal, onClose }) {
@@ -75,7 +75,7 @@ function PremiumProofGalleryModal({ award, signal, onClose }) {
             <p>{signal.meaning}</p>
           </div>
           <aside className="award-modal__signal">
-            <span>Recognition signal</span>
+            <span>What it was for</span>
             <strong>{signal.signal}</strong>
             <p>{award.description}</p>
           </aside>
@@ -110,9 +110,9 @@ export default function AwardsPage() {
   const archiveAwards = awardAssets.slice(4);
   const recognitionLedger = [
     { value: "10", label: "awards", text: "Repeated recognition across ownership, client trust, delivery, and long-term contribution." },
-    { value: "8", label: "year span", text: "A pattern from early performer signals to recent leadership offsite recognition." },
-    { value: "4", label: "signal types", text: "Ownership, contribution, delivery excellence, and client happiness across different moments." },
-    { value: "2026", label: "latest proof", text: "Recent recognition still connected to growth initiatives, not nostalgia." }
+    { value: "8", label: "year span", text: "From early performer awards to recent leadership recognition." },
+    { value: "2", label: "awards at the 2026 offsite", text: "Outstanding Contribution and ESOP Ownership Achievement, at the Leadership Offsite 2026." },
+    { value: "2023", label: "Employee of the Year", text: "For contribution to organizational growth and delivery excellence." }
   ];
 
   const signatureAwards = gridAwards.map((award) => ({ ...award, ...getSignal(award) }));
@@ -137,8 +137,8 @@ export default function AwardsPage() {
       }} />
     <PageFrame
       eyebrow="Recognition"
-      title="10 awards across 10 years — consistent delivery, client trust, and leadership impact."
-      intro="Recognition earned across delivery milestones, client moments, and organizational growth cycles at Successive Digital."
+      title="Ten awards in ten years at Successive Digital."
+      intro="For delivery milestones, client work and long-term contribution."
     >
       {heroAward && (
         <Reveal as={motion.section} className="awards-recognition-hero">
@@ -147,8 +147,8 @@ export default function AwardsPage() {
               <span>{heroAward.issuer}</span>
               <small>{heroAward.date}</small>
             </div>
-            <h2>A long-running pattern of being trusted when contribution has to compound.</h2>
-            <p>The awards matter less as trophies and more as a signal: ownership was visible across years, delivery phases, client moments, and organizational growth cycles.</p>
+            <h2>Recognised repeatedly, not just once.</h2>
+            <p>What matters is the pattern: ownership noticed across different years, teams and clients.</p>
             <div className="awards-recognition-hero__signal">
               <span>{heroSignal.signal}</span>
               <strong>{heroAward.title}</strong>
@@ -180,8 +180,8 @@ export default function AwardsPage() {
 
       <Reveal as={motion.section} className="awards-section-intro">
         <div>
-          <span className="eyebrow">Signature recognition</span>
-          <h2>Recent awards, interpreted as operating signals.</h2>
+          <span className="eyebrow">Recent awards</span>
+          <h2>The latest awards and what each was for.</h2>
         </div>
         <p className="awards-section-intro__copy">
           Each recognition is interpreted for what it signals: not a trophy, but a moment where ownership, contribution, or delivery reliability was made visible to the organization.
@@ -210,8 +210,8 @@ export default function AwardsPage() {
       <Reveal as={motion.section} className="awards-archive-ledger" aria-label="Award archive ledger">
         <div className="awards-archive-ledger__header">
           <div>
-            <span className="eyebrow">Recognition ledger</span>
-            <h2>The archive is useful because the pattern repeats.</h2>
+            <span className="eyebrow">All awards</span>
+            <h2>Every award, newest first.</h2>
           </div>
           <span>{archiveEntries.length} archive entries - {proofCount} proof images</span>
         </div>
@@ -255,9 +255,9 @@ export default function AwardsPage() {
       </AnimatePresence>
 
       <ReflectionBlock
-        eyebrow="Recognition reflection"
-        title="The senior signal is consistency, not decoration."
-        text="Across the archive, the strongest message is not that awards were collected. It is that ownership, contribution, client trust, and delivery reliability kept becoming visible to the organization over time."
+        eyebrow="In short"
+        title="Consistency is the point."
+        text="The awards came from different managers, years and projects. Together they point to the same things: ownership, client trust and reliable delivery."
       />
     </PageFrame>
     </div>

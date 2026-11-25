@@ -75,7 +75,7 @@ function FeaturedHighlight({ highlight }) {
         <h2>{highlight.title}</h2>
         <p>{highlight.context}</p>
         <div className="featured-highlight__why">
-          <span>Executive signal</span>
+          <span>Why it matters</span>
           <strong>{highlight.story}</strong>
         </div>
         <div className="featured-highlight__signals">
@@ -111,20 +111,20 @@ function GlobalRoutesMap() {
             <stop offset="100%" stopColor="var(--gold)" stopOpacity="0" />
           </radialGradient>
           <radialGradient id="glowPersonal" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="rgba(163, 158, 149, 0.35)" stopOpacity="1" />
-            <stop offset="100%" stopColor="rgba(163, 158, 149, 0)" stopOpacity="0" />
+            <stop offset="0%" stopColor="rgba(84, 79, 71, 0.35)" stopOpacity="1" />
+            <stop offset="100%" stopColor="rgba(84, 79, 71, 0)" stopOpacity="0" />
           </radialGradient>
           <linearGradient id="routeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="var(--gold)" />
             <stop offset="50%" stopColor="var(--gold)" />
-            <stop offset="100%" stopColor="rgba(255,255,255,0.4)" />
+            <stop offset="100%" stopColor="rgba(84, 79, 71, 0.4)" />
           </linearGradient>
           <linearGradient id="routeGradPersonal" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="rgba(163, 158, 149, 0.85)" />
-            <stop offset="100%" stopColor="rgba(163, 158, 149, 0.35)" />
+            <stop offset="0%" stopColor="rgba(84, 79, 71, 0.85)" />
+            <stop offset="100%" stopColor="rgba(84, 79, 71, 0.35)" />
           </linearGradient>
         </defs>
-        <g stroke="rgba(255,255,255,0.03)" strokeWidth="0.5">
+        <g stroke="rgba(23, 21, 15, 0.05)" strokeWidth="0.5">
           {Array.from({ length: 13 }).map((_, i) => <line key={`x-${i}`} x1={i * 30} y1="0" x2={i * 30} y2="260" />)}
           {Array.from({ length: 9 }).map((_, i) => <line key={`y-${i}`} x1="0" y1={i * 30} x2={380} y2={i * 30} />)}
         </g>
@@ -156,8 +156,8 @@ function GlobalRoutesMap() {
             <g key={`dot-${r.id}`} className="route-dot route-dot--professional">
               <circle cx={r.x} cy={r.y} r="10" fill="url(#glow)" className="pulse-glow" />
               <circle cx={r.x} cy={r.y} r="3.5" fill="var(--gold)" />
-              <rect x={rx - 3} y={ry} width={textWidth + 6} height={textHeight} rx="3" fill="rgba(22, 21, 20, 0.75)" stroke="rgba(127, 194, 173, 0.42)" strokeWidth="0.5" />
-              <text x={r.x + r.dx} y={r.y + r.dy} fill="rgba(127, 194, 173, 0.92)" fontSize="9" fontWeight="900" fontFamily="var(--font-sans)" letterSpacing="0.04em" textAnchor={r.dx < 0 ? "end" : "start"}>{r.label}</text>
+              <rect x={rx - 3} y={ry} width={textWidth + 6} height={textHeight} rx="3" fill="rgba(251, 250, 246, 0.96)" stroke="rgba(21, 94, 78, 0.45)" strokeWidth="0.5" />
+              <text x={r.x + r.dx} y={r.y + r.dy} fill="rgb(21, 94, 78)" fontSize="9" fontWeight="600" fontFamily="var(--font-sans)" letterSpacing="0.04em" textAnchor={r.dx < 0 ? "end" : "start"}>{r.label}</text>
             </g>
           );
         })}
@@ -169,21 +169,21 @@ function GlobalRoutesMap() {
           return (
             <g key={`dot-${r.id}`} className="route-dot route-dot--personal">
               <circle cx={r.x} cy={r.y} r="9" fill="url(#glowPersonal)" className="pulse-glow" />
-              <circle cx={r.x} cy={r.y} r="2.5" fill="rgba(163, 158, 149, 0.9)" />
-              <rect x={rx - 3} y={ry} width={textWidth + 6} height={textHeight} rx="3" fill="rgba(22, 21, 20, 0.72)" stroke="rgba(163, 158, 149, 0.32)" strokeWidth="0.5" />
-              <text x={r.x + r.dx} y={r.y + r.dy} fill="rgba(236, 232, 225, 0.88)" fontSize="9" fontWeight="600" fontFamily="var(--font-sans)" letterSpacing="0.03em" textAnchor={r.dx < 0 ? "end" : "start"}>{r.label}</text>
+              <circle cx={r.x} cy={r.y} r="2.5" fill="rgba(84, 79, 71, 0.9)" />
+              <rect x={rx - 3} y={ry} width={textWidth + 6} height={textHeight} rx="3" fill="rgba(251, 250, 246, 0.96)" stroke="rgba(23, 21, 15, 0.18)" strokeWidth="0.5" />
+              <text x={r.x + r.dx} y={r.y + r.dy} fill="rgb(23, 21, 15)" fontSize="9" fontWeight="500" fontFamily="var(--font-sans)" letterSpacing="0.03em" textAnchor={r.dx < 0 ? "end" : "start"}>{r.label}</text>
             </g>
           );
         })}
-        <circle cx={center.x} cy={center.y} r="14" fill="rgba(127, 194, 173, 0.18)" />
+        <circle cx={center.x} cy={center.y} r="14" fill="rgba(21, 94, 78, 0.14)" />
         <circle cx={center.x} cy={center.y} r="4" fill="#fff" />
-        <circle cx={center.x} cy={center.y} r="2" fill="var(--gold)" />
-        <rect x={center.x - 32} y={center.y + 11} width={64} height={13} rx="3" fill="rgba(22, 21, 20, 0.82)" stroke="rgba(127, 194, 173, 0.2)" strokeWidth="0.5" />
-        <text x={center.x} y={center.y + 20} fill="var(--gold)" fontSize="10" fontWeight="900" fontFamily="var(--font-sans)" letterSpacing="0.08em" textAnchor="middle">{center.label}</text>
+        <circle cx={center.x} cy={center.y} r="2" fill="rgb(21, 94, 78)" />
+        <rect x={center.x - 32} y={center.y + 11} width={64} height={13} rx="3" fill="rgba(251, 250, 246, 0.96)" stroke="rgba(21, 94, 78, 0.35)" strokeWidth="0.5" />
+        <text x={center.x} y={center.y + 20} fill="rgb(23, 21, 15)" fontSize="10" fontWeight="600" fontFamily="var(--font-sans)" letterSpacing="0.08em" textAnchor="middle">{center.label}</text>
       </svg>
       <div className="global-routes-legend" aria-hidden="true">
-        <span><i className="legend-dot legend-dot--professional" />Client delivery — US (onsite, B1/B2 visa) · UK · South Africa</span>
-        <span><i className="legend-dot legend-dot--personal" />Cultural exposure — Phuket · Nepal · Vietnam · Dubai</span>
+        <span><i className="legend-dot legend-dot--professional" />Client delivery: US (onsite, B1/B2 visa), UK, South Africa</span>
+        <span><i className="legend-dot legend-dot--personal" />Travel: Phuket, Nepal, Vietnam, Dubai</span>
       </div>
     </div>
   );
@@ -198,17 +198,17 @@ export default function HighlightsPage() {
     { value: "Global", label: "cross-border operating range" }
   ];
   const globalSignalLedger = [
-    { label: "US onsite delivery", value: "B1/B2 business visa — can appear in person with US clients" },
-    { label: "Remote stakeholder alignment", value: "UK / South Africa — multi-year delivery relationships" },
-    { label: "Cultural operating range", value: "Phuket · Nepal · Vietnam · Dubai — not limited to one geography" }
+    { label: "US onsite delivery", value: "B1/B2 business visa, so I can work in person with US clients" },
+    { label: "Remote stakeholder alignment", value: "UK and South Africa: multi-year delivery relationships" },
+    { label: "Cultural operating range", value: "Phuket, Nepal, Vietnam and Dubai" }
   ];
 
   return (
     <div data-theme="highlights">
     <PageFrame
-      eyebrow="Professional highlights"
-      title="Selected signals of client-facing trust."
-      intro="A tight evidence set for the moments that matter outside ordinary delivery metrics: onsite trust, global stakeholder exposure, and communication credibility."
+      eyebrow="Highlights"
+      title="Client visits, publications and other milestones."
+      intro="The moments that don’t show up in delivery numbers: working onsite with clients, international exposure and published writing."
       className="highlights-page-hero"
       heroAside={
         <motion.div className="highlights-hero-ledger" variants={itemReveal}>
@@ -259,8 +259,8 @@ export default function HighlightsPage() {
 
       <Reveal as={motion.section} className="global-map-card">
         <div className="global-map-card__header">
-          <span className="eyebrow">Interactive footprint</span>
-          <h2>Lived global travel & connection range</h2>
+          <span className="eyebrow">Travel</span>
+          <h2>Where work and travel have taken me</h2>
         </div>
         <div className="global-map-card__body">
           <GlobalRoutesMap />
