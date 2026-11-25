@@ -62,7 +62,7 @@ function FlagshipCase({ project }) {
       <div className="projects-case__body">
         <h3>{project.name}</h3>
         <p className="projects-case__headline">{project.preview?.result || project.headline}</p>
-        {project.preview && <SystemFlowPreview title={project.name} steps={project.preview.steps} />}
+        {project.preview && <SystemFlowPreview diagram={project.preview.diagram} />}
         <TextLink to={`/ai-projects/professional/${project.slug}`}>Read the case</TextLink>
       </div>
     </li>

@@ -227,7 +227,7 @@ export const profile = {
       headline: "90+ media data sources, each onboarded in 1–2 days.",
       preview: {
         result: "90+ media sources, onboarded in 1–2 days each.",
-        steps: ["Ingest", "Clean & enrich", "Deliver"]
+        diagram: "data-refinery"
       },
       context:
         "Dentsu International's media teams pulled advertising data from dozens of platforms, and every new source meant manual engineering before anyone could report on it.",
@@ -259,7 +259,7 @@ export const profile = {
       preview: {
         title: "Banking & payments platform",
         result: "160K+ daily transactions at 99.9% uptime.",
-        steps: ["Enroll", "Process ACH", "Score & settle"]
+        diagram: "banking-payments"
       },
       context:
         "A US bank needed white-label ACH debit payments for merchant, mobile and web commerce, with identity checks, fraud controls and compliance reporting built in.",

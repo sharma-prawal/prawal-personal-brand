@@ -16,12 +16,12 @@ import { profile } from "../data/profile.js";
 const featuredWork = professionalCasesWithSlugs.filter(({ preview }) => preview);
 
 const fieldPhotos = [
-  { records: conferenceAssets, title: "AI Impact Summit", to: "/conferences#featured-event", label: "AI Impact Summit" },
-  { records: professionalHighlights, title: "USA Client Business Visit", to: "/highlights#usa-client-business-visit", label: "Client visit, USA" },
-  { records: conferenceAssets, title: "Deloitte Fast 50", to: "/conferences#deloitte-fast-50", label: "Deloitte Fast 50" }
-].map(({ records, title, ...photo }) => ({
+  { records: conferenceAssets, title: "AI Impact Summit", photoIndex: 1, to: "/conferences#featured-event", label: "AI Impact Summit", caption: "On the exhibition floor at the 2026 summit.", lead: true },
+  { records: professionalHighlights, title: "USA Client Business Visit", photoIndex: 0, to: "/highlights#usa-client-business-visit", label: "Client visit, USA", caption: "A trip for onsite client collaboration." },
+  { records: conferenceAssets, title: "Deloitte Fast 50", photoIndex: 7, to: "/conferences#deloitte-fast-50", label: "Deloitte Fast 50", caption: "Onstage at the 2023 recognition event." }
+].map(({ records, title, photoIndex, ...photo }) => ({
   ...photo,
-  image: records.find((record) => record.title === title)?.images?.[0]
+  image: records.find((record) => record.title === title)?.images?.[photoIndex]
 })).filter(({ image }) => image);
 
 const featuredQuote = profile.recommendations.find(({ name }) => name === "Preet Saxena") || profile.recommendations[0];
@@ -65,7 +65,7 @@ function SelectedWork() {
       </header>
       <div className="home-work__grid">
         {featuredWork.map((project) => {
-          const { title = project.name, result, steps } = project.preview;
+          const { title = project.name, result, diagram } = project.preview;
           return (
             <article className="home-case" key={project.slug}>
               <div className="home-case__copy">
@@ -73,7 +73,7 @@ function SelectedWork() {
                 <p className="home-case__role">{project.role}</p>
                 <p className="home-case__result">{result}</p>
               </div>
-              <SystemFlowPreview title={title} steps={steps} />
+              <SystemFlowPreview diagram={diagram} />
               <Link className="home-link" to={`/ai-projects/professional/${project.slug}`} aria-label={`Read the ${title} case study`}>
                 Read case study <ArrowRight size={16} aria-hidden="true" />
               </Link>
@@ -91,12 +91,15 @@ function FieldStrip() {
     <section className="home-field" aria-labelledby="home-field-title">
       <h2 id="home-field-title">In the field</h2>
       <ul className="home-field__grid">
-        {fieldPhotos.map(({ to, label, image }) => (
-          <li key={label}>
+        {fieldPhotos.map(({ to, label, image, caption, lead }) => (
+          <li className={lead ? "home-field__lead" : "home-field__support"} key={label}>
             <Link to={to}>
               <figure>
-                <img src={encodeURI(image.src)} alt={image.alt || label} loading="lazy" decoding="async" />
-                <figcaption>{label} <ArrowRight size={16} aria-hidden="true" /></figcaption>
+                <img src={encodeURI(image.src)} alt="" loading="lazy" decoding="async" />
+                <figcaption>
+                  <span><strong>{label}</strong><span>{caption}</span></span>
+                  <ArrowRight size={16} aria-hidden="true" />
+                </figcaption>
               </figure>
             </Link>
           </li>

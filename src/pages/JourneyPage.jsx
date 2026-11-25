@@ -47,13 +47,13 @@ export default function JourneyPage() {
         intro="How hands-on engineering grew into owning systems, leading global delivery and building an AI-assisted way of working."
       >
         <div className="ledger-page">
-          <Reveal as={motion.section} className="home-section ledger-page__lead" aria-labelledby="journey-roles-title">
+          <Reveal as={motion.section} className="home-section ledger-page__lead career-timeline" aria-labelledby="journey-roles-title">
             <header className="home-section__head">
               <h2 id="journey-roles-title">Successive Digital, {successive.location}</h2>
             </header>
-            <ol className="role-ledger">
+            <ol className="role-ledger role-ledger--timeline">
               {successive.roles.map((role, idx) => (
-                <li key={role.title}>
+                <li key={role.title} aria-current={idx === 0 ? "true" : undefined}>
                   <div className="role-ledger__when">
                     <span>{formatRoleYears(role.period)}</span>
                     {idx === 0 ? <span className="role-ledger__current">Current role</span> : null}
