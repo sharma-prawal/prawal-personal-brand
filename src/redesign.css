@@ -418,7 +418,7 @@
 
 .home-recognition__list {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0 clamp(16px, 2.4vw, 32px);
   margin: 0;
   padding: 0;
@@ -435,7 +435,7 @@
 .home-recognition__img {
   display: block;
   overflow: hidden;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 3 / 2;
   margin-bottom: 12px;
   border-radius: 4px;
   background: var(--paper-light);
@@ -449,8 +449,9 @@
 }
 
 .home-recognition__list strong {
+  max-width: 30ch;
   font-family: var(--font-display);
-  font-size: 1.2rem;
+  font-size: clamp(1.25rem, 1.8vw, 1.5rem);
   font-weight: 400;
   line-height: 1.25;
   letter-spacing: -0.01em;
@@ -476,10 +477,10 @@
   .home-recognition__img img { transition: none; }
 }
 
-@media (max-width: 760px) {
+@media (max-width: 640px) {
   .home-recognition__list {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 22px 18px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
   }
 }
 

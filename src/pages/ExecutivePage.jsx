@@ -25,9 +25,27 @@ const fieldPhotos = [
   image: records.find((record) => record.title === title)?.images?.[photoIndex]
 })).filter(({ image }) => image);
 
-const recentAwards = ["ESOP Ownership Achievement Award", "Outstanding Contribution Award", "Employee of the Year (2023)", "Key Contributor Award"]
-  .map((title) => awardAssets.find((award) => award.title === title))
-  .filter((award) => award?.images?.[0]?.src);
+const findAward = (title) => awardAssets.find((award) => award.title === title);
+
+// Each group shares one photo of the awards together, so related awards read as one moment.
+const awardGroups = [
+  {
+    titles: ["ESOP Ownership Achievement Award", "Outstanding Contribution Award"],
+    label: "ESOP Ownership Achievement and Outstanding Contribution",
+    photo: { from: "ESOP Ownership Achievement Award", index: 1 },
+    alt: "The ESOP Ownership Achievement certificate and Outstanding Contribution trophy displayed together."
+  },
+  {
+    titles: ["Employee of the Year (2023)", "Key Contributor Award", "Longevity Award"],
+    label: "Employee of the Year, Key Contributor and Longevity",
+    photo: { from: "Key Contributor Award", index: 0 },
+    alt: "The Employee of the Year trophy with the Key Contributor and Longevity awards on one table."
+  }
+].map((group) => {
+  const awards = group.titles.map(findAward).filter(Boolean);
+  const src = findAward(group.photo.from)?.images?.[group.photo.index]?.src;
+  return { ...group, awards, src, date: awards[0]?.date };
+}).filter((group) => group.src && group.awards.length);
 
 const featuredQuote = profile.recommendations.find(({ name }) => name === "Preet Saxena") || profile.recommendations[0];
 
@@ -92,7 +110,7 @@ function SelectedWork() {
 }
 
 function Recognition() {
-  if (!recentAwards.length) return null;
+  if (!awardGroups.length) return null;
   return (
     <section className="home-recognition" aria-labelledby="home-recognition-title">
       <header className="home-heading">
@@ -103,14 +121,14 @@ function Recognition() {
         {awardAssets.length} awards in ten years at Successive Digital, for delivery, client work and long-term ownership.
       </p>
       <ul className="home-recognition__list">
-        {recentAwards.map((award) => (
-          <li key={award.title}>
+        {awardGroups.map((group) => (
+          <li key={group.label}>
             <Link to="/awards">
               <span className="home-recognition__img">
-                <img src={encodeURI(award.images[0].src)} alt={award.images[0].alt || award.title} loading="lazy" decoding="async" />
+                <img src={encodeURI(group.src)} alt={group.alt} loading="lazy" decoding="async" />
               </span>
-              <strong>{award.title.replace(/ \(\d{4}\)$/, "")}</strong>
-              <span>{award.date}</span>
+              <strong>{group.label}</strong>
+              <span>{group.date} · {group.awards.length} awards</span>
             </Link>
           </li>
         ))}
