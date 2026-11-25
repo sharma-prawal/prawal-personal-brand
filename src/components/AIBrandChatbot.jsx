@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import OverlayDialog from "./OverlayDialog.jsx";
 import { AnimatePresence, motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import {
@@ -508,6 +509,50 @@ function useCompactLauncherHidden() {
 export default function AIBrandChatbot({ downloadResume, generateExecutiveProfile }) {
   const [isOpen, setIsOpen] = useState(false);
   const launcherHidden = useCompactLauncherHidden();
+  const panelRef = useRef(null);
+  const inputRef = useRef(null);
+  const launcherRef = useRef(null);
+  const wasOpenRef = useRef(false);
+  const [isFullScreen, setIsFullScreen] = useState(false);
+
+  // Keyboard handling: focus the input on open, return focus to the launcher on close.
+  useEffect(() => {
+    if (isOpen) {
+      setIsFullScreen(window.matchMedia("(max-width: 480px), (max-height: 500px)").matches);
+      const frame = requestAnimationFrame(() => inputRef.current?.focus({ preventScroll: true }));
+      wasOpenRef.current = true;
+      return () => cancelAnimationFrame(frame);
+    }
+    if (wasOpenRef.current) {
+      wasOpenRef.current = false;
+      const frame = requestAnimationFrame(() => {
+        const target = launcherRef.current || document.getElementById("main");
+        target?.focus({ preventScroll: true });
+      });
+      return () => cancelAnimationFrame(frame);
+    }
+  }, [isOpen]);
+
+  const handlePanelKeyDown = (event) => {
+    if (event.key === "Escape") {
+      event.stopPropagation();
+      setIsOpen(false);
+      return;
+    }
+    // When the panel covers the whole screen it behaves as a modal: keep Tab inside it.
+    if (event.key !== "Tab" || !isFullScreen || !panelRef.current) return;
+    const focusable = [...panelRef.current.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])')];
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  };
   const [messages, setMessages] = useState([
     {
       id: "welcome",
@@ -735,6 +780,7 @@ export default function AIBrandChatbot({ downloadResume, generateExecutiveProfil
       <AnimatePresence>
         {!isOpen && !launcherHidden && (
           <motion.button
+            ref={launcherRef}
             className="chatbot-fab"
             onClick={() => setIsOpen(true)}
             initial={{ scale: 0.6, opacity: 0 }}
@@ -757,9 +803,11 @@ export default function AIBrandChatbot({ downloadResume, generateExecutiveProfil
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: 30, opacity: 0, scale: 0.94 }}
             transition={{ duration: 0.36, ease: premiumEase }}
+            ref={panelRef}
             role="dialog"
-            aria-modal="true"
+            aria-modal={isFullScreen ? "true" : undefined}
             aria-label="Prawal AI Assistant"
+            onKeyDown={handlePanelKeyDown}
           >
             <div className="chatbot-header">
               <div className="header-identity">
@@ -796,7 +844,7 @@ export default function AIBrandChatbot({ downloadResume, generateExecutiveProfil
 
             {/* Message Area */}
             <div className="chatbot-body">
-              <div className="chat-messages-container">
+              <div className="chat-messages-container" role="log" aria-live="polite" aria-label="Conversation">
                 {messages.map((message) => {
                   const parseTextInline = (lineText) => {
                     const inlineRegex = /(\*\*.*?\*\*)|(\*.*?\*)|(\`[^\`]+\`)|(\[.*?\]\(.*?\))/g;
@@ -1019,7 +1067,9 @@ export default function AIBrandChatbot({ downloadResume, generateExecutiveProfil
                 }}
               >
                 <input
+                  ref={inputRef}
                   type="text"
+                  aria-label="Ask the assistant a question"
                   placeholder="Ask about leadership, cloud, AI, or proof..."
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
@@ -1037,29 +1087,23 @@ export default function AIBrandChatbot({ downloadResume, generateExecutiveProfil
         )}
       </AnimatePresence>
 
-      {/* Premium Lightbox Modal */}
-      <AnimatePresence>
-        {activeLightboxImage && (
-          <motion.div
-            className="chat-lightbox-overlay"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setActiveLightboxImage(null)}
-          >
+      {/* Image viewer: a native modal dialog (Escape, focus trap and focus return). */}
+      {activeLightboxImage && (
+        <OverlayDialog className="chat-lightbox-dialog" label={activeLightboxImage.alt || "Image"} onDismiss={() => setActiveLightboxImage(null)}>
+          <div className="chat-lightbox-overlay" onClick={() => setActiveLightboxImage(null)}>
             <motion.div
               className="chat-lightbox-content"
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
               transition={{ duration: 0.28, ease: premiumEase }}
               onClick={(e) => e.stopPropagation()}
             >
               <button
                 className="chat-lightbox-close"
                 onClick={() => setActiveLightboxImage(null)}
-                aria-label="Close Lightbox"
+                aria-label="Close image"
                 type="button"
+                data-dialog-initial-focus
               >
                 <X size={24} />
               </button>
@@ -1069,13 +1113,12 @@ export default function AIBrandChatbot({ downloadResume, generateExecutiveProfil
               {activeLightboxImage.alt && (
                 <div className="chat-lightbox-caption">
                   <h3>{activeLightboxImage.alt}</h3>
-                  <span>Official Visual Verification Proof</span>
                 </div>
               )}
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </div>
+        </OverlayDialog>
+      )}
     </div>
   );
 }

@@ -61,17 +61,17 @@ function AwardProofViewer({ award, signal, onClose, returnFocusRef }) {
         </div>
 
         {award.images && award.images.length > 1 && (
-          <div className="award-modal__thumbs" aria-label="Award proof thumbnails">
+          <div className="award-modal__thumbs" aria-label="Award photos">
             {award.images.map((img, idx) => (
               <button
                 className={idx === activeImageIndex ? "is-active" : undefined}
                 type="button"
                 key={img.src || idx}
                 onClick={() => setActiveImageIndex(idx)}
-                aria-label={`View proof image ${idx + 1}`}
+                aria-label={`Show photo ${idx + 1} of ${award.images.length}`}
                 aria-pressed={idx === activeImageIndex}
               >
-                <img src={imageSrc(img)} alt={`${award.title} proof thumbnail ${idx + 1}`} />
+                <img src={imageSrc(img)} alt="" />
               </button>
             ))}
           </div>

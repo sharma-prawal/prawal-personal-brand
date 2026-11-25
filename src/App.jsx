@@ -126,9 +126,21 @@ function useRouteTitle(pathname) {
   }, [pathname]);
 }
 
+// After an in-app navigation, move focus to the new page so keyboard and
+// screen-reader users start at the content rather than on the old nav link.
+function useFocusMainOnNavigate(pathname) {
+  const previousPath = useRef(pathname);
+  useEffect(() => {
+    if (previousPath.current === pathname) return;
+    previousPath.current = pathname;
+    document.getElementById("main")?.focus({ preventScroll: true });
+  }, [pathname]);
+}
+
 function AppShell() {
   const location = useLocation();
   useRouteTitle(location.pathname);
+  useFocusMainOnNavigate(location.pathname);
   const shouldReduceMotion = useReducedMotion();
   const topNavRef = useRef(null);
   const mobileNavTrigger = useRef(null);
@@ -206,6 +218,16 @@ function AppShell() {
   return (
     <div className={`site-shell${mobileNavOpen ? " nav-open" : ""}`} data-theme={currentTheme}>
       <ScrollToTop />
+      <a
+        className="skip-link"
+        href="#main"
+        onClick={(event) => {
+          event.preventDefault();
+          document.getElementById("main")?.focus();
+        }}
+      >
+        Skip to content
+      </a>
       <header className={`topbar${isScrolled ? " is-scrolled" : ""}`}>
         <Link className="brand-lockup" to="/" aria-label="Prawal Sharma home">
           <strong>{profile.name}</strong>
@@ -328,7 +350,7 @@ function AppShell() {
         </OverlayDialog>
       )}
 
-      <main aria-label="Main content">
+      <main id="main" tabIndex={-1} aria-label="Main content">
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             className="route-motion"

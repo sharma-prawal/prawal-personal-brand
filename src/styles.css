@@ -124,6 +124,34 @@ img {
   display: block;
 }
 
+.skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 12000;
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  background: rgb(var(--accent-deep-rgb));
+  color: #fff;
+  font-weight: 500;
+  transform: translateY(-160%);
+  transition: transform 0.15s var(--ease);
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+main:focus {
+  outline: none;
+}
+
+/* Holds the page's space while a lazy route loads, so the footer
+   does not flash into view and then jump down (layout shift). */
+.page-suspense-fallback {
+  min-height: 100vh;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -1091,8 +1119,8 @@ a.recommendation-verification--link:hover {
 .mobile-nav-header button {
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   border:1px solid rgba(var(--fg-rgb), 0.12);
   border-radius: 50%;
   background:rgba(var(--fg-rgb), 0.07);
@@ -1354,7 +1382,7 @@ main {
 }
 
 .connection-badge.groq .connection-dot {
-  background-color: #0ea5e9;
+  background-color: rgb(var(--accent-deep-rgb));
 }
 
 .connection-badge.sandbox .connection-dot {
@@ -1375,8 +1403,8 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 44px;
+  height: 44px;
   border-radius: 8px;
   transition: all 200ms ease;
   padding: 0;
@@ -1613,6 +1641,7 @@ main {
 
 /* Input Footer */
 .chatbot-footer {
+  flex-shrink: 0;
   padding: 12px 14px 14px;
   background: var(--raised);
   border-top: 1px solid var(--theme-accent-glow-strong);
@@ -1644,7 +1673,8 @@ main {
   padding: 8px 0;
 }
 
-@media (min-width: 481px) {
+/* Smaller input text only with a mouse; touch devices keep 16px so iOS does not zoom on focus. */
+@media (min-width: 481px) and (hover: hover) and (pointer: fine) {
   .chatbot-footer input {
     font-size: 0.86rem;
   }
@@ -1811,8 +1841,8 @@ main {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Responsive Overrides */
-@media (max-width: 480px) {
+/* Responsive Overrides: full screen on phones, including landscape */
+@media (max-width: 480px), (max-height: 500px) {
   .chatbot-panel {
     position: fixed;
     bottom: 0;
@@ -2156,6 +2186,7 @@ main {
 .image-carousel__slide-area {
   width: 100%;
   height: 100%;
+  touch-action: pan-y; /* vertical scroll stays native; horizontal drags swipe */
 }
 
 .image-carousel__slide-area--zoomable {
@@ -2173,8 +2204,8 @@ main {
   top: 50%;
   z-index: 10;
   transform: translateY(-50%);
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   display: inline-flex;
   align-items: center;
   justify-content: center;

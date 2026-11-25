@@ -1,4 +1,5 @@
 import { createImageMeta } from "./imageMetadata.js";
+import { describeImage } from "./imageDescriptions.js";
 
 export const routes = [
   { path: "/", label: "Home" },
@@ -363,8 +364,8 @@ export const aiProjects = aiProjectRecords.map((project) => ({
       title: `${project.name} proof ${index + 1}`,
       date: "Project proof archive",
       category: project.type,
-      alt: `${project.name} screenshot proof ${index + 1}`,
-      caption: index === 0 ? project.previewCaption : `${project.name} supporting screenshot ${index + 1}.`,
+      alt: describeImage(src) || `${project.name}, screenshot ${index + 1} of ${project.images.length}`,
+      caption: index === 0 ? project.previewCaption : describeImage(src) || `${project.name}, screenshot ${index + 1}.`,
       featured: index === 0,
       priority: index === 0
     })

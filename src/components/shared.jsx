@@ -114,14 +114,44 @@ export function ImageCarousel({ images, renderImage, size = "default", onSlideCl
     setActiveImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
+  // Touch swipe: a horizontal drag of 40px or more changes the image.
+  const swipeStart = useRef(null);
+  const swiped = useRef(false);
+  const handlePointerDown = (e) => {
+    swiped.current = false;
+    swipeStart.current = e.pointerType === "mouse" ? null : { x: e.clientX, y: e.clientY };
+  };
+  const handlePointerUp = (e) => {
+    const start = swipeStart.current;
+    swipeStart.current = null;
+    if (!start || images.length < 2) return;
+    const dx = e.clientX - start.x;
+    if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(e.clientY - start.y)) return;
+    swiped.current = true;
+    if (dx < 0) setActiveImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+    else setActiveImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  };
+
+  // A click anywhere on the slide opens the image's own zoom button. Ignore clicks
+  // that come from the open viewer (rendered in a portal but bubbling through
+  // React), clicks on the zoom button itself, and the click that ends a swipe.
+  const handleSlideClick = (e) => {
+    if (!onSlideClick) return;
+    if (swiped.current) {
+      swiped.current = false;
+      return;
+    }
+    if (!e.currentTarget.contains(e.target) || e.target.closest(".proof-image-button")) return;
+    onSlideClick(e);
+  };
+
   return (
     <div className={`image-carousel${isCompact ? " image-carousel--compact" : ""}`}>
       <div
         className={`image-carousel__slide-area${onSlideClick ? " image-carousel__slide-area--zoomable" : ""}`}
-        onClick={onSlideClick}
-        onKeyDown={onSlideClick ? (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onSlideClick(e); } } : undefined}
-        role={onSlideClick ? "button" : undefined}
-        tabIndex={onSlideClick ? 0 : undefined}
+        onClick={handleSlideClick}
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
       >
         <AnimatePresence mode="wait">
           <motion.div
