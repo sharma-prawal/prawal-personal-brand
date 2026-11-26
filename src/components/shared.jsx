@@ -254,9 +254,12 @@ export function MotionCard({ className, children, priority = false, immediate = 
 
 export function Magnetic({ children, strength = 10 }) {
   const shouldReduceMotion = useReducedMotion();
-  const [hasFinePointer] = useState(() =>
-    typeof window !== "undefined" && window.matchMedia("(hover: hover) and (pointer: fine)").matches
-  );
+  // Read after mount: the pre-rendered HTML has no pointer, so the first
+  // render must match it.
+  const [hasFinePointer, setHasFinePointer] = useState(false);
+  useEffect(() => {
+    setHasFinePointer(window.matchMedia("(hover: hover) and (pointer: fine)").matches);
+  }, []);
   const active = !shouldReduceMotion && hasFinePointer;
   const x = useMotionValue(0);
   const y = useMotionValue(0);

@@ -9,5 +9,6 @@
 /scratch/
 /docs/
 /dist/
+/dist-ssr/
 /.claude/
 /VISUAL_AUDIT_TRACKER.md
