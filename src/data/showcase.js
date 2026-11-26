@@ -170,19 +170,18 @@ const aiProjectRecords = [
     images: ["/media/projects/github/personal-assistant.jpg"]
   },
   {
-    name: "AI Brand Assistant",
+    name: "Data Refinery Connectors MCP Server",
     group: "ai",
-    type: "RAG chatbot",
-    stage: "Live on this site",
-    summary: "The chat assistant on this site (the speech-bubble button): it answers questions about my work from a structured knowledge base.",
-    problem: "Visitors often have one specific question, such as which cloud certifications I hold, and a long page answers it slowly.",
-    solution: "Intent classification and synonym-expanded retrieval pick the most relevant knowledge-base chunks, which are added to the prompt and streamed back from the model.",
-    aiUsage: "Retrieval-augmented generation over the site's own data, using the Groq API with Llama 4 Scout.",
-    outcome: "Live on every page of this site.",
-    stack: ["React", "Groq API", "Llama 4 Scout", "RAG"],
-    repo: "https://github.com/sharma-prawal/prawal-personal-brand",
-    previewCaption: "The live assistant opens with suggested questions and shortcuts.",
-    images: ["/media/projects/github/ai-brand-assistant.jpg"]
+    type: "MCP server",
+    stage: "Hackathon POC",
+    summary: "An MCP server that lets AI agents check, create, enable, disable and delete Data Refinery datastreams in plain language: 26 tools over five APIs, hosted as a Databricks App.",
+    problem: "Connector onboarding meant hand-clicking the Data Refinery UI for every client, market and platform. The team had shown it could be automated but had no governed API path for agents.",
+    solution: "A FastMCP server at /mcp, inside one Databricks App, wraps five downstream APIs as 26 tools: 21 read, 5 write. A built-in chat UI runs a tool-calling loop, and Claude Code or Copilot can connect to the same server. I built the Adverity GraphQL integration, the chat-driven connector-creation flow, and enable, disable and delete, hardened against two upstream bugs.",
+    aiUsage: "Claude Sonnet on Databricks drives the tool-calling loop. Every call carries the user's own Okta token, so each read and write is attributable.",
+    outcome: "Demoed live as a hackathon POC: 26 tools shipped against 7 planned. It still needs a security review, rate limiting and a human-approval step for deletes before production.",
+    stack: ["MCP", "FastMCP", "FastAPI", "Databricks Apps", "Claude Sonnet", "Okta"],
+    previewCaption: "Architecture: MCP clients, the FastMCP tool layer, and the five downstream APIs it wraps.",
+    images: ["/media/projects/Data Refinery MCP Server/architecture.svg"]
   },
   {
     name: "The Series",

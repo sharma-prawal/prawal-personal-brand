@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#1f8a70"/>
+    </marker>
+  </defs>
+
+  <rect width="1600" height="900" fill="#f6f8fb"/>
+  <circle cx="1420" cy="120" r="230" fill="#e9eef6"/>
+
+  <!-- Title -->
+  <text x="64" y="92" font-size="40" font-weight="700" fill="#1b2a4e">Data Refinery Connectors MCP Server</text>
+  <text x="64" y="134" font-size="21" fill="#4a5670">Connector operations through a governed, agent-callable tool layer</text>
+  <rect x="1312" y="62" width="224" height="38" rx="19" fill="#1f8a70"/>
+  <text x="1424" y="87" font-size="15" font-weight="700" fill="#ffffff" text-anchor="middle" letter-spacing="1.2">HACKATHON POC</text>
+
+  <!-- Column 1: MCP clients -->
+  <rect x="64" y="190" width="380" height="450" rx="14" fill="#ffffff" stroke="#d5dbe6" stroke-width="2"/>
+  <rect x="88" y="218" width="5" height="26" fill="#1b2a4e"/>
+  <text x="104" y="239" font-size="22" font-weight="700" fill="#1b2a4e">MCP clients</text>
+  <text x="104" y="266" font-size="15" fill="#6a748a">Anything that speaks MCP</text>
+  <g font-size="17" fill="#26324d">
+    <rect x="88" y="296" width="332" height="74" rx="10" fill="#eef3fa"/>
+    <text x="108" y="327" font-weight="600">Built-in chat UI</text>
+    <text x="108" y="352" font-size="15" fill="#4a5670">Claude Sonnet runs the tool-calling loop</text>
+    <rect x="88" y="384" width="332" height="56" rx="10" fill="#eef3fa"/>
+    <text x="108" y="419" font-weight="600">Claude Code</text>
+    <rect x="88" y="454" width="332" height="56" rx="10" fill="#eef3fa"/>
+    <text x="108" y="489" font-weight="600">VS Code / Copilot</text>
+    <rect x="88" y="524" width="332" height="56" rx="10" fill="#eef3fa"/>
+    <text x="108" y="559" font-weight="600">Other teams' agents</text>
+  </g>
+  <text x="104" y="614" font-size="14" fill="#6a748a">Same tools, including writes</text>
+
+  <!-- Arrow 1 -->
+  <line x1="452" y1="415" x2="548" y2="415" stroke="#1f8a70" stroke-width="3" marker-end="url(#arrow)" marker-start="url(#arrow)"/>
+  <text x="500" y="396" font-size="12" font-weight="700" fill="#1f8a70" text-anchor="middle" letter-spacing="1">STREAMABLE</text>
+  <text x="500" y="442" font-size="12" font-weight="700" fill="#1f8a70" text-anchor="middle" letter-spacing="1">HTTP · STDIO</text>
+
+  <!-- Column 2: MCP server -->
+  <rect x="560" y="190" width="480" height="450" rx="14" fill="#ffffff" stroke="#1f8a70" stroke-width="3"/>
+  <rect x="584" y="218" width="5" height="26" fill="#1f8a70"/>
+  <text x="600" y="239" font-size="22" font-weight="700" fill="#1b2a4e">FastMCP server at /mcp</text>
+  <text x="600" y="266" font-size="15" fill="#6a748a">One Databricks App · FastAPI · 26 tools</text>
+
+  <rect x="584" y="292" width="432" height="176" rx="10" fill="#eef3fa"/>
+  <text x="604" y="324" font-size="18" font-weight="700" fill="#1b2a4e">Read · 21 tools</text>
+  <g font-size="16" fill="#26324d">
+    <text x="604" y="356">• Credentials and datastreams</text>
+    <text x="604" y="384">• Change history and activity logs</text>
+    <text x="604" y="412">• Connector forms and reference data</text>
+    <text x="604" y="440">• Data Serve catalogs and destinations</text>
+  </g>
+
+  <rect x="584" y="482" width="432" height="134" rx="10" fill="#e3f3ee"/>
+  <text x="604" y="514" font-size="18" font-weight="700" fill="#145c4b">Write · 5 tools</text>
+  <g font-size="16" fill="#26324d">
+    <text x="604" y="546">• Preview payload, then create a datastream</text>
+    <text x="604" y="574">• Enable, disable, delete</text>
+    <text x="604" y="602">• Delete re-checks that it took effect</text>
+  </g>
+
+  <!-- Arrow 2 -->
+  <line x1="1048" y1="415" x2="1144" y2="415" stroke="#1f8a70" stroke-width="3" marker-end="url(#arrow)"/>
+  <text x="1096" y="396" font-size="12" font-weight="700" fill="#1f8a70" text-anchor="middle" letter-spacing="1">PER-USER</text>
+  <text x="1096" y="442" font-size="12" font-weight="700" fill="#1f8a70" text-anchor="middle" letter-spacing="1">OKTA TOKEN</text>
+
+  <!-- Column 3: downstream APIs -->
+  <rect x="1156" y="190" width="380" height="450" rx="14" fill="#ffffff" stroke="#d5dbe6" stroke-width="2"/>
+  <rect x="1180" y="218" width="5" height="26" fill="#1b2a4e"/>
+  <text x="1196" y="239" font-size="22" font-weight="700" fill="#1b2a4e">Downstream APIs</text>
+  <text x="1196" y="266" font-size="15" fill="#6a748a">Five services wrapped</text>
+  <g font-size="17" font-weight="600" fill="#26324d">
+    <rect x="1180" y="296" width="332" height="56" rx="10" fill="#eef3fa"/>
+    <text x="1200" y="331">Connectors API</text>
+    <rect x="1180" y="362" width="332" height="56" rx="10" fill="#eef3fa"/>
+    <text x="1200" y="397">Adverity GraphQL gateway</text>
+    <rect x="1180" y="428" width="332" height="56" rx="10" fill="#eef3fa"/>
+    <text x="1200" y="463">Reference Data API</text>
+    <rect x="1180" y="494" width="332" height="56" rx="10" fill="#eef3fa"/>
+    <text x="1200" y="529">Data Serve API</text>
+    <rect x="1180" y="560" width="332" height="56" rx="10" fill="#eef3fa"/>
+    <text x="1200" y="595">Activity Logs</text>
+  </g>
+
+  <!-- Bottom band -->
+  <rect x="0" y="690" width="1600" height="210" fill="#1b2a4e"/>
+  <text x="64" y="742" font-size="13" font-weight="700" fill="#8fd3bf" letter-spacing="1.4">GOVERNED ACCESS</text>
+  <text x="64" y="778" font-size="20" fill="#ffffff">Databricks SSO at the front door, the user's Okta token forwarded per tenant:</text>
+  <text x="64" y="808" font-size="20" fill="#ffffff">every read and write is attributable, with no shared credentials.</text>
+
+  <rect x="1084" y="722" width="452" height="128" rx="12" fill="#26386a"/>
+  <text x="1160" y="784" font-size="40" font-weight="700" fill="#ffffff" text-anchor="middle">26</text>
+  <text x="1160" y="814" font-size="14" fill="#c9d3ea" text-anchor="middle">MCP tools</text>
+  <text x="1310" y="784" font-size="40" font-weight="700" fill="#ffffff" text-anchor="middle">5</text>
+  <text x="1310" y="814" font-size="14" fill="#c9d3ea" text-anchor="middle">APIs wrapped</text>
+  <text x="1460" y="780" font-size="22" font-weight="700" fill="#8fd3bf" text-anchor="middle">Read +</text>
+  <text x="1460" y="806" font-size="22" font-weight="700" fill="#8fd3bf" text-anchor="middle">Write</text>
+  <text x="1460" y="830" font-size="13" fill="#c9d3ea" text-anchor="middle">live actions</text>
+</svg>

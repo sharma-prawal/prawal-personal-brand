@@ -15,7 +15,7 @@ const portfolioOrder = [
   "OpsPilot AI",
   "AI-Driven Datastream Intelligence POC",
   "J.A.R.V.I.S. Personal Assistant",
-  "AI Brand Assistant",
+  "Data Refinery Connectors MCP Server",
   "The Series",
   "Personal Branding Site",
   "Sunrise Public School Website",

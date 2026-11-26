@@ -5,6 +5,7 @@ import { PageFrame, ProofImage, ProofIndex, Reveal } from "../components/shared.
 import { imageAlt, imageCaption, imageSrc } from "../data/imageMetadata.js";
 import { aiProjectsWithSlugs, professionalCasesWithSlugs } from "../data/derived.js";
 import SystemFlowPreview from "../components/SystemFlowPreview.jsx";
+import { profile } from "../data/profile.js";
 
 // Domains are counted from the case data so the numbers always add up.
 const domainGroups = [
@@ -141,7 +142,6 @@ export default function AIProjectsPage() {
   const featuredBuild = aiBuilds.find((p) => p.name === "OpsPilot AI") || aiBuilds[0];
   const otherAiBuilds = aiBuilds.filter((p) => p !== featuredBuild);
   const productBuilds = byGroup("product");
-  const funBuilds = byGroup("fun");
 
   const domains = domainGroups.map((group) => ({
     ...group,
@@ -212,24 +212,13 @@ export default function AIProjectsPage() {
               {productBuilds.map((project) => <BuildCard project={project} key={project.name} />)}
             </ul>
 
-            {funBuilds.length ? (
-              <div className="projects-fun">
-                <h3 className="projects-subhead">For fun</h3>
-                <ul>
-                  {funBuilds.map((project) => (
-                    <li key={project.name}>
-                      <Link to={`/ai-projects/${project.slug}`}>
-                        <span className="projects-fun__thumb">
-                          <img src={encodeURI(imageSrc(project.images[0]))} alt="" loading="lazy" decoding="async" />
-                        </span>
-                        <span className="projects-fun__name">{project.name}</span>
-                        <span className="projects-fun__type">{project.type}</span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
+            <aside className="projects-github" aria-labelledby="projects-github-title">
+              <div>
+                <h3 id="projects-github-title">The complete project portfolio</h3>
+                <p>Every repository is on GitHub, including the experiments, games and side projects that aren't written up here.</p>
               </div>
-            ) : null}
+              <TextLink href={profile.contact.github}>github.com/sharma-prawal</TextLink>
+            </aside>
           </Reveal>
 
           <Reveal as={motion.section} className="home-section home-section--split projects-section" id="case-study-model" aria-labelledby="projects-model-title">
