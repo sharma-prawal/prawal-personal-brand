@@ -3300,7 +3300,7 @@ p.case-modules--after-list {
   }
 }
 
-/* Keeps "Experimental · v0.11" style values from breaking at the dot. */
+/* Keeps "Experimental · v0.12" style values from breaking at the dot. */
 .nowrap-part {
   white-space: nowrap;
 }

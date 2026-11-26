@@ -142,7 +142,7 @@ const aiProjectRecords = [
     name: "OpsPilot AI",
     group: "ai",
     type: "Agentic AI",
-    stage: "Experimental · v0.11",
+    stage: "Experimental · v0.12",
     summary: "Local-first incident investigation: a LangGraph agent correlates telemetry, change history, service dependencies and runbooks, proposes a fix, waits for a human to approve it, runs it in a sandbox and writes the RCA.",
     problem: "On-call engineers piece together logs, metrics, recent deploys and runbooks by hand before they can even guess at a root cause.",
     solution: "A LangGraph investigation workflow that calls two MCP servers (13 read tools, 2 action tools), retrieves runbooks with hybrid pgvector and full-text search, writes evidence-cited root-cause hypotheses and proposes a remediation from a fixed catalogue. A signed, hash-bound operator approval is required before the sandboxed action runs.",
