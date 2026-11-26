@@ -473,21 +473,28 @@ function getSandboxResponse(inputText) {
   };
 }
 
-// On phones the launcher sits over the first screen's links and the footer's
-// controls, so it only appears once the reader is past the hero and before the footer.
+// The launcher is a fixed button in the bottom-right corner. Where the page
+// margin is narrower than the button (below ~1400px wide) it would sit over
+// content, so it hides while the reader scrolls down and returns when they
+// scroll up. It also hides over the footer, and on phones over the hero.
 function useCompactLauncherHidden() {
   const [hidden, setHidden] = useState(false);
   useEffect(() => {
-    const compact = window.matchMedia("(max-width: 760px)");
+    const phone = window.matchMedia("(max-width: 760px)");
+    const narrow = window.matchMedia("(max-width: 1399px)");
     let frame = 0;
+    let lastY = window.scrollY;
+    let scrollingDown = false;
     const update = () => {
       frame = 0;
-      if (!compact.matches) {
-        setHidden(false);
-        return;
-      }
+      const y = window.scrollY;
+      if (Math.abs(y - lastY) > 4) scrollingDown = y > lastY;
+      lastY = y;
       const footerTop = document.querySelector(".site-footer")?.getBoundingClientRect().top ?? Infinity;
-      setHidden(window.scrollY < window.innerHeight * 0.6 || footerTop < window.innerHeight);
+      const overFooter = footerTop < window.innerHeight;
+      const overHero = phone.matches && y < window.innerHeight * 0.6;
+      const inTheWay = narrow.matches && scrollingDown && y > 120;
+      setHidden(overFooter || overHero || inTheWay);
     };
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(update);
@@ -495,12 +502,10 @@ function useCompactLauncherHidden() {
     update();
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule);
-    compact.addEventListener("change", schedule);
     return () => {
       cancelAnimationFrame(frame);
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
-      compact.removeEventListener("change", schedule);
     };
   }, []);
   return hidden;

@@ -43,7 +43,7 @@ export default function JourneyPage() {
     <div data-theme="journey">
       <PageFrame
         eyebrow="Career"
-        title="From trainee to technology manager in seven years."
+        title="Trainee in 2017, technology manager by 2024."
         intro="How hands-on engineering grew into owning systems, leading global delivery and building an AI-assisted way of working."
       >
         <div className="ledger-page">
@@ -62,7 +62,7 @@ export default function JourneyPage() {
                     <h3>{role.title}</h3>
                     {roleResults[idx] && <p className="role-ledger__summary">{roleResults[idx]}</p>}
                     <details className="role-ledger__details">
-                      <summary>Role details</summary>
+                      <summary><span className="summary-closed">Role details</span><span className="summary-open">Hide details</span></summary>
                       <ul>
                         {role.details.map((detail) => <li key={detail}>{detail}</li>)}
                       </ul>

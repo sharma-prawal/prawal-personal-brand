@@ -641,9 +641,11 @@ h1,
   gap: clamp(24px, 4vw, 48px);
   margin: 46px auto 0;
   width: min(1200px, 100%);
-  padding: 6px 0;
+  padding: 10px 0;
   border-block: 1px solid var(--line);
-  background: var(--paper);
+  background: rgba(244, 241, 234, 0.92);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 6px 14px -12px rgba(23, 21, 15, 0.35);
 }
 
 .proof-index > div:first-child {
@@ -1471,7 +1473,6 @@ main {
   display: flex;
   flex-direction: column;
   gap: 18px;
-  margin-top: auto;
 }
 
 .chat-msg {
@@ -2213,9 +2214,11 @@ main {
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  color: var(--ink);
-  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  color: #fff;
+  background: rgba(23, 21, 15, 0.55); /* dark scrim: visible on bright photos */
+  backdrop-filter: blur(4px);
+  box-shadow: 0 2px 10px rgba(23, 21, 15, 0.25);
   cursor: pointer;
   transition:
     background 200ms var(--ease),
@@ -2235,9 +2238,9 @@ main {
 .carousel-nav-btn--compact.carousel-nav-btn--next { right: 12px; }
 
 .carousel-nav-btn:hover {
-  background: rgba(255, 255, 255, 0.88);
-  border-color: rgba(34, 33, 32, 0.22);
-  color: #1e1d1c;
+  background: rgba(23, 21, 15, 0.78);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: #fff;
 }
 
 .carousel-indicator {

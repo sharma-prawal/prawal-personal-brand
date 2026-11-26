@@ -75,7 +75,11 @@ export default function ProjectCaseStudyPage() {
             {facts.map((fact) => (
               <div key={fact.label}>
                 <dt>{fact.label}</dt>
-                <dd>{fact.value}</dd>
+                <dd>
+                  {String(fact.value).split(" · ").map((part, i) => (
+                    <span key={part}>{i ? " · " : null}<span className="nowrap-part">{part}</span></span>
+                  ))}
+                </dd>
               </div>
             ))}
           </dl>

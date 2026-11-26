@@ -70,10 +70,17 @@ function CourseArchive({ courses }) {
         <h2 id="courses-title">Courses</h2>
         <p>{courses.length} course certificates, kept as a record of ongoing learning.</p>
       </header>
-      {!open ? (
-        <button type="button" className="secondary-link" onClick={() => setOpen(true)}>Show courses</button>
-      ) : (
-        <div className="course-archive">
+      <button
+        type="button"
+        className="secondary-link course-archive__toggle"
+        aria-expanded={open}
+        aria-controls="course-archive"
+        onClick={() => setOpen((value) => !value)}
+      >
+        {open ? "Hide courses" : `Show ${courses.length} courses`}
+      </button>
+      {open ? (
+        <div className="course-archive" id="course-archive">
           <div className="course-archive__controls">
             <label className="course-archive__search">
               <Search size={16} aria-hidden="true" />
@@ -110,7 +117,7 @@ function CourseArchive({ courses }) {
             </button>
           ) : null}
         </div>
-      )}
+      ) : null}
     </Reveal>
   );
 }

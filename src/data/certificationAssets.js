@@ -163,14 +163,19 @@ const eliteFiles = new Map([
   }]
 ]);
 
+// Course titles come from certificate filenames, e.g.
+// "AWS Certified Solutions Architect - Associate (SAA-C01)- 2 Storage Design.png"
+// -> "AWS Certified Solutions Architect – Associate (SAA-C01): 2 Storage Design".
+// Hyphens inside words and exam codes (Self-Confidence, AZ-900) are kept.
 function titleFromPath(file) {
-  const filename = file.split("/").at(-1);
-  return filename
-    .replace(/\.(png|jpe?g|webp|pdf)$/i, "")
-    .replace(/\.png$/i, "")
-    .replace(/\.jpg$/i, "")
+  let title = file.split("/").at(-1).replace(/(\.(png|jpe?g|webp|pdf))+$/i, "");
+  if (!/\s/.test(title)) title = title.replace(/[-_]+/g, " "); // "Apollo-Certified-Prawal-Sharma"
+  return title
+    .replace(/^\[NEW\]\s*/i, "")
     .replace(/_/g, " ")
-    .replace(/-/g, " ")
+    .replace(/\s+-\s+/g, " – ")
+    .replace(/(\S)-\s+/g, "$1: ")
+    .replace(/\b([A-Z]{2,3}-\d{3}):([A-Z]{2,3}-\d{3})\b/g, "$1/$2")
     .replace(/\s+/g, " ")
     .trim();
 }

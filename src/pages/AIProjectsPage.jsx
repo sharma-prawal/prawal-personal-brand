@@ -208,7 +208,7 @@ export default function AIProjectsPage() {
               <h2 id="projects-product-title">Product builds</h2>
               <p>Shipped sites and apps outside my day job, built AI-assisted from idea to release.</p>
             </header>
-            <ul className="projects-builds">
+            <ul className="projects-builds projects-builds--pairs">
               {productBuilds.map((project) => <BuildCard project={project} key={project.name} />)}
             </ul>
 
