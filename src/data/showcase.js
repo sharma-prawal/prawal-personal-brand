@@ -174,7 +174,7 @@ const aiProjectRecords = [
     group: "ai",
     type: "RAG chatbot",
     stage: "Live on this site",
-    summary: "The chat assistant in the corner of this site: it answers questions about my work from a structured knowledge base.",
+    summary: "The chat assistant on this site (the speech-bubble button): it answers questions about my work from a structured knowledge base.",
     problem: "Visitors often have one specific question, such as which cloud certifications I hold, and a long page answers it slowly.",
     solution: "Intent classification and synonym-expanded retrieval pick the most relevant knowledge-base chunks, which are added to the prompt and streamed back from the model.",
     aiUsage: "Retrieval-augmented generation over the site's own data, using the Groq API with Llama 4 Scout.",
@@ -187,6 +187,7 @@ const aiProjectRecords = [
   {
     name: "The Series",
     group: "product",
+    thumbFit: "letterbox", // wide cover art: show it whole on black instead of cropping the title
     type: "Portfolio platform",
     stage: "Live",
     summary: "My career told as a streaming-style series, with an intro sequence, seasons and episodes. Built AI-assisted with Claude Code.",

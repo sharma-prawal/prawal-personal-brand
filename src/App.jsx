@@ -1,7 +1,7 @@
 import React, { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Link, NavLink, Navigate, Route, Routes, useLocation } from "react-router-dom";
-import { Check, ChevronDown, ChevronRight, Copy, Linkedin, Menu, X } from "lucide-react";
+import { Check, ChevronDown, ChevronRight, Copy, Linkedin, Menu, MessageSquare, X } from "lucide-react";
 import { ExecutiveProfileDownloadButton, LinkedInButton, RecoveryPage, ResumeDownloadButton, ScrollToTop, downloadResume, generateExecutiveProfile } from "./components/shared.jsx";
 import OverlayDialog from "./components/OverlayDialog.jsx";
 // The homepage is where most visitors land, so it ships in the main bundle
@@ -295,6 +295,17 @@ function AppShell() {
         </nav>
         <div className="topbar-actions">
           <LinkedInButton compact />
+          {/* Below 1400px the page margin is too narrow for the floating chat
+              button, so the assistant opens from here instead. */}
+          <button
+            className="assistant-trigger"
+            type="button"
+            aria-label="Open AI assistant"
+            title="Ask the AI assistant"
+            onClick={() => window.dispatchEvent(new CustomEvent("assistant:open"))}
+          >
+            <MessageSquare size={19} aria-hidden="true" />
+          </button>
           <button
             ref={mobileNavTrigger}
             className="hamburger-btn"

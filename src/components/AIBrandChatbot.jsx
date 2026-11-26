@@ -473,28 +473,18 @@ function getSandboxResponse(inputText) {
   };
 }
 
-// The launcher is a fixed button in the bottom-right corner. Where the page
-// margin is narrower than the button (below ~1400px wide) it would sit over
-// content, so it hides while the reader scrolls down and returns when they
-// scroll up. It also hides over the footer, and on phones over the hero.
+// The floating launcher only shows where the page margin can hold it
+// (1400px and wider); narrower screens open the assistant from the header.
+// It also hides over the footer so it never covers the footer's links.
 function useCompactLauncherHidden() {
   const [hidden, setHidden] = useState(false);
   useEffect(() => {
-    const phone = window.matchMedia("(max-width: 760px)");
     const narrow = window.matchMedia("(max-width: 1399px)");
     let frame = 0;
-    let lastY = window.scrollY;
-    let scrollingDown = false;
     const update = () => {
       frame = 0;
-      const y = window.scrollY;
-      if (Math.abs(y - lastY) > 4) scrollingDown = y > lastY;
-      lastY = y;
       const footerTop = document.querySelector(".site-footer")?.getBoundingClientRect().top ?? Infinity;
-      const overFooter = footerTop < window.innerHeight;
-      const overHero = phone.matches && y < window.innerHeight * 0.6;
-      const inTheWay = narrow.matches && scrollingDown && y > 120;
-      setHidden(overFooter || overHero || inTheWay);
+      setHidden(narrow.matches || footerTop < window.innerHeight);
     };
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(update);
@@ -502,10 +492,12 @@ function useCompactLauncherHidden() {
     update();
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule);
+    narrow.addEventListener("change", schedule);
     return () => {
       cancelAnimationFrame(frame);
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
+      narrow.removeEventListener("change", schedule);
     };
   }, []);
   return hidden;
@@ -518,6 +510,17 @@ export default function AIBrandChatbot({ downloadResume, generateExecutiveProfil
   const inputRef = useRef(null);
   const launcherRef = useRef(null);
   const wasOpenRef = useRef(false);
+  const returnFocusRef = useRef(null);
+
+  // The header button (below 1400px) opens the assistant with this event.
+  useEffect(() => {
+    const open = () => {
+      returnFocusRef.current = document.activeElement;
+      setIsOpen(true);
+    };
+    window.addEventListener("assistant:open", open);
+    return () => window.removeEventListener("assistant:open", open);
+  }, []);
   const [isFullScreen, setIsFullScreen] = useState(false);
 
   // Keyboard handling: focus the input on open, return focus to the launcher on close.
@@ -531,7 +534,10 @@ export default function AIBrandChatbot({ downloadResume, generateExecutiveProfil
     if (wasOpenRef.current) {
       wasOpenRef.current = false;
       const frame = requestAnimationFrame(() => {
-        const target = launcherRef.current || document.getElementById("main");
+        // Return focus to whatever opened the assistant (header button or launcher).
+        const opener = returnFocusRef.current;
+        returnFocusRef.current = null;
+        const target = (opener?.isConnected && opener.offsetParent ? opener : null) || launcherRef.current || document.getElementById("main");
         target?.focus({ preventScroll: true });
       });
       return () => cancelAnimationFrame(frame);

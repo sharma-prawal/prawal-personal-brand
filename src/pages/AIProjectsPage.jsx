@@ -121,7 +121,7 @@ function FeaturedBuild({ project }) {
 function BuildCard({ project, priority }) {
   const isMobileApp = project.type === "Android app";
   return (
-    <li className={["projects-build", isMobileApp ? "projects-build--mobile" : ""].filter(Boolean).join(" ")}>
+    <li className={["projects-build", isMobileApp ? "projects-build--mobile" : "", project.thumbFit === "letterbox" ? "projects-build--letterbox" : ""].filter(Boolean).join(" ")}>
       <div className="projects-build__media">
         <Media project={project} eager priority={priority} />
       </div>
