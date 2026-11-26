@@ -77,6 +77,7 @@ export const imageDescriptions = {
   "/media/book_contributor/1680621098666.jpeg": "The book cover, its contributors page including Prawal Sharma, and the contributors on stage at the launch.",
 
   // Projects
+  "/media/projects/github/opspilot-ai-workbench.jpg": "OpsPilot AI v0.12 investigation workbench: a leading hypothesis with supporting and contradicting evidence, and the evidence inspector showing one selected record.",
   "/media/projects/github/opspilot-ai.jpg": "OpsPilot AI system overview with an investigation intake form, recent investigations and runtime health.",
   "/media/projects/github/personal-assistant.jpg": "J.A.R.V.I.S. dashboard with a clock, a briefing panel and task columns on a dark interface.",
   "/media/projects/github/ai-brand-assistant.jpg": "The AI assistant panel on this site, showing suggested questions and a message box.",
