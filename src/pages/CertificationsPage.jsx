@@ -78,7 +78,7 @@ function CourseList({ courses, limit }) {
     <ul className="course-list">
       {courses.slice(0, limit).map((cert) => (
         <li key={cert.id}>
-          <span className="ledger-rows__thumb course-list__thumb"><ProofImage src={cert.src} alt={cert.alt} caption={cert.caption} /></span>
+          <span className="ledger-rows__thumb course-list__thumb"><ProofImage thumb src={cert.src} alt={cert.alt} caption={cert.caption} /></span>
           <span className="course-list__text">
             <strong>{cert.title}</strong>
             {courseSources[cert.provider] ? <span>{courseSources[cert.provider]}</span> : null}
@@ -256,7 +256,7 @@ export default function CertificationsPage() {
                         <span>{signal.text}</span>
                       </span>
                       <span className="ledger-rows__tag">{signal.signal}</span>
-                      <span className="ledger-rows__thumb"><ProofImage src={cert.src} alt={cert.alt} caption={cert.caption} /></span>
+                      <span className="ledger-rows__thumb"><ProofImage thumb src={cert.src} alt={cert.alt} caption={cert.caption} /></span>
                     </div>
                   </li>
                 );

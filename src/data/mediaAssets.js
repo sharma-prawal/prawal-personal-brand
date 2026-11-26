@@ -280,10 +280,10 @@ const conferenceRecords = [
     theme: "Modern data platforms, developer productivity, and application architecture.",
     takeaway: "Connect data platform practices with scalable application and backend architecture.",
     images: [
-      "/media/conferences/MongoDB.Local/2024/1694762207825.jpeg",
-      "/media/conferences/MongoDB.Local/2024/1694762216252.jpeg",
-      "/media/conferences/MongoDB.Local/2024/1694762220918.jpeg",
-      "/media/conferences/MongoDB.Local/2024/Screenshot 2026-05-21 at 11.53.08-AM.png"
+      "/media/conferences/MongoDB local/2024/1694762207825.jpeg",
+      "/media/conferences/MongoDB local/2024/1694762216252.jpeg",
+      "/media/conferences/MongoDB local/2024/1694762220918.jpeg",
+      "/media/conferences/MongoDB local/2024/Screenshot 2026-05-21 at 11.53.08-AM.png"
     ]
   },
   {
@@ -293,7 +293,7 @@ const conferenceRecords = [
     eventType: "Developer Event",
     theme: "Data modeling, developer workflows, and modern database platforms.",
     takeaway: "Continue building depth in data-backed application platforms.",
-    images: ["/media/conferences/MongoDB.Local/2025/unnamed (2).png"]
+    images: ["/media/conferences/MongoDB local/2025/unnamed (2).png"]
   },
   {
     title: "Unicommerce",

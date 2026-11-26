@@ -337,14 +337,18 @@ function AppShell() {
         </nav>
         <div className="topbar-actions">
           <LinkedInButton compact />
-          {/* Below 1400px the page margin is too narrow for the floating chat
-              button, so the assistant opens from here instead. */}
+          {/* The assistant always opens from the header, at every width, so it
+              never covers page content or jumps between positions. The flag
+              covers a click that lands before the assistant's code has loaded. */}
           <button
             className="assistant-trigger"
             type="button"
             aria-label="Open AI assistant"
             title="Ask the AI assistant"
-            onClick={() => window.dispatchEvent(new CustomEvent("assistant:open"))}
+            onClick={() => {
+              window.__assistantOpenRequested = true;
+              window.dispatchEvent(new CustomEvent("assistant:open"));
+            }}
           >
             <MessageSquare size={19} aria-hidden="true" />
           </button>
@@ -352,7 +356,7 @@ function AppShell() {
             ref={mobileNavTrigger}
             className="hamburger-btn"
             type="button"
-            aria-label={mobileNavOpen ? "Close navigation" : "Open navigation"}
+            aria-label="Site menu"
             aria-expanded={mobileNavOpen}
             onClick={() => setMobileNavOpen((prev) => !prev)}
           >

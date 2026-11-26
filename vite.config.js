@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import { copyFileSync } from 'node:fs'
 import { ViteImageOptimizer } from 'vite-plugin-image-optimizer'
+import thumbnails from './scripts/thumbnails-plugin.mjs'
 
 // Vercel serves dist/404.html, with a 404 status, for any path that has no
 // file in dist/. It is a copy of the empty app shell (taken before
@@ -17,6 +18,7 @@ const notFoundPage = {
 export default defineConfig(({ isSsrBuild }) => ({
   plugins: [
     notFoundPage,
+    thumbnails(),
     // The SSR build only renders HTML; the client build emits the images.
     !isSsrBuild && ViteImageOptimizer({
       jpg: { quality: 80 },

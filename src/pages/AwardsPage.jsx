@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import { PageFrame, Reveal } from "../components/shared.jsx";
-import { imageSrc } from "../data/imageMetadata.js";
+import { imageSrc, thumbSrc } from "../data/imageMetadata.js";
 import { awardAssets } from "../data/mediaAssets.js";
 import OverlayDialog from "../components/OverlayDialog.jsx";
 import { projectSlug } from "../data/derived.js";
@@ -71,7 +71,7 @@ function AwardProofViewer({ award, signal, onClose, returnFocusRef }) {
                 aria-label={`Show photo ${idx + 1} of ${award.images.length}`}
                 aria-pressed={idx === activeImageIndex}
               >
-                <img src={imageSrc(img)} alt="" />
+                <img src={thumbSrc(imageSrc(img))} alt="" />
               </button>
             ))}
           </div>
@@ -157,7 +157,7 @@ export default function AwardsPage() {
                       </span>
                       <span className="ledger-rows__tag">{signal.signal}</span>
                       <span className="ledger-rows__thumb">
-                        {award.images?.[0] ? <img src={imageSrc(award.images[0])} alt="" loading="lazy" /> : null}
+                        {award.images?.[0] ? <img src={thumbSrc(imageSrc(award.images[0]))} alt="" loading="lazy" /> : null}
                       </span>
                     </button>
                   </li>

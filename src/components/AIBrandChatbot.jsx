@@ -22,6 +22,18 @@ import { certificationAssets } from "../data/certificationAssets.js";
 import { awardAssets, conferenceAssets, professionalHighlights } from "../data/mediaAssets.js";
 import { retrieveChunks, buildContext, debugLog, classifyIntent } from "../lib/chatbotRag.js";
 
+// Groq chat models, preferred first. The first accepts images, which the
+// certificate questions attach; the fallback is text-only and gets the question
+// without the image. Groq retires models, so check
+// https://console.groq.com/docs/models when the assistant falls back to its
+// built-in answers.
+const GROQ_MODELS = [
+  { id: "qwen/qwen3.8-27b", label: "Qwen3.8", vision: true },
+  // reasoning_effort keeps its hidden reasoning from eating the token budget.
+  { id: "openai/gpt-oss-20b", label: "gpt-oss-20b", vision: false, options: { reasoning_effort: "low" } },
+  { id: "openai/gpt-oss-120b", label: "gpt-oss-120b", vision: false, options: { reasoning_effort: "low" } }
+];
+
 const premiumEase = [0.16, 1, 0.3, 1];
 
 // ── Debug mode: add ?debug=1 to the URL to enable RAG logging ────────────────
@@ -33,38 +45,36 @@ const debugMode = typeof window !== 'undefined' && new URLSearchParams(window.lo
 // To add a new image: add it to the relevant section below.
 // ─────────────────────────────────────────────────────────────────────────────
 
-function generateVisualAssetsPrompt() {
+// The image list is only sent when the visitor asks to see something, and then
+// only the entries that match the question. Sending every path on the site with
+// every question cost ~5K tokens, over the free Groq tier's per-minute budget.
+const VISUAL_QUERY = /\b(photo|picture|image|pic|show|see|proof|certificate|badge|award|trophy|visit|event|conference)s?\b/i;
+
+function generateVisualAssetsPrompt(queryText) {
+  if (!VISUAL_QUERY.test(queryText)) return "";
+  const words = queryText.toLowerCase().split(/\W+/).filter((w) => w.length > 3);
+  const matches = (title) => words.some((w) => title.toLowerCase().includes(w));
+
+  const groups = [
+    ["Highlights & Client Visits", professionalHighlights.map((h) => ({ title: h.title, images: h.images.map(imageSrc) }))],
+    ["Awards & Certificates", awardAssets.map((a) => ({ title: `${a.title}" (${a.issuer}, ${a.date})`, images: a.images.map(imageSrc) }))],
+    ["Conferences", conferenceAssets.map((c) => ({ title: `${c.title}" (${c.year})`, images: c.images.map(imageSrc) }))],
+    // Official certifications only; the 80+ course certificates are left out.
+    ["Certifications", certificationAssets.filter((c) => c.proctored).map((c) => ({ title: `${c.title}" (${c.provider})`, images: [c.src] }))]
+  ];
+  const anyMatch = groups.some(([, items]) => items.some((item) => matches(item.title)));
+
   let prompt = "\nVISUAL ASSETS (embed with exact Markdown: ![Caption](URL) — NEVER invent URLs):\n";
-
-  prompt += "\nHighlights & Client Visits:\n";
-  professionalHighlights.forEach(h => {
-    prompt += `  * "${h.title}":\n`;
-    h.images.forEach((img, i) => {
-      prompt += `    - Photo ${i + 1}: ${imageSrc(img)}\n`;
-    });
-  });
-
-  prompt += "\nAwards & Certificates:\n";
-  awardAssets.forEach(a => {
-    prompt += `  * "${a.title}" (${a.issuer}, ${a.date}):\n`;
-    a.images.forEach((img, i) => {
-      prompt += `    - Proof ${i + 1}: ${imageSrc(img)}\n`;
-    });
-  });
-
-  prompt += "\nConferences:\n";
-  conferenceAssets.forEach(c => {
-    prompt += `  * "${c.title}" (${c.year}):\n`;
-    c.images.forEach((img, i) => {
-      prompt += `    - Photo ${i + 1}: ${imageSrc(img)}\n`;
-    });
-  });
-
-  prompt += "\nCloud Certifications:\n";
-  certificationAssets.forEach(cert => {
-    prompt += `  * "${cert.title}" (${cert.provider}): /${cert.src.replace(/^\//, '')}\n`;
-  });
-
+  for (const [label, items] of groups) {
+    // With a match, list only matching entries in full; otherwise one image per entry.
+    const shown = anyMatch ? items.filter((item) => matches(item.title)) : items.map((item) => ({ ...item, images: item.images.slice(0, 1) }));
+    if (!shown.length) continue;
+    prompt += `\n${label}:\n`;
+    for (const item of shown) {
+      prompt += `  * "${item.title.replace(/^"/, "")}:\n`;
+      item.images.forEach((src, i) => { prompt += `    - Image ${i + 1}: ${src}\n`; });
+    }
+  }
   return prompt;
 }
 
@@ -73,7 +83,7 @@ function generateVisualAssetsPrompt() {
 // Constructs a focused, grounded system prompt using RAG-retrieved context.
 // ─────────────────────────────────────────────────────────────────────────────
 
-function buildSystemPrompt(ragContext) {
+function buildSystemPrompt(ragContext, queryText) {
   return `You are Prawal Sharma's personal AI assistant on his portfolio site. Help visitors understand his work, experience, skills, projects, certifications, and leadership.
 
 GROUNDING RULES:
@@ -82,7 +92,7 @@ GROUNDING RULES:
 3. NEVER invent metrics, dates, company names, or credentials not in the knowledge base.
 4. For resume requests: mention the Executive Profile and the Resume PDF (both downloadable in this chat).
 5. For contact requests: write one warm sentence, then stop — the action buttons handle LinkedIn and the contact form. Do NOT paste any URL in your text.
-6. For image/proof requests: embed ONLY exact paths from VISUAL ASSETS using ![Caption](URL).
+6. For image/proof requests: embed ONLY exact paths from VISUAL ASSETS using ![Caption](URL). If no VISUAL ASSETS list is given, do not embed images.
 
 TONE: Warm, confident, conversational — like a well-briefed colleague, not a FAQ bot.
 
@@ -100,7 +110,7 @@ RESPONSE FORMAT (this renders in a narrow mobile chat — follow strictly):
 WEBSITE KNOWLEDGE BASE (your only source of truth):
 ${ragContext}
 
-${generateVisualAssetsPrompt()}`;
+${generateVisualAssetsPrompt(queryText)}`;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -149,7 +159,7 @@ async function callLLMAPI(messages, apiKey, onChunk) {
   const ragContext = buildContext(retrievalResult.results);
 
   // 3. Build focused system prompt with retrieved context
-  const systemInstructionText = buildSystemPrompt(ragContext);
+  const systemInstructionText = buildSystemPrompt(ragContext, queryText);
 
   // 4. Debug log (enable with ?debug=1)
   if (debugMode) {
@@ -166,11 +176,11 @@ async function callLLMAPI(messages, apiKey, onChunk) {
   if (isGroq) {
     const url = "https://api.groq.com/openai/v1/chat/completions";
     const filteredMsgs = messages.filter(m => m.role === 'user' || m.role === 'model');
-    const formattedMessages = [
+    const formatMessages = (withImage) => [
       { role: "system", content: systemInstructionText },
       ...filteredMsgs.map((m, i) => {
         const isLastUser = m.role === 'user' && i === filteredMsgs.length - 1;
-        if (isLastUser && visionDataUrl) {
+        if (isLastUser && withImage && visionDataUrl) {
           return {
             role: "user",
             content: [
@@ -183,21 +193,31 @@ async function callLLMAPI(messages, apiKey, onChunk) {
       })
     ];
 
-    const response = await fetch(url, {
-      method: "POST",
-      headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "meta-llama/llama-4-scout-17b-16e-instruct",
-        messages: formattedMessages,
-        temperature: 0.15,
-        max_tokens: 350,
-        stream: true
-      })
-    });
-    if (!response.ok) {
+    // Try each model in order. Move on when Groq no longer serves one, or when
+    // one is over its per-minute quota (each model has its own; 413 is Groq's
+    // answer when a single request exceeds that quota).
+    let response;
+    for (const [index, candidate] of GROQ_MODELS.entries()) {
+      response = await fetch(url, {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: candidate.id,
+          messages: formatMessages(candidate.vision),
+          temperature: 0.15,
+          max_tokens: 350,
+          stream: true,
+          ...candidate.options
+        })
+      });
+      if (response.ok) break;
       const err = await response.json().catch(() => ({}));
       const msg = err.error?.message || "Failed to contact Groq API";
-      throw new Error(response.status === 429 ? "RATE_LIMIT" : msg);
+      const isLast = index === GROQ_MODELS.length - 1;
+      const rateLimited = response.status === 429 || response.status === 413;
+      const modelUnavailable = response.status === 404 || /model .*(does not exist|decommissioned|not found)|do not have access/i.test(msg);
+      if (rateLimited && isLast) throw new Error("RATE_LIMIT");
+      if (!rateLimited && (!modelUnavailable || isLast)) throw new Error(msg);
     }
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
@@ -473,51 +493,22 @@ function getSandboxResponse(inputText) {
   };
 }
 
-// The floating launcher only shows where the page margin can hold it
-// (1400px and wider); narrower screens open the assistant from the header.
-// It also hides over the footer so it never covers the footer's links.
-function useCompactLauncherHidden() {
-  const [hidden, setHidden] = useState(false);
-  useEffect(() => {
-    const narrow = window.matchMedia("(max-width: 1399px)");
-    let frame = 0;
-    const update = () => {
-      frame = 0;
-      const footerTop = document.querySelector(".site-footer")?.getBoundingClientRect().top ?? Infinity;
-      setHidden(narrow.matches || footerTop < window.innerHeight);
-    };
-    const schedule = () => {
-      if (!frame) frame = requestAnimationFrame(update);
-    };
-    update();
-    window.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("resize", schedule);
-    narrow.addEventListener("change", schedule);
-    return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", schedule);
-      window.removeEventListener("resize", schedule);
-      narrow.removeEventListener("change", schedule);
-    };
-  }, []);
-  return hidden;
-}
-
 export default function AIBrandChatbot({ downloadResume, generateExecutiveProfile }) {
   const [isOpen, setIsOpen] = useState(false);
-  const launcherHidden = useCompactLauncherHidden();
   const panelRef = useRef(null);
   const inputRef = useRef(null);
-  const launcherRef = useRef(null);
   const wasOpenRef = useRef(false);
   const returnFocusRef = useRef(null);
 
-  // The header button (below 1400px) opens the assistant with this event.
+  // The header button opens the assistant with this event. A click made
+  // before this component loaded leaves a flag instead, picked up here.
   useEffect(() => {
     const open = () => {
+      window.__assistantOpenRequested = false;
       returnFocusRef.current = document.activeElement;
       setIsOpen(true);
     };
+    if (window.__assistantOpenRequested) open();
     window.addEventListener("assistant:open", open);
     return () => window.removeEventListener("assistant:open", open);
   }, []);
@@ -534,10 +525,10 @@ export default function AIBrandChatbot({ downloadResume, generateExecutiveProfil
     if (wasOpenRef.current) {
       wasOpenRef.current = false;
       const frame = requestAnimationFrame(() => {
-        // Return focus to whatever opened the assistant (header button or launcher).
+        // Return focus to whatever opened the assistant (normally the header button).
         const opener = returnFocusRef.current;
         returnFocusRef.current = null;
-        const target = (opener?.isConnected && opener.offsetParent ? opener : null) || launcherRef.current || document.getElementById("main");
+        const target = (opener?.isConnected && opener.offsetParent ? opener : null) || document.querySelector(".assistant-trigger") || document.getElementById("main");
         target?.focus({ preventScroll: true });
       });
       return () => cancelAnimationFrame(frame);
@@ -593,7 +584,7 @@ export default function AIBrandChatbot({ downloadResume, generateExecutiveProfil
   const activeProvider = currentApiKey ? (currentApiKey.startsWith("gsk_") ? "groq" : "gemini") : "sandbox";
   const providerLabel =
     activeProvider === "groq"
-      ? "Groq / Llama 4 Scout"
+      ? `Groq / ${GROQ_MODELS[0].label}`
       : activeProvider === "gemini"
         ? "Gemini 2.0"
         : "Local sandbox";
@@ -788,24 +779,6 @@ export default function AIBrandChatbot({ downloadResume, generateExecutiveProfil
 
   return (
     <div className={`brand-chatbot ${isOpen ? "is-expanded" : "is-collapsed"}`} aria-label="Virtual Assistant">
-      <AnimatePresence>
-        {!isOpen && !launcherHidden && (
-          <motion.button
-            ref={launcherRef}
-            className="chatbot-fab"
-            onClick={() => setIsOpen(true)}
-            initial={{ scale: 0.6, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.6, opacity: 0 }}
-            transition={{ duration: 0.28, ease: premiumEase }}
-            aria-label="Open AI Assistant"
-            type="button"
-          >
-            <MessageSquare size={19} aria-hidden="true" />
-          </motion.button>
-        )}
-      </AnimatePresence>
-
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -1081,7 +1054,7 @@ export default function AIBrandChatbot({ downloadResume, generateExecutiveProfil
                   ref={inputRef}
                   type="text"
                   aria-label="Ask the assistant a question"
-                  placeholder="Ask about leadership, cloud, AI, or proof..."
+                  placeholder="Ask about my work…"
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   disabled={isPending}
