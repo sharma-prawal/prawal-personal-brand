@@ -4,12 +4,14 @@ import { Link, NavLink, Navigate, Route, Routes, useLocation } from "react-route
 import { Check, ChevronDown, ChevronRight, Copy, Linkedin, Menu, X } from "lucide-react";
 import { ExecutiveProfileDownloadButton, LinkedInButton, RecoveryPage, ResumeDownloadButton, ScrollToTop, downloadResume, generateExecutiveProfile } from "./components/shared.jsx";
 import OverlayDialog from "./components/OverlayDialog.jsx";
+// The homepage is where most visitors land, so it ships in the main bundle
+// instead of waiting on a second request; the other pages stay lazy.
+import ExecutivePage from "./pages/ExecutivePage.jsx";
 import { getDirectContact, profile } from "./data/profile.js";
 import { pageEntrance, exitEase, premiumEase } from "./lib/motion.js";
 
 const LazyAIBrandChatbot = lazy(() => import("./components/AIBrandChatbot.jsx"));
 
-const ExecutivePage = lazy(() => import("./pages/ExecutivePage.jsx"));
 const JourneyPage = lazy(() => import("./pages/JourneyPage.jsx"));
 const AwardsPage = lazy(() => import("./pages/AwardsPage.jsx"));
 const CertificationsPage = lazy(() => import("./pages/CertificationsPage.jsx"));

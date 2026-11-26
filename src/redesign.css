@@ -170,7 +170,7 @@
 .topbar-submenu {
   position: absolute;
   top: calc(100% + 8px);
-  left: 0;
+  right: 0; /* Recognition and Events sit at the right end of the nav */
   display: none;
   min-width: 300px;
   padding: 6px;
@@ -1401,7 +1401,7 @@
 }
 
 .projects-build__media {
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 16 / 9; /* most build screenshots are ~16:9, so cover crops very little */
   margin-bottom: 16px;
 }
 
@@ -1430,7 +1430,7 @@
 .projects-build__media img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover; /* screenshots fill the frame, anchored to the top of the page shown */
   object-position: top center;
 }
 
@@ -1442,6 +1442,14 @@
 .projects-builds {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* Four product builds read as a 2 x 2 grid instead of 3 + 1. */
+.projects-builds--pairs {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.projects-builds {
   gap: clamp(40px, 5vw, 56px) clamp(24px, 3vw, 40px);
   margin: clamp(48px, 6vw, 72px) 0 0;
   padding: 0;
@@ -1539,6 +1547,14 @@
 
 .conf-feature__media--publication img {
   object-fit: contain;
+}
+
+/* The book covers are portrait: give them a portrait frame so the
+   carousel arrows sit beside the cover, not over empty space. */
+.conf-feature .conf-feature__media--publication {
+  width: min(100%, 420px);
+  aspect-ratio: 3 / 4;
+  justify-self: center;
 }
 
 .event-index-hero {
@@ -3048,6 +3064,9 @@ p.case-modules--after-list {
 }
 
 .role-ledger__details summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   width: fit-content;
   padding: 8px 4px;
   color: rgb(var(--accent-text-rgb));
@@ -3240,4 +3259,48 @@ p.case-modules--after-list {
   .case-gallery--mobile {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
+
+/* Role details: label and chevron reflect the open state. */
+.role-ledger__details summary::after {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform 0.2s var(--ease);
+}
+
+.role-ledger__details[open] summary::after {
+  transform: translateY(2px) rotate(-135deg);
+}
+
+.role-ledger__details .summary-open,
+.role-ledger__details[open] .summary-closed {
+  display: none;
+}
+
+.role-ledger__details[open] .summary-open {
+  display: inline;
+}
+
+/* Phones: stacked CTA buttons share one full width. */
+@media (max-width: 520px) {
+  .home-actions,
+  .home .home-hero__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .home-actions > a,
+  .home-actions > button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Keeps "Experimental · v0.12" style values from breaking at the dot. */
+.nowrap-part {
+  white-space: nowrap;
 }

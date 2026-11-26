@@ -1,5 +1,45 @@
 {
+  "trailingSlash": false,
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/journey",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/awards",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/certifications",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/ai-projects",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/ai-projects/:path*",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/conferences",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/highlights",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/recommendations",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/references",
+      "destination": "/index.html"
+    }
   ]
 }

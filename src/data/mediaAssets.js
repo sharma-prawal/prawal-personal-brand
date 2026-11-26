@@ -7,7 +7,7 @@ export const profilePortrait = {
   alt: "Prawal Sharma professional portrait",
   date: "Current profile asset",
   category: "Executive portrait",
-  caption: "Professional portrait used as the primary executive brand image.",
+  caption: "Prawal Sharma, engineering leader at Successive Digital.",
   featured: true,
   priority: true
 };

@@ -443,7 +443,11 @@ export function KeepRanges({ text }) {
 }
 
 export function PageFrame({ eyebrow, title, intro, children, className = "", heroAside = null }) {
-  const { hash } = useLocation();
+  const { hash, key } = useLocation();
+  // The title animates in when you move between pages, but not on the first
+  // load (React Router's initial location key is "default"), where the fade
+  // only delayed the first readable text.
+  const [animateIn] = useState(() => key !== "default");
   const heroClassName = ["page-hero", className].filter(Boolean).join(" ");
 
   useEffect(() => {
@@ -456,7 +460,7 @@ export function PageFrame({ eyebrow, title, intro, children, className = "", her
 
   return (
     <>
-      <motion.section className={heroClassName} initial="hidden" animate="visible" variants={stagger}>
+      <motion.section className={heroClassName} initial={animateIn ? "hidden" : false} animate="visible" variants={stagger}>
         <motion.div className="page-hero__inner" variants={fadeUp} transition={{ duration: 0.72, ease: premiumEase }}>
           <div className="page-hero__copy">
             {eyebrow && <motion.span className="eyebrow" variants={itemReveal}>{eyebrow}</motion.span>}
