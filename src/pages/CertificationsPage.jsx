@@ -53,71 +53,134 @@ function getCredentialSignal(cert) {
   return credentialSignals[cert.title] || { signal: cert.provider, text: cert.caption };
 }
 
+// Courses are grouped by what they taught, not by the folder they came from.
+// Rules run in order and the first match wins; anything left is professional skills.
+const courseTopics = [
+  { id: "ai", label: "AI and machine learning", match: /\bAI\b|AI-90|Claude|Machine Learning/, text: "Claude and Claude Code, AWS and Azure AI fundamentals, machine learning with Python." },
+  { id: "cloud", label: "Cloud", match: /AWS|Azure|AZ-900|SC-900|DP-900|GCP|Google Cloud/, text: "AWS Solutions Architect and Developer prep, AWS Partner accreditations, Azure and Google Cloud fundamentals." },
+  { id: "data", label: "Databases", match: /MongoDB|SQL|Redis/, text: "MongoDB University's developer and operations track, SQL from basic to advanced, and Redis." },
+  { id: "backend", label: "Backend and APIs", match: /Node|REST|GraphQL|Graph Developer|Apollo|Django|Python|Docker|GitOps|npm|\bExpress\b/, text: "Node.js, REST and GraphQL (Apollo certified), Python and Django, Docker and GitOps." },
+  { id: "frontend", label: "Frontend and JavaScript", match: /JavaScript|React|TypeScript|CSS/, text: "JavaScript and TypeScript, React state, context and testing, and modern CSS layout." },
+  { id: "practice", label: "Engineering practice", match: /Problem Solving|Data Structures|Design Patterns|Architecture|Agile|Regular Expressions|Blockchain/, text: "Data structures and algorithms, design patterns, software architecture and agile practice." },
+  { id: "skills", label: "Professional skills", match: /.*/, text: "Decision-making, listening, confidence and work habits." }
+];
+
+// Only real course sources are shown; "Featured Courses" and "Miscellaneous" are folder names.
+const courseSources = { LinkedIn: "LinkedIn Learning", HackerRank: "HackerRank", MongoDB: "MongoDB University", GraphQL: "Apollo GraphQL" };
+
+function topicFor(course) {
+  const haystack = `${course.title} ${course.provider === "MongoDB" ? "MongoDB" : ""}`;
+  return courseTopics.find((topic) => topic.match.test(haystack)).id;
+}
+
+function CourseList({ courses, limit }) {
+  return (
+    <ul className="course-list">
+      {courses.slice(0, limit).map((cert) => (
+        <li key={cert.id}>
+          <span className="ledger-rows__thumb course-list__thumb"><ProofImage src={cert.src} alt={cert.alt} caption={cert.caption} /></span>
+          <span className="course-list__text">
+            <strong>{cert.title}</strong>
+            {courseSources[cert.provider] ? <span>{courseSources[cert.provider]}</span> : null}
+          </span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 function CourseArchive({ courses }) {
-  const [open, setOpen] = useState(false);
-  const [provider, setProvider] = useState("All");
+  const [topicId, setTopicId] = useState(null);
   const [query, setQuery] = useState("");
   const [limit, setLimit] = useState(courseBatchSize);
-  const providers = useMemo(() => ["All", ...new Set(courses.map((c) => c.provider))], [courses]);
-  const matches = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    return courses.filter((c) => (provider === "All" || c.provider === provider) && (!q || `${c.title} ${c.provider}`.toLowerCase().includes(q)));
-  }, [courses, provider, query]);
+
+  const byTopic = useMemo(() => {
+    const groups = Object.fromEntries(courseTopics.map((topic) => [topic.id, []]));
+    courses.forEach((course) => groups[topicFor(course)].push(course));
+    return groups;
+  }, [courses]);
+
+  const q = query.trim().toLowerCase();
+  const searchMatches = useMemo(
+    () => (q ? courses.filter((c) => `${c.title} ${courseSources[c.provider] || ""}`.toLowerCase().includes(q)) : []),
+    [courses, q]
+  );
+
+  const selectTopic = (id) => {
+    setQuery("");
+    setLimit(courseBatchSize);
+    setTopicId((current) => (current === id ? null : id));
+  };
 
   return (
     <Reveal as={motion.section} className="home-section" id="courses" aria-labelledby="courses-title">
-      <header className="home-section__head">
-        <h2 id="courses-title">Courses</h2>
-        <p>{courses.length} course certificates, kept as a record of ongoing learning.</p>
+      <header className="home-section__head course-archive__head">
+        <div>
+          <h2 id="courses-title">Courses</h2>
+          <p>{courses.length} course certificates across {courseTopics.length} areas. Pick an area to see its courses.</p>
+        </div>
+        <label className="course-archive__search">
+          <Search size={16} aria-hidden="true" />
+          <span className="sr-only">Search all courses</span>
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => { setQuery(e.target.value); setTopicId(null); setLimit(courseBatchSize); }}
+            placeholder={`Search all ${courses.length} courses`}
+          />
+        </label>
       </header>
-      <button
-        type="button"
-        className="secondary-link course-archive__toggle"
-        aria-expanded={open}
-        aria-controls="course-archive"
-        onClick={() => setOpen((value) => !value)}
-      >
-        {open ? "Hide courses" : `Show ${courses.length} courses`}
-      </button>
-      {open ? (
-        <div className="course-archive" id="course-archive">
-          <div className="course-archive__controls">
-            <label className="course-archive__search">
-              <Search size={16} aria-hidden="true" />
-              <span className="sr-only">Search courses</span>
-              <input type="search" value={query} onChange={(e) => { setQuery(e.target.value); setLimit(courseBatchSize); }} placeholder="Search by title or provider" />
-            </label>
-            <div className="course-archive__filters" role="group" aria-label="Filter by provider">
-              {providers.map((name) => (
-                <button type="button" key={name} aria-pressed={provider === name} className={provider === name ? "is-active" : undefined} onClick={() => { setProvider(name); setLimit(courseBatchSize); }}>
-                  {name}
-                </button>
-              ))}
-            </div>
-          </div>
-          {matches.length ? (
-            <ol className="ledger-rows ledger-rows--compact">
-              {matches.slice(0, limit).map((cert) => (
-                <li key={cert.id}>
-                  <div className="ledger-rows__row">
-                    <span className="ledger-rows__date">{cert.provider}</span>
-                    <span className="ledger-rows__main"><strong>{cert.title}</strong></span>
-                    <span className="ledger-rows__tag" />
-                    <span className="ledger-rows__thumb"><ProofImage src={cert.src} alt={cert.alt} caption={cert.caption} /></span>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          ) : (
-            <p className="course-archive__empty" role="status">No matches. Try another provider or search term.</p>
-          )}
-          {matches.length > limit ? (
+
+      {q ? (
+        // While searching, results take the tiles' place so they sit right under the box.
+        <div className="course-panel" role="region" aria-live="polite" aria-label="Search results">
+          <p className="course-panel__title">
+            {searchMatches.length ? `${searchMatches.length} ${searchMatches.length === 1 ? "course matches" : "courses match"} "${query.trim()}"` : `No courses match "${query.trim()}".`}
+          </p>
+          <CourseList courses={searchMatches} limit={limit} />
+          {searchMatches.length > limit ? (
             <button type="button" className="secondary-link course-archive__more" onClick={() => setLimit((l) => l + courseBatchSize)}>
-              Show {Math.min(courseBatchSize, matches.length - limit)} more of {matches.length - limit}
+              Show {Math.min(courseBatchSize, searchMatches.length - limit)} more of {searchMatches.length - limit}
             </button>
           ) : null}
         </div>
-      ) : null}
+      ) : (
+        // The open topic's list is placed right after its tile; dense grid packing
+        // moves it below that tile's row on wide screens and directly under it on phones.
+        <ul className="course-topics">
+          {courseTopics.flatMap((topic) => {
+            const count = byTopic[topic.id].length;
+            if (!count) return [];
+            const active = topic.id === topicId;
+            const tile = (
+              <li key={topic.id}>
+                <button
+                  type="button"
+                  className={active ? "is-active" : undefined}
+                  aria-expanded={active}
+                  aria-controls={active ? "course-panel" : undefined}
+                  onClick={() => selectTopic(topic.id)}
+                >
+                  <strong>{topic.label}</strong>
+                  <span className="course-topics__count">{count} {count === 1 ? "course" : "courses"}</span>
+                  <span className="course-topics__text">{topic.text}</span>
+                </button>
+              </li>
+            );
+            if (!active) return [tile];
+            return [
+              tile,
+              <li key={`${topic.id}-panel`} id="course-panel" className="course-panel" role="region" aria-label={`${topic.label} courses`}>
+                <div className="course-panel__bar">
+                  <p className="course-panel__title">{topic.label} · {count} courses</p>
+                  <button type="button" className="course-panel__close" onClick={() => setTopicId(null)}>Close</button>
+                </div>
+                <CourseList courses={byTopic[topic.id]} limit={Infinity} />
+              </li>
+            ];
+          })}
+        </ul>
+      )}
     </Reveal>
   );
 }
