@@ -150,8 +150,8 @@ const aiProjectRecords = [
     outcome: "Working local prototype with deterministic incident scenarios and read-only evidence providers for Loki, Prometheus, Datadog, Azure Monitor and AWS CloudWatch (CloudWatch tested against a synthetic fixture only).",
     stack: ["LangGraph", "MCP", "pgvector", "Ollama", "PostgreSQL", "Next.js"],
     repo: "https://github.com/sharma-prawal/opspilot-ai",
-    previewCaption: "System overview with demo intake, recent investigations and runtime health.",
-    images: ["/media/projects/github/opspilot-ai.jpg"]
+    previewCaption: "The v0.12 investigation workbench: the leading hypothesis with its cited evidence, and the evidence inspector open beside it.",
+    images: ["/media/projects/github/opspilot-ai-workbench.jpg", "/media/projects/github/opspilot-ai.jpg"]
   },
   {
     name: "J.A.R.V.I.S. Personal Assistant",
