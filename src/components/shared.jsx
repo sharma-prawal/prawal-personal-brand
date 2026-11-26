@@ -104,6 +104,27 @@ export function ImageCarousel({ images, renderImage, size = "default", onSlideCl
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const isCompact = size === "compact";
 
+  // Fetch the slides either side of the current one so Next/Previous shows a
+  // ready image instead of the empty frame. It starts only once a visitor shows
+  // interest in this carousel (pointer over it, focus inside it, a touch), so a
+  // page full of carousels does not download every slide on load.
+  const [warm, setWarm] = useState(false);
+  const preloaded = useRef(new Map());
+  useEffect(() => {
+    if (!warm || images.length < 2) return;
+    const last = images.length - 1;
+    const neighbours = [activeImageIndex === last ? 0 : activeImageIndex + 1, activeImageIndex === 0 ? last : activeImageIndex - 1];
+    for (const index of neighbours) {
+      const src = imageSrc(images[index]);
+      if (!src || preloaded.current.has(src)) continue;
+      const img = new Image();
+      img.decoding = "async";
+      img.src = src;
+      preloaded.current.set(src, img);
+    }
+  }, [warm, activeImageIndex, images]);
+  const warmUp = () => { if (!warm) setWarm(true); };
+
   const handlePrev = (e) => {
     e.stopPropagation();
     setActiveImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
@@ -146,7 +167,12 @@ export function ImageCarousel({ images, renderImage, size = "default", onSlideCl
   };
 
   return (
-    <div className={`image-carousel${isCompact ? " image-carousel--compact" : ""}`}>
+    <div
+      className={`image-carousel${isCompact ? " image-carousel--compact" : ""}`}
+      onPointerEnter={warmUp}
+      onPointerDown={warmUp}
+      onFocus={warmUp}
+    >
       <div
         className={`image-carousel__slide-area${onSlideClick ? " image-carousel__slide-area--zoomable" : ""}`}
         onClick={handleSlideClick}
