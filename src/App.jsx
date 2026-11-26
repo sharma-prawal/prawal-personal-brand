@@ -1,6 +1,6 @@
 import React, { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { Link, NavLink, Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { Link, NavLink, Navigate, Route, Routes, matchPath, useLocation } from "react-router-dom";
 import { Check, ChevronDown, ChevronRight, Copy, Linkedin, Menu, MessageSquare, X } from "lucide-react";
 import { ExecutiveProfileDownloadButton, LinkedInButton, RecoveryPage, ResumeDownloadButton, ScrollToTop, downloadResume, generateExecutiveProfile } from "./components/shared.jsx";
 import OverlayDialog from "./components/OverlayDialog.jsx";
@@ -9,20 +9,69 @@ import OverlayDialog from "./components/OverlayDialog.jsx";
 import ExecutivePage from "./pages/ExecutivePage.jsx";
 import { getDirectContact, profile } from "./data/profile.js";
 import { pageEntrance, exitEase, premiumEase } from "./lib/motion.js";
+import { NOT_FOUND_TITLE, pageTitles } from "./data/routes.js";
 
 const LazyAIBrandChatbot = lazy(() => import("./components/AIBrandChatbot.jsx"));
 
-const JourneyPage = lazy(() => import("./pages/JourneyPage.jsx"));
-const AwardsPage = lazy(() => import("./pages/AwardsPage.jsx"));
-const CertificationsPage = lazy(() => import("./pages/CertificationsPage.jsx"));
-const AIProjectsPage = lazy(() => import("./pages/AIProjectsPage.jsx"));
-const ProfessionalCaseStudyPage = lazy(() => import("./pages/ProfessionalCaseStudyPage.jsx"));
-const ProjectCaseStudyPage = lazy(() => import("./pages/ProjectCaseStudyPage.jsx"));
-const ConferencesPage = lazy(() => import("./pages/ConferencesPage.jsx"));
-const HighlightsPage = lazy(() => import("./pages/HighlightsPage.jsx"));
-const RecommendationsPage = lazy(() => import("./pages/RecommendationsPage.jsx"));
+// React.lazy plus a preload(). Once the page module has loaded, the page
+// renders synchronously. The build pre-renders every route to static HTML,
+// and main.jsx preloads the current route's page before hydrating that HTML,
+// so neither ever renders the Suspense fallback in place of real content.
+function lazyPage(load) {
+  let LoadedPage = null;
+  const preload = () => load().then((module) => {
+    LoadedPage = module.default;
+    return module;
+  });
+  const LazyPage = lazy(preload);
+  function Page(props) {
+    return LoadedPage ? <LoadedPage {...props} /> : <LazyPage {...props} />;
+  }
+  Page.preload = preload;
+  return Page;
+}
 
-const CURRENT_YEAR = new Date().getFullYear();
+const JourneyPage = lazyPage(() => import("./pages/JourneyPage.jsx"));
+const AwardsPage = lazyPage(() => import("./pages/AwardsPage.jsx"));
+const CertificationsPage = lazyPage(() => import("./pages/CertificationsPage.jsx"));
+const AIProjectsPage = lazyPage(() => import("./pages/AIProjectsPage.jsx"));
+const ProfessionalCaseStudyPage = lazyPage(() => import("./pages/ProfessionalCaseStudyPage.jsx"));
+const ProjectCaseStudyPage = lazyPage(() => import("./pages/ProjectCaseStudyPage.jsx"));
+const ConferencesPage = lazyPage(() => import("./pages/ConferencesPage.jsx"));
+const HighlightsPage = lazyPage(() => import("./pages/HighlightsPage.jsx"));
+const RecommendationsPage = lazyPage(() => import("./pages/RecommendationsPage.jsx"));
+
+// The lazy pages from <Routes> below, by path pattern.
+const lazyRoutes = [
+  ["/journey", JourneyPage],
+  ["/awards", AwardsPage],
+  ["/certifications", CertificationsPage],
+  ["/ai-projects", AIProjectsPage],
+  ["/ai-projects/professional/:caseSlug", ProfessionalCaseStudyPage],
+  ["/ai-projects/:projectSlug", ProjectCaseStudyPage],
+  ["/conferences", ConferencesPage],
+  ["/highlights", HighlightsPage],
+  ["/recommendations", RecommendationsPage]
+];
+
+/** Loads the page module for `pathname`, if it is a lazy page. */
+export function preloadRoute(pathname) {
+  const route = lazyRoutes.find(([pattern]) => matchPath(pattern, pathname));
+  return route ? route[1].preload() : Promise.resolve();
+}
+
+/** Loads every lazy page module (used when pre-rendering at build time). */
+export function preloadAllRoutes() {
+  return Promise.all(lazyRoutes.map(([, Page]) => Page.preload()));
+}
+
+// The footer year is the build year in the pre-rendered HTML, so hydration
+// matches, and the visitor's current year once the page is running.
+function CopyrightYear() {
+  const [year, setYear] = useState(__BUILD_YEAR__);
+  useEffect(() => setYear(new Date().getFullYear()), []);
+  return year;
+}
 
 const topNavItems = [
   { label: "Home", path: "/", match: (path) => path === "/" },
@@ -108,23 +157,12 @@ function ContactBand() {
   );
 }
 
-const pageTitles = {
-  "/": "Prawal Sharma | Engineering Leader",
-  "/journey": "Career | Prawal Sharma",
-  "/awards": "Awards | Prawal Sharma",
-  "/certifications": "Certifications | Prawal Sharma",
-  "/ai-projects": "Projects | Prawal Sharma",
-  "/conferences": "Conferences | Prawal Sharma",
-  "/highlights": "Highlights | Prawal Sharma",
-  "/recommendations": "Recommendations | Prawal Sharma"
-};
-
 // Case-study pages set their own title from the project name.
 function useRouteTitle(pathname) {
   useEffect(() => {
     const path = pathname.length > 1 ? pathname.replace(/\/+$/, "") : pathname;
     if (path.startsWith("/ai-projects/") || path === "/references") return;
-    document.title = pageTitles[path] || "Page not found | Prawal Sharma";
+    document.title = pageTitles[path] || NOT_FOUND_TITLE;
   }, [pathname]);
 }
 
@@ -151,6 +189,10 @@ function AppShell() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [openTopMenu, setOpenTopMenu] = useState(null);
   const [isScrolled, setIsScrolled] = useState(false);
+  // The assistant only exists in the browser: it is not part of the
+  // pre-rendered HTML, so it mounts after hydration.
+  const [assistantReady, setAssistantReady] = useState(false);
+  useEffect(() => setAssistantReady(true), []);
 
   const cancelTopMenuClose = () => {
     if (topNavCloseTimerRef.current) {
@@ -399,7 +441,7 @@ function AppShell() {
           <div className="footer-brand">
             <strong>{profile.name}</strong>
             <p>Engineering leader · {profile.location}</p>
-            <small>&copy; {CURRENT_YEAR} {profile.name}</small>
+            <small>&copy; <CopyrightYear /> {profile.name}</small>
           </div>
           <nav className="footer-nav" aria-label="Footer">
             <div>
@@ -423,9 +465,11 @@ function AppShell() {
         </div>
       </footer>
 
-      <Suspense fallback={null}>
-        <LazyAIBrandChatbot downloadResume={downloadResume} generateExecutiveProfile={generateExecutiveProfile} />
-      </Suspense>
+      {assistantReady ? (
+        <Suspense fallback={null}>
+          <LazyAIBrandChatbot downloadResume={downloadResume} generateExecutiveProfile={generateExecutiveProfile} />
+        </Suspense>
+      ) : null}
     </div>
   );
 }

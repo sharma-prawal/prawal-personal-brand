@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 npm run dev        # Start dev server (http://localhost:5173, also bound to 0.0.0.0)
-npm run build      # Build to dist/
+npm run build      # Client build to dist/, SSR build to dist-ssr/, then pre-render every route (scripts/prerender.mjs)
 npm run preview    # Preview production build
 npm run screenshots # Capture Playwright screenshots (scripts/capture-screenshots.mjs)
 ```
@@ -32,7 +32,9 @@ Single-page React app (React 19, Vite, React Router v7, Tailwind CSS v3, Framer 
 
 **Motion system** — shared animation constants (`premiumEase`, `exitEase`, `fadeUp`, `stagger`, `itemReveal`, `cardHover`, `tapPress`, `viewportReveal`) defined at module level. `useReducedMotion()` gates all animations. `<Reveal>` wraps scroll-triggered fade-in; `<MotionGroup>` wraps stagger containers.
 
-**Deployment** — Vercel (`.vercel/project.json`). `vercel.json` rewrites all routes to `index.html` for SPA routing.
+**Pre-rendering** — `npm run build` renders every known route to its own static HTML (`dist/<route>/index.html`) with `src/entry-server.jsx` + `scripts/prerender.mjs`. The route list and per-route `<title>` come from `prerenderRoutes()` in `src/data/routes.js` (case studies are derived from `aiProjectsWithSlugs` / `professionalCasesWithSlugs`). `src/main.jsx` preloads the current route's page module, then `hydrateRoot`s the pre-rendered HTML (or `createRoot`s when `#root` is empty, as in dev and `404.html`, or when the visitor prefers reduced motion). Anything that reads `window`, `matchMedia` or the clock must do it in an effect, or hydration will not match.
+
+**Deployment** — Vercel (`.vercel/project.json`), which runs `npm run build` itself. `vercel.json` has no SPA rewrites: Vercel serves the pre-rendered files and falls through to `dist/404.html` (the empty app shell) with a real 404 for any other path. `/references` is a Vercel redirect to `/recommendations`.
 
 ## Key conventions
 

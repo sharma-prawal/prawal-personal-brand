@@ -1,14 +1,15 @@
 import React from "react";
-import { createRoot } from "react-dom/client";
+import { createRoot, hydrateRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { Analytics } from "@vercel/analytics/react";
-import App from "./App.jsx";
+import App, { preloadRoute } from "./App.jsx";
 import "./styles.css";
 import "./redesign.css";
 
 window.history.scrollRestoration = "manual";
 
-createRoot(document.getElementById("root")).render(
+const container = document.getElementById("root");
+const app = (
   <React.StrictMode>
     <BrowserRouter>
       <App />
@@ -18,3 +19,23 @@ createRoot(document.getElementById("root")).render(
     <Analytics mode={import.meta.env.PROD ? "production" : "development"} />
   </React.StrictMode>
 );
+
+// Known routes ship pre-rendered HTML (scripts/prerender.mjs); 404.html and
+// the dev server ship an empty #root. The pre-rendered HTML assumes no
+// reduced-motion preference, but framer-motion reads that preference during
+// the first render, so those visitors get a fresh client render instead of a
+// hydration that would keep the server's animation start styles.
+const isPrerendered = container.firstElementChild !== null;
+const prefersReducedMotion = window.matchMedia?.("(prefers-reduced-motion)").matches;
+
+// Load the current route's page first, so hydration renders the same content
+// the HTML already shows instead of a Suspense fallback.
+preloadRoute(window.location.pathname)
+  .catch(() => {})
+  .then(() => {
+    if (isPrerendered && !prefersReducedMotion) {
+      hydrateRoot(container, app);
+    } else {
+      createRoot(container).render(app);
+    }
+  });
