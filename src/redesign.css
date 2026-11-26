@@ -220,6 +220,38 @@
   gap: 8px;
 }
 
+.assistant-trigger {
+  display: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--raised);
+  color: var(--ink);
+  cursor: pointer;
+  transition: color 0.15s var(--ease), border-color 0.15s var(--ease);
+}
+
+.assistant-trigger:hover {
+  border-color: rgb(var(--accent-text-rgb));
+  color: rgb(var(--accent-text-rgb));
+}
+
+@media (max-width: 1399px) {
+  .assistant-trigger {
+    display: grid;
+  }
+}
+
+/* With a mouse, match the LinkedIn button beside it; touch keeps 44px. */
+@media (hover: hover) and (pointer: fine) {
+  .assistant-trigger {
+    width: 36px;
+    height: 36px;
+  }
+}
+
 .hamburger-btn {
   display: none;
   place-items: center;
@@ -1434,7 +1466,29 @@
   object-position: top center;
 }
 
+/* Phone screenshots: shown whole on a soft tinted stage, inset and lifted
+   with a shadow, so the space either side reads as a mockup backdrop. */
+.projects-build--mobile .projects-build__media {
+  background: #e9efe9;
+  border-color: #cfdcd4;
+}
+
+.projects-build--mobile .projects-build__media .proof-image-button {
+  padding: 14px 0;
+}
+
 .projects-build--mobile .projects-build__media img {
+  object-fit: contain;
+  object-position: center;
+  filter: drop-shadow(0 6px 14px rgba(23, 21, 15, 0.22));
+}
+
+/* Wide cover art with black edges: show it whole; the letterbox blends in. */
+.projects-build--letterbox .projects-build__media {
+  background: #000;
+}
+
+.projects-build--letterbox .projects-build__media img {
   object-fit: contain;
   object-position: center;
 }
@@ -3177,15 +3231,19 @@ p.case-modules--after-list {
     grid-template-columns: minmax(0, 1fr);
   }
 
+  /* One fact per row on phones: Type, Status, Built with. */
   .case-facts--project {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  .case-facts--project div:last-child {
-    grid-column: 1 / -1;
+  .case-facts--project div,
+  .case-facts--project div + div {
     padding-left: 0;
-    border-top: 1px solid var(--line);
     border-left: 0;
+  }
+
+  .case-facts--project div + div {
+    border-top: 1px solid var(--line);
   }
 }
 

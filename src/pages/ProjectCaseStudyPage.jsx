@@ -76,9 +76,12 @@ export default function ProjectCaseStudyPage() {
               <div key={fact.label}>
                 <dt>{fact.label}</dt>
                 <dd>
-                  {String(fact.value).split(" · ").map((part, i) => (
-                    <span key={part}>{i ? " · " : null}<span className="nowrap-part">{part}</span></span>
-                  ))}
+                  {String(fact.value).includes(" · ")
+                    ? String(fact.value).split(" · ").map((part, i) => (
+                        // "Experimental · v0.12": break only at the dot, never inside a part
+                        <span key={part}>{i ? " · " : null}<span className="nowrap-part">{part}</span></span>
+                      ))
+                    : fact.value}
                 </dd>
               </div>
             ))}
