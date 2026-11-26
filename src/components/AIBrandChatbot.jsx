@@ -21,18 +21,11 @@ import { imageSrc } from "../data/imageMetadata.js";
 import { certificationAssets } from "../data/certificationAssets.js";
 import { awardAssets, conferenceAssets, professionalHighlights } from "../data/mediaAssets.js";
 import { retrieveChunks, buildContext, debugLog, classifyIntent } from "../lib/chatbotRag.js";
+import { GROQ_MODELS } from "../lib/groqModels.js";
 
-// Groq chat models, preferred first. The first accepts images, which the
-// certificate questions attach; the fallback is text-only and gets the question
-// without the image. Groq retires models, so check
-// https://console.groq.com/docs/models when the assistant falls back to its
-// built-in answers.
-const GROQ_MODELS = [
-  { id: "qwen/qwen3.8-27b", label: "Qwen3.8", vision: true },
-  // reasoning_effort keeps its hidden reasoning from eating the token budget.
-  { id: "openai/gpt-oss-20b", label: "gpt-oss-20b", vision: false, options: { reasoning_effort: "low" } },
-  { id: "openai/gpt-oss-120b", label: "gpt-oss-120b", vision: false, options: { reasoning_effort: "low" } }
-];
+// Whether the site was built with GROQ_API_KEY set (see vite.config.js). The
+// key itself stays on the server, in api/chat.js.
+const CHAT_LIVE = typeof __CHAT_LIVE__ !== "undefined" && __CHAT_LIVE__;
 
 const premiumEase = [0.16, 1, 0.3, 1];
 
@@ -143,13 +136,11 @@ async function fetchImageAsBase64(src) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// LLM API CALL — Groq (primary) or Gemini (fallback)
-// RAG retrieval runs here before the system prompt is assembled.
+// LLM API CALL — Groq, through the site's own /api/chat (api/chat.js), which
+// holds the key. RAG retrieval runs here before the system prompt is assembled.
 // ─────────────────────────────────────────────────────────────────────────────
 
-async function callLLMAPI(messages, apiKey, onChunk) {
-  const isGroq = apiKey.startsWith("gsk_");
-
+async function callLLMAPI(messages, onChunk) {
   // 1. Find last user message
   const lastUserMsg = [...messages].reverse().find(m => m.role === 'user');
   const queryText = lastUserMsg?.text || '';
@@ -173,117 +164,78 @@ async function callLLMAPI(messages, apiKey, onChunk) {
     try { visionDataUrl = await fetchImageAsBase64(visionCert.src); } catch (_) { /* skip */ }
   }
 
-  if (isGroq) {
-    const url = "https://api.groq.com/openai/v1/chat/completions";
-    const filteredMsgs = messages.filter(m => m.role === 'user' || m.role === 'model');
-    const formatMessages = (withImage) => [
-      { role: "system", content: systemInstructionText },
-      ...filteredMsgs.map((m, i) => {
-        const isLastUser = m.role === 'user' && i === filteredMsgs.length - 1;
-        if (isLastUser && withImage && visionDataUrl) {
-          return {
-            role: "user",
-            content: [
-              { type: "text", text: m.text + "\n\nThe certificate image is attached. Read all visible text (issue date, expiry, credential ID) to answer accurately." },
-              { type: "image_url", image_url: { url: visionDataUrl } }
-            ]
-          };
-        }
-        return { role: m.role === 'user' ? 'user' : 'assistant', content: m.text };
-      })
-    ];
-
-    // Try each model in order. Move on when Groq no longer serves one, or when
-    // one is over its per-minute quota (each model has its own; 413 is Groq's
-    // answer when a single request exceeds that quota).
-    let response;
-    for (const [index, candidate] of GROQ_MODELS.entries()) {
-      response = await fetch(url, {
-        method: "POST",
-        headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: candidate.id,
-          messages: formatMessages(candidate.vision),
-          temperature: 0.15,
-          max_tokens: 350,
-          stream: true,
-          ...candidate.options
-        })
-      });
-      if (response.ok) break;
-      const err = await response.json().catch(() => ({}));
-      const msg = err.error?.message || "Failed to contact Groq API";
-      const isLast = index === GROQ_MODELS.length - 1;
-      const rateLimited = response.status === 429 || response.status === 413;
-      const modelUnavailable = response.status === 404 || /model .*(does not exist|decommissioned|not found)|do not have access/i.test(msg);
-      if (rateLimited && isLast) throw new Error("RATE_LIMIT");
-      if (!rateLimited && (!modelUnavailable || isLast)) throw new Error(msg);
-    }
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-    let accumulated = "";
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      const chunk = decoder.decode(value, { stream: true });
-      for (const line of chunk.split("\n")) {
-        const trimmed = line.trim();
-        if (!trimmed.startsWith("data:")) continue;
-        const jsonStr = trimmed.slice(5).trim();
-        if (jsonStr === "[DONE]") break;
-        try {
-          const parsed = JSON.parse(jsonStr);
-          const delta = parsed.choices?.[0]?.delta?.content;
-          if (delta) { accumulated += delta; onChunk?.(accumulated); }
-        } catch (_) { /* malformed SSE line */ }
-      }
-    }
-
-    if (debugMode && accumulated) debugLog(queryText, retrievalResult, ragContext, accumulated);
-    return accumulated || "I'm sorry, I couldn't generate a response.";
-
-  } else {
-    // Gemini path
-    const model = "gemini-2.0-flash";
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-    const filteredMsgs = messages.filter(m => m.role === 'user' || m.role === 'model');
-    const contents = filteredMsgs.map((m, i) => {
+  const filteredMsgs = messages.filter(m => m.role === 'user' || m.role === 'model');
+  const formatMessages = (withImage) => [
+    { role: "system", content: systemInstructionText },
+    ...filteredMsgs.map((m, i) => {
       const isLastUser = m.role === 'user' && i === filteredMsgs.length - 1;
-      if (isLastUser && visionDataUrl) {
-        const [header, b64] = visionDataUrl.split(",");
-        const mimeType = header.replace("data:", "").replace(";base64", "");
+      if (isLastUser && withImage && visionDataUrl) {
         return {
           role: "user",
-          parts: [
-            { text: m.text + "\n\nThe certificate image is attached. Read all visible text to answer accurately." },
-            { inline_data: { mime_type: mimeType, data: b64 } }
+          content: [
+            { type: "text", text: m.text + "\n\nThe certificate image is attached. Read all visible text (issue date, expiry, credential ID) to answer accurately." },
+            { type: "image_url", image_url: { url: visionDataUrl } }
           ]
         };
       }
-      return { role: m.role === 'user' ? 'user' : 'model', parts: [{ text: m.text }] };
-    });
+      return { role: m.role === 'user' ? 'user' : 'assistant', content: m.text };
+    })
+  ];
 
-    const response = await fetch(url, {
+  // Try each model in order. Move on when Groq no longer serves one, or when
+  // one is over its per-minute quota (each model has its own; 413 is Groq's
+  // answer when a single request exceeds that quota).
+  let response;
+  for (const [index, candidate] of GROQ_MODELS.entries()) {
+    response = await fetch("/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        contents,
-        systemInstruction: { parts: [{ text: systemInstructionText }] },
-        generationConfig: { maxOutputTokens: 350, temperature: 0.15 }
+        model: candidate.id,
+        messages: formatMessages(candidate.vision),
+        temperature: 0.15,
+        max_tokens: 350,
+        stream: true,
+        ...candidate.options
       })
     });
-    if (!response.ok) {
-      const err = await response.json().catch(() => ({}));
-      const msg = err.error?.message || "Failed to contact Gemini API";
-      throw new Error(response.status === 429 ? "RATE_LIMIT" : msg);
-    }
-    const data = await response.json();
-    const answer = data.candidates?.[0]?.content?.parts?.[0]?.text || "I'm sorry, I couldn't generate a response.";
-    if (debugMode) debugLog(queryText, retrievalResult, ragContext, answer);
-    return answer;
+    if (response.ok) break;
+    const err = await response.json().catch(() => ({}));
+    const msg = err.error?.message || "Failed to contact the assistant API";
+    const isLast = index === GROQ_MODELS.length - 1;
+    const rateLimited = response.status === 429 || response.status === 413;
+    const modelUnavailable = response.status === 404 || /model .*(does not exist|decommissioned|not found)|do not have access/i.test(msg);
+    if (rateLimited && isLast) throw new Error("RATE_LIMIT");
+    if (!rateLimited && (!modelUnavailable || isLast)) throw new Error(msg);
   }
-}
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let accumulated = "";
+  let buffered = "";
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    // An SSE line can be split across network chunks; keep the unfinished
+    // tail for the next read.
+    buffered += decoder.decode(value, { stream: true });
+    const lines = buffered.split("\n");
+    buffered = lines.pop();
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed.startsWith("data:")) continue;
+      const jsonStr = trimmed.slice(5).trim();
+      if (jsonStr === "[DONE]") break;
+      try {
+        const parsed = JSON.parse(jsonStr);
+        const delta = parsed.choices?.[0]?.delta?.content;
+        if (delta) { accumulated += delta; onChunk?.(accumulated); }
+      } catch (_) { /* malformed SSE line */ }
+    }
+  }
 
+  if (debugMode && accumulated) debugLog(queryText, retrievalResult, ragContext, accumulated);
+  return accumulated || "I'm sorry, I couldn't generate a response.";
+}
 // ─────────────────────────────────────────────────────────────────────────────
 // SANDBOX ENGINE
 // Used when no API key is configured, or as a rate-limit fallback.
@@ -579,15 +531,9 @@ export default function AIBrandChatbot({ downloadResume, generateExecutiveProfil
 
   const messagesEndRef = useRef(null);
 
-  const currentApiKey = import.meta.env.VITE_GROQ_API_KEY || import.meta.env.VITE_GEMINI_API_KEY || "";
-  const apiMode = currentApiKey ? "live" : "sandbox";
-  const activeProvider = currentApiKey ? (currentApiKey.startsWith("gsk_") ? "groq" : "gemini") : "sandbox";
-  const providerLabel =
-    activeProvider === "groq"
-      ? `Groq / ${GROQ_MODELS[0].label}`
-      : activeProvider === "gemini"
-        ? "Gemini 2.0"
-        : "Local sandbox";
+  const apiMode = CHAT_LIVE ? "live" : "sandbox";
+  const activeProvider = CHAT_LIVE ? "groq" : "sandbox";
+  const providerLabel = CHAT_LIVE ? `Groq / ${GROQ_MODELS[0].label}` : "Local sandbox";
   const connectionLabel = apiMode === "live" ? "Live portfolio Q&A" : "Local portfolio Q&A";
   const footerProviderLabel =
     activeProvider === "sandbox"
@@ -715,7 +661,7 @@ export default function AIBrandChatbot({ downloadResume, generateExecutiveProfil
 
     const history = [...messages, userMsg];
 
-    if (apiMode === "live" && currentApiKey) {
+    if (apiMode === "live") {
       const streamId = `model-${Date.now()}`;
       // Insert empty streaming placeholder immediately
       setMessages((prev) => [
@@ -724,7 +670,7 @@ export default function AIBrandChatbot({ downloadResume, generateExecutiveProfil
       ]);
 
       try {
-        await callLLMAPI(history, currentApiKey, (accumulated) => {
+        await callLLMAPI(history, (accumulated) => {
           setMessages((prev) =>
             prev.map((m) => m.id === streamId ? { ...m, text: accumulated } : m)
           );
