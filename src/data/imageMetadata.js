@@ -36,3 +36,9 @@ export function imageAlt(image, fallback) {
 export function imageCaption(image, fallback) {
   return typeof image === "string" ? fallback : image.caption || image.alt || fallback;
 }
+
+// Small WebP copy for images shown as thumbnails; built by
+// scripts/thumbnails-plugin.mjs. Other files (SVG, PDF) are returned as-is.
+export function thumbSrc(src) {
+  return /^\/media\/.+\.(png|jpe?g|webp)$/i.test(src) ? `/thumbs${src}.webp` : src;
+}

@@ -1288,24 +1288,6 @@ main {
   pointer-events: auto;
 }
 
-.chatbot-fab {
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: var(--raised);
-  border: 1px solid var(--line-strong);
-  color: var(--ink);
-  cursor: pointer;
-  transition: color 150ms var(--ease), border-color 150ms var(--ease);
-}
-
-.chatbot-fab:hover {
-  border-color: rgb(var(--accent-text-rgb));
-  color: rgb(var(--accent-text-rgb));
-}
-
 /* Chatbot Panel Wrapper */
 .chatbot-panel {
   position: absolute;

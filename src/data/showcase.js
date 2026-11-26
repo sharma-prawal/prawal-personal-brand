@@ -372,33 +372,6 @@ export const aiProjects = aiProjectRecords.map((project) => ({
   )
 }));
 
-export const conferenceMoments = [
-  {
-    id: "conference-01",
-    title: "AI Impact Summit",
-    location: "In-person event",
-    theme: "Artificial intelligence, enterprise adoption, and leadership perspective",
-    takeaway: "Capture AI adoption signals and translate them into practical engineering leadership choices.",
-    image: "/media/conferences/conference-placeholder.svg"
-  },
-  {
-    id: "conference-02",
-    title: "Leadership Offsite",
-    location: "Recognition and strategy forum",
-    theme: "Engineering leadership, ownership, and organizational growth",
-    takeaway: "Connect recognition moments with the broader story of ownership, delivery, and long-term contribution.",
-    image: "/media/conferences/conference-placeholder.svg"
-  },
-  {
-    id: "conference-03",
-    title: "Cloud and Architecture Sessions",
-    location: "Industry learning",
-    theme: "Cloud-native systems, serverless thinking, and scalable delivery",
-    takeaway: "Use conference learning to sharpen cloud-native, serverless, and scalable architecture decisions.",
-    image: "/media/conferences/conference-placeholder.svg"
-  },
-];
-
 export const journeyPrinciples = [
   "Show increasing scope: engineer, lead, technology lead, technology manager.",
   "Keep each role readable by surfacing the highest-signal bullets first.",

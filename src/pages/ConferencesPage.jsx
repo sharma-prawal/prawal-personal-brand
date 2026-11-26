@@ -105,7 +105,7 @@ export default function ConferencesPage() {
                     <span className="ledger-rows__strip">
                       {moment.images.slice(0, 3).map((image) => (
                         <span className="ledger-rows__thumb" key={imageSrc(image)}>
-                          <ProofImage src={imageSrc(image)} alt={imageAlt(image, `${moment.title} photo`)} caption={imageCaption(image, moment.theme)} />
+                          <ProofImage thumb src={imageSrc(image)} alt={imageAlt(image, `${moment.title} photo`)} caption={imageCaption(image, moment.theme)} />
                         </span>
                       ))}
                     </span>

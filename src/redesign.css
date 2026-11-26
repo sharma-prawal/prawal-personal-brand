@@ -229,7 +229,7 @@
 }
 
 .assistant-trigger {
-  display: none;
+  display: grid;
   place-items: center;
   width: 44px;
   height: 44px;
@@ -244,12 +244,6 @@
 .assistant-trigger:hover {
   border-color: rgb(var(--accent-text-rgb));
   color: rgb(var(--accent-text-rgb));
-}
-
-@media (max-width: 1399px) {
-  .assistant-trigger {
-    display: grid;
-  }
 }
 
 /* With a mouse, match the LinkedIn button beside it; touch keeps 44px. */

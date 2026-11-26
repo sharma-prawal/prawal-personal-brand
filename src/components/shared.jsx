@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { CheckCircleMark, DiagArrow, DocMark, DownloadMark, NodeMark, StarMark, VerifyCircle, WorkMark } from "./icons.jsx";
 import { getDirectContact, profile } from "../data/profile.js";
-import { imageAlt, imageCaption, imageSrc } from "../data/imageMetadata.js";
+import { imageAlt, imageCaption, imageSrc, thumbSrc } from "../data/imageMetadata.js";
 import { Button } from "./ui/button.jsx";
 import OverlayDialog from "./OverlayDialog.jsx";
 import { fadeUp,
@@ -295,12 +295,17 @@ export function Magnetic({ children, strength = 10 }) {
 
 // ─── ProofImage ───────────────────────────────────────────────────────────────
 
-export function ProofImage({ src, alt, caption, priority = false, eager = false, zoomable = true, width = 800, height = 600 }) {
+// `thumb` shows a small WebP copy in the frame (for thumbnail-sized slots);
+// the lightbox always opens the original.
+export function ProofImage({ src, alt, caption, priority = false, eager = false, zoomable = true, width = 800, height = 600, thumb = false }) {
   const shouldReduceMotion = useReducedMotion();
   const [isZoomed, setIsZoomed] = useState(false);
   const zoomTrigger = useRef(null);
   const [zoomScale, setZoomScale] = useState(1);
-  const frameStyle = { "--proof-image": `url("${src.replaceAll("\"", "\\\"")}")` };
+  const [thumbFailed, setThumbFailed] = useState(false);
+  const displaySrc = thumb && !thumbFailed ? thumbSrc(src) : src;
+  const onImageError = displaySrc !== src ? () => setThumbFailed(true) : undefined;
+  const frameStyle = { "--proof-image": `url("${displaySrc.replaceAll("\"", "\\\"")}")` };
   const zoomImageStyle =
     zoomScale === 1
       ? { width: "auto", maxWidth: "100%", maxHeight: "calc(100dvh - 194px)" }
@@ -364,7 +369,8 @@ export function ProofImage({ src, alt, caption, priority = false, eager = false,
             }}
           >
             <img
-              src={src}
+              src={displaySrc}
+              onError={onImageError}
               alt={alt}
               width={width}
               height={height}
@@ -379,7 +385,8 @@ export function ProofImage({ src, alt, caption, priority = false, eager = false,
           </button>
         ) : (
           <img
-            src={src}
+            src={displaySrc}
+            onError={onImageError}
             alt={alt}
             width={width}
             height={height}
