@@ -368,7 +368,7 @@ function AppShell() {
       {mobileNavOpen && (
         <OverlayDialog
           className="mobile-nav-overlay"
-          label="Site menu"
+          label="Site navigation"
           returnFocusRef={mobileNavTrigger}
           onDismiss={() => setMobileNavOpen(false)}
         >
