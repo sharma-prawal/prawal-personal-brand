@@ -140,7 +140,7 @@ async function fetchImageAsBase64(src) {
 // holds the key. RAG retrieval runs here before the system prompt is assembled.
 // ─────────────────────────────────────────────────────────────────────────────
 
-async function callLLMAPI(messages, onChunk) {
+async function callLLMAPI(messages, onChunk, signal) {
   // 1. Find last user message
   const lastUserMsg = [...messages].reverse().find(m => m.role === 'user');
   const queryText = lastUserMsg?.text || '';
@@ -189,6 +189,7 @@ async function callLLMAPI(messages, onChunk) {
   for (const [index, candidate] of GROQ_MODELS.entries()) {
     response = await fetch("/api/chat", {
       method: "POST",
+      signal,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         model: candidate.id,
@@ -530,6 +531,13 @@ export default function AIBrandChatbot({ downloadResume, generateExecutiveProfil
   const [activeLightboxImage, setActiveLightboxImage] = useState(null);
 
   const messagesEndRef = useRef(null);
+  // One send at a time. isPending is state, so two clicks in the same frame
+  // (a double-click on a suggestion chip) would both see it as false; the ref
+  // is updated synchronously. The controller cancels a live request if the
+  // assistant unmounts mid-answer.
+  const sendInFlight = useRef(false);
+  const requestController = useRef(null);
+  useEffect(() => () => requestController.current?.abort(), []);
 
   const apiMode = CHAT_LIVE ? "live" : "sandbox";
   const activeProvider = CHAT_LIVE ? "groq" : "sandbox";
@@ -649,7 +657,8 @@ export default function AIBrandChatbot({ downloadResume, generateExecutiveProfil
 
   const sendMessage = async (textToSend) => {
     const text = textToSend || inputValue;
-    if (!text.trim()) return;
+    if (!text.trim() || sendInFlight.current) return;
+    sendInFlight.current = true;
 
     if (!textToSend) setInputValue("");
     setRateLimitAlert(false);
@@ -669,17 +678,20 @@ export default function AIBrandChatbot({ downloadResume, generateExecutiveProfil
         { id: streamId, role: "model", text: "", streaming: true }
       ]);
 
+      const controller = new AbortController();
+      requestController.current = controller;
       try {
         await callLLMAPI(history, (accumulated) => {
           setMessages((prev) =>
             prev.map((m) => m.id === streamId ? { ...m, text: accumulated } : m)
           );
-        });
+        }, controller.signal);
         // Mark streaming done
         setMessages((prev) =>
           prev.map((m) => m.id === streamId ? { ...m, streaming: false } : m)
         );
       } catch (err) {
+        if (controller.signal.aborted) return;
         console.error("AI assistant API error:", err);
         const sandboxRes = getSandboxResponse(text);
         if (err.message === "RATE_LIMIT") setRateLimitAlert(true);
@@ -692,6 +704,8 @@ export default function AIBrandChatbot({ downloadResume, generateExecutiveProfil
           )
         );
       } finally {
+        if (requestController.current === controller) requestController.current = null;
+        sendInFlight.current = false;
         setIsPending(false);
       }
     } else {
@@ -716,6 +730,7 @@ export default function AIBrandChatbot({ downloadResume, generateExecutiveProfil
           setMessages((prev) =>
             prev.map((m) => m.id === streamId ? { ...m, streaming: false } : m)
           );
+          sendInFlight.current = false;
           setIsPending(false);
         }
       };

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
@@ -99,40 +99,90 @@ export function ScrollToTop() {
 
 // ─── ImageCarousel ────────────────────────────────────────────────────────────
 
+// ProofImage plays a short fade-and-settle intro when it is a priority image.
+// Inside a carousel that intro belongs to the first slide only: replaying it on
+// every Next would leave the frame blank while the new slide fades in.
+const ImageIntroContext = createContext(true);
+
 export function ImageCarousel({ images, renderImage, size = "default", onSlideClick }) {
   const shouldReduceMotion = useReducedMotion();
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [hasNavigated, setHasNavigated] = useState(false);
   const isCompact = size === "compact";
+  const rootRef = useRef(null);
+  const last = images.length - 1;
 
   // Fetch the slides either side of the current one so Next/Previous shows a
-  // ready image instead of the empty frame. It starts only once a visitor shows
-  // interest in this carousel (pointer over it, focus inside it, a touch), so a
-  // page full of carousels does not download every slide on load.
+  // ready image instead of the empty frame. It starts once the carousel is near
+  // the viewport (or a visitor points at, focuses or touches it), so a page full
+  // of carousels does not download every slide on load.
   const [warm, setWarm] = useState(false);
   const preloaded = useRef(new Map());
-  useEffect(() => {
-    if (!warm || images.length < 2) return;
-    const last = images.length - 1;
-    const neighbours = [activeImageIndex === last ? 0 : activeImageIndex + 1, activeImageIndex === 0 ? last : activeImageIndex - 1];
-    for (const index of neighbours) {
-      const src = imageSrc(images[index]);
-      if (!src || preloaded.current.has(src)) continue;
-      const img = new Image();
+  const preload = (index) => {
+    const src = imageSrc(images[index]);
+    if (!src) return null;
+    let img = preloaded.current.get(src);
+    if (!img) {
+      img = new Image();
       img.decoding = "async";
       img.src = src;
       preloaded.current.set(src, img);
     }
-  }, [warm, activeImageIndex, images]);
+    return img;
+  };
+  useEffect(() => {
+    if (warm || images.length < 2) return undefined;
+    const node = rootRef.current;
+    if (!node || typeof IntersectionObserver === "undefined") return undefined;
+    const observer = new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) setWarm(true);
+    }, { rootMargin: "300px 0px" });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [warm, images.length]);
+  useEffect(() => {
+    if (!warm || images.length < 2) return;
+    preload(activeImageIndex === last ? 0 : activeImageIndex + 1);
+    preload(activeImageIndex === 0 ? last : activeImageIndex - 1);
+    // preload only reads images, which is covered by last/images below.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [warm, activeImageIndex, images, last]);
   const warmUp = () => { if (!warm) setWarm(true); };
+
+  // Switch slides only once the next image is decoded (or after a short cap on
+  // a slow connection), so the outgoing photo stays up instead of an empty frame.
+  // targetIndex tracks the latest request, so quick repeated clicks still step.
+  const targetIndex = useRef(0);
+  const goTo = (index) => {
+    targetIndex.current = index;
+    const show = () => {
+      if (targetIndex.current !== index) return;
+      setActiveImageIndex(index);
+      setHasNavigated(true);
+    };
+    const img = preload(index);
+    if (!img || typeof img.decode !== "function") {
+      show();
+      return;
+    }
+    Promise.race([
+      img.decode().catch(() => {}),
+      new Promise((resolve) => { setTimeout(resolve, 450); })
+    ]).then(show);
+  };
+  const step = (delta) => {
+    const from = Math.min(targetIndex.current, last);
+    goTo(delta > 0 ? (from === last ? 0 : from + 1) : (from === 0 ? last : from - 1));
+  };
 
   const handlePrev = (e) => {
     e.stopPropagation();
-    setActiveImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+    step(-1);
   };
 
   const handleNext = (e) => {
     e.stopPropagation();
-    setActiveImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+    step(1);
   };
 
   // Touch swipe: a horizontal drag of 40px or more changes the image.
@@ -149,8 +199,7 @@ export function ImageCarousel({ images, renderImage, size = "default", onSlideCl
     const dx = e.clientX - start.x;
     if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(e.clientY - start.y)) return;
     swiped.current = true;
-    if (dx < 0) setActiveImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
-    else setActiveImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+    step(dx < 0 ? 1 : -1);
   };
 
   // A click anywhere on the slide opens the image's own zoom button. Ignore clicks
@@ -168,6 +217,7 @@ export function ImageCarousel({ images, renderImage, size = "default", onSlideCl
 
   return (
     <div
+      ref={rootRef}
       className={`image-carousel${isCompact ? " image-carousel--compact" : ""}`}
       onPointerEnter={warmUp}
       onPointerDown={warmUp}
@@ -179,18 +229,27 @@ export function ImageCarousel({ images, renderImage, size = "default", onSlideCl
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp}
       >
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeImageIndex}
-            className="image-carousel__slide"
-            initial={shouldReduceMotion ? false : { opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={shouldReduceMotion ? undefined : { opacity: 0 }}
-            transition={{ duration: 0.25, ease: premiumEase }}
-          >
-            {renderImage(images[activeImageIndex], activeImageIndex)}
-          </motion.div>
-        </AnimatePresence>
+        {/* Slides share one grid cell: the outgoing slide stays mounted and
+            opaque underneath while the incoming one fades in over it. */}
+        <ImageIntroContext.Provider value={!hasNavigated}>
+          <AnimatePresence initial={false}>
+            <motion.div
+              key={activeImageIndex}
+              className="image-carousel__slide"
+              style={{ zIndex: 1 }}
+              initial={shouldReduceMotion ? false : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={
+                shouldReduceMotion
+                  ? { opacity: 0, transition: { duration: 0 } }
+                  : { zIndex: 0, opacity: 0, transition: { zIndex: { duration: 0 }, opacity: { delay: 0.3, duration: 0 } } }
+              }
+              transition={{ duration: 0.3, ease: premiumEase }}
+            >
+              {renderImage(images[activeImageIndex], activeImageIndex)}
+            </motion.div>
+          </AnimatePresence>
+        </ImageIntroContext.Provider>
       </div>
       {images.length > 1 && (
         <>
@@ -325,6 +384,8 @@ export function Magnetic({ children, strength = 10 }) {
 // the lightbox always opens the original.
 export function ProofImage({ src, alt, caption, priority = false, eager = false, zoomable = true, width = 800, height = 600, thumb = false }) {
   const shouldReduceMotion = useReducedMotion();
+  const introAllowed = useContext(ImageIntroContext);
+  const playIntro = priority && !shouldReduceMotion && introAllowed;
   const [isZoomed, setIsZoomed] = useState(false);
   const zoomTrigger = useRef(null);
   const [zoomScale, setZoomScale] = useState(1);
@@ -378,8 +439,8 @@ export function ProofImage({ src, alt, caption, priority = false, eager = false,
       <motion.span
         className="proof-image-frame"
         style={frameStyle}
-        initial={shouldReduceMotion || !priority ? false : { opacity: 0, scale: 1.025 }}
-        animate={shouldReduceMotion || !priority ? undefined : { opacity: 1, scale: 1 }}
+        initial={playIntro ? { opacity: 0, scale: 1.025 } : false}
+        animate={playIntro ? { opacity: 1, scale: 1 } : undefined}
         transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.82, ease: premiumEase }}
       >
         {zoomable ? (
