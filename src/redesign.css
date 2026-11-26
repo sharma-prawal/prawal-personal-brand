@@ -5,6 +5,14 @@
    need !important. Later phases move the remaining pages onto these patterns.
    ═══════════════════════════════════════════════════════════════════════════ */
 
+/* ─── Spacing ────────────────────────────────────────────────────────────
+   One vertical rhythm for the whole site. Sections, the closing call to
+   action and the footer all derive from these, so gaps can't drift apart. */
+:root {
+  --section-gap: clamp(64px, 8vw, 104px);
+  --band-inset: clamp(40px, 5vw, 64px);
+}
+
 /* ─── Buttons ────────────────────────────────────────────────────────────
    Flat, rectangular, one fill colour. Replaces the gradient pill buttons. */
 .primary-link,
@@ -888,7 +896,7 @@
 
 /* Sections */
 .home-section {
-  padding-block: clamp(64px, 8vw, 104px);
+  padding-block: var(--section-gap);
 }
 
 .home-section__head {
@@ -1121,7 +1129,8 @@
 /* ─── Site footer ────────────────────────────────────────────────────────── */
 .site-footer {
   width: min(1200px, calc(100vw - 40px));
-  margin: clamp(80px, 10vw, 128px) auto 0;
+  /* Every page ends on a call to action; match the space above its heading. */
+  margin: var(--band-inset) auto 0;
   border-top: 1px solid var(--line);
   color: var(--ink-soft);
 }
@@ -1207,24 +1216,47 @@
 .direct-contact-panel__row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  gap: 8px;
   color: var(--ink);
   font-size: 0.92rem;
 }
 
 .direct-contact-panel__row button {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 32px;
   min-height: 32px;
-  padding: 0 10px;
+  padding: 0;
+  color: var(--ink-soft);
+}
+
+.direct-contact-panel__row button:hover {
+  color: var(--ink);
+}
+
+@media (pointer: coarse) {
+  .direct-contact-panel__row button {
+    width: 44px;
+    min-height: 44px;
+  }
+}
+
+.direct-contact-panel__status {
+  color: var(--ink-soft);
+  font-size: 0.85rem;
+}
+
+/* The route wrapper's min-height would leave a hole under the short 404
+   message; let it size to its content so the CTA follows at --section-gap. */
+.route-motion:has(> .recovery-page) {
+  min-height: 0;
 }
 
 .recovery-page {
   width: min(1200px, 100%);
   margin-inline: auto;
-  padding-block: clamp(54px, 9vw, 120px);
+  padding-block: var(--section-gap) 0;
 }
 
 .recovery-page > * {
@@ -1266,7 +1298,7 @@
 }
 
 .projects-section {
-  padding-top: clamp(72px, 9vw, 120px);
+  padding-top: var(--section-gap);
   padding-bottom: 0;
 }
 
@@ -1518,10 +1550,6 @@
   font-size: 0.95rem;
 }
 
-#case-study-model {
-  padding-bottom: clamp(48px, 6vw, 72px);
-}
-
 @media (max-width: 960px) {
   .projects-domains {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1718,8 +1746,8 @@
 /* ─── Closing call to action on inner pages ─────────────────────────────── */
 .contact-band {
   width: min(1200px, 100%);
-  margin: clamp(72px, 9vw, 120px) auto 0;
-  padding-top: clamp(48px, 6vw, 72px);
+  margin: var(--section-gap) auto 0;
+  padding-top: var(--band-inset);
   border-top: 1px solid var(--line);
 }
 
@@ -1909,52 +1937,31 @@
   font-size: 0.82rem !important;
 }
 
-.projects-fun ul {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 16px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.projects-fun a {
-  display: grid;
-  grid-template-columns: 72px minmax(0, 1fr);
-  grid-template-rows: auto auto;
-  column-gap: 12px;
+.projects-github {
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
+  justify-content: space-between;
+  gap: 16px 32px;
+  margin-top: clamp(48px, 6vw, 72px);
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+
+.projects-github h3 {
+  margin: 0;
   color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 600;
 }
 
-.projects-fun__thumb {
-  grid-row: span 2;
-  overflow: hidden;
-  aspect-ratio: 4 / 3;
-  border-radius: 4px;
-  background: var(--paper-light);
-}
-
-.projects-fun__thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.projects-fun__name {
-  align-self: end;
+.projects-github p {
+  max-width: 60ch;
+  margin: 6px 0 0;
+  color: var(--ink-soft);
   font-size: 0.95rem;
-  font-weight: 500;
-}
-
-.projects-fun__type {
-  align-self: start;
-  color: var(--ink-muted);
-  font-size: 0.82rem;
-}
-
-.projects-fun a:hover .projects-fun__name {
-  color: rgb(var(--accent-text-rgb));
+  line-height: 1.55;
 }
 
 /* ─── System flow diagram ────────────────────────────────────────────────── */

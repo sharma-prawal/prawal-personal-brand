@@ -78,10 +78,10 @@ function DirectContactPanel() {
       <h2 className="direct-contact-panel__header">Get in touch</h2>
       <div className="direct-contact-panel__row">
         <a href={`mailto:${email}`}>{email}</a>
-        <button type="button" onClick={copyEmail} aria-live="polite">
-          {copied ? <Check size={14} aria-hidden="true" /> : <Copy size={14} aria-hidden="true" />}
-          <span>{copied ? "Copied" : "Copy"}</span>
+        <button type="button" onClick={copyEmail} aria-label={copied ? "Email copied" : "Copy email address"} title={copied ? "Copied" : "Copy email"}>
+          {copied ? <Check size={15} aria-hidden="true" /> : <Copy size={15} aria-hidden="true" />}
         </button>
+        <span className="direct-contact-panel__status" role="status">{copied ? "Copied" : ""}</span>
       </div>
       <ul className="direct-contact-panel__links">
         <li><a href={profile.contact.linkedin} target="_blank" rel="noreferrer">LinkedIn</a></li>

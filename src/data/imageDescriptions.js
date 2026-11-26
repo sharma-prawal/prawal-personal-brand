@@ -81,6 +81,7 @@ export const imageDescriptions = {
   "/media/projects/github/opspilot-ai.jpg": "OpsPilot AI system overview with an investigation intake form, recent investigations and runtime health.",
   "/media/projects/github/personal-assistant.jpg": "J.A.R.V.I.S. dashboard with a clock, a briefing panel and task columns on a dark interface.",
   "/media/projects/github/ai-brand-assistant.jpg": "The AI assistant panel on this site, showing suggested questions and a message box.",
+  "/media/projects/Data Refinery MCP Server/architecture.svg": "Architecture of the Data Refinery Connectors MCP Server: MCP clients such as a chat UI, Claude Code and Copilot connect to a FastMCP server with 21 read and 5 write tools, which calls five downstream APIs using each user's own Okta token.",
   "/media/projects/github/prawal-the-series.jpg": "Cover art for Prawal: The Series, a career told as a streaming-style series.",
   "/media/projects/Sun Rise School/Screenshot 2026-05-25 at 7.35.43-PM.png": "Sun Rise Model Public School homepage with a class photo and admission buttons.",
   "/media/projects/Sun Rise School/Screenshot 2026-05-25 at 7.36.08-PM.png": "Sun Rise School contact section with address details and a map.",
