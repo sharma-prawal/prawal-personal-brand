@@ -7,8 +7,10 @@ import { projectSlug } from "../data/derived.js";
 import { internationalExposure, professionalHighlights } from "../data/mediaAssets.js";
 
 // A map label whose background chip is sized from the rendered text, so it fits
-// whatever font is in use instead of a per-character estimate.
-function MapLabel({ x, y, anchor, label, textFill, chipStroke, weight, spacing }) {
+// whatever font is in use instead of a per-character estimate. Phones get a
+// larger font from CSS (see .global-routes-svg text), so it measures again
+// when that breakpoint is crossed.
+function MapLabel({ x, y, anchor, label, textFill, chipStroke, weight, spacing, size = 9 }) {
   const textRef = useRef(null);
   const [box, setBox] = useState(null);
   useLayoutEffect(() => {
@@ -19,8 +21,11 @@ function MapLabel({ x, y, anchor, label, textFill, chipStroke, weight, spacing }
     };
     measure();
     document.fonts?.ready.then(measure);
+    const phone = window.matchMedia("(max-width: 540px)");
+    phone.addEventListener("change", measure);
     return () => {
       active = false;
+      phone.removeEventListener("change", measure);
     };
   }, [label]);
   return (
@@ -28,7 +33,7 @@ function MapLabel({ x, y, anchor, label, textFill, chipStroke, weight, spacing }
       {box ? (
         <rect x={box.x - 4} y={box.y - 1.5} width={box.width + 8} height={box.height + 3} rx="3" fill="rgba(251, 250, 246, 0.96)" stroke={chipStroke} strokeWidth="0.5" />
       ) : null}
-      <text ref={textRef} x={x} y={y} fill={textFill} fontSize="9" fontWeight={weight} fontFamily="var(--font-sans)" letterSpacing={spacing} textAnchor={anchor}>{label}</text>
+      <text ref={textRef} x={x} y={y} fill={textFill} fontSize={size} fontWeight={weight} fontFamily="var(--font-sans)" letterSpacing={spacing} textAnchor={anchor}>{label}</text>
     </>
   );
 }
@@ -157,8 +162,7 @@ function GlobalRoutesMap() {
           <circle cx={center.x} cy={center.y} r="14" fill="rgba(21, 94, 78, 0.14)" />
           <circle cx={center.x} cy={center.y} r="4" fill="#fff" />
           <circle cx={center.x} cy={center.y} r="2" fill="rgb(21, 94, 78)" />
-          <rect x={center.x - 32} y={center.y + 11} width={64} height={13} rx="3" fill="rgba(251, 250, 246, 0.96)" stroke="rgba(21, 94, 78, 0.35)" strokeWidth="0.5" />
-          <text x={center.x} y={center.y + 20} fill="rgb(23, 21, 15)" fontSize="10" fontWeight="600" fontFamily="var(--font-sans)" letterSpacing="0.08em" textAnchor="middle">{center.label}</text>
+          <MapLabel x={center.x} y={center.y + 21} anchor="middle" label={center.label} textFill="rgb(23, 21, 15)" chipStroke="rgba(21, 94, 78, 0.35)" weight="600" spacing="0.08em" size={10} />
         </g>
       </svg>
       <div className="global-routes-legend">
@@ -174,7 +178,7 @@ export default function HighlightsPage() {
   const workAbroad = [
     { title: "US onsite delivery", text: "Worked in person with US clients on a B1/B2 business visa." },
     { title: "UK and South Africa", text: "Multi-year delivery relationships with remote stakeholders." },
-    { title: "Travel", text: "Phuket, Nepal, Vietnam and Dubai." }
+    { title: "Travel", text: "Dubai, Nepal, Phuket and Vietnam." }
   ];
 
   return (

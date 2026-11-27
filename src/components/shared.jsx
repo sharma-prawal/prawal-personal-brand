@@ -406,24 +406,27 @@ export function ProofImage({ src, alt, caption, priority = false, eager = false,
       onDismiss={() => setIsZoomed(false)}
     >
       <div className="image-lightbox__panel" data-theme={pageTheme}>
-        <button className="image-lightbox__close" type="button" aria-label="Close zoomed image" data-dialog-initial-focus onClick={() => setIsZoomed(false)}>
-          <X size={18} />
-        </button>
-        <div className="image-lightbox__toolbar">
-          <span>Fit</span>
-          <ZoomOut size={16} aria-hidden="true" />
-          <input
-            type="range"
-            min="1"
-            max="3"
-            step="0.1"
-            value={zoomScale}
-            aria-label="Image zoom level"
-            onInput={(event) => setZoomScale(Number(event.currentTarget.value))}
-            onChange={(event) => setZoomScale(Number(event.target.value))}
-          />
-          <ZoomIn size={16} aria-hidden="true" />
-          <output>{Math.round(zoomScale * 100)}%</output>
+        {/* The close button sits beside the zoom bar, not over it. */}
+        <div className="image-lightbox__bar">
+          <div className="image-lightbox__toolbar">
+            <span>Fit</span>
+            <ZoomOut size={16} aria-hidden="true" />
+            <input
+              type="range"
+              min="1"
+              max="3"
+              step="0.1"
+              value={zoomScale}
+              aria-label="Image zoom level"
+              onInput={(event) => setZoomScale(Number(event.currentTarget.value))}
+              onChange={(event) => setZoomScale(Number(event.target.value))}
+            />
+            <ZoomIn size={16} aria-hidden="true" />
+            <output>{Math.round(zoomScale * 100)}%</output>
+          </div>
+          <button className="image-lightbox__close" type="button" aria-label="Close zoomed image" data-dialog-initial-focus onClick={() => setIsZoomed(false)}>
+            <X size={18} />
+          </button>
         </div>
         <div className="image-lightbox__viewport">
           <img src={src} alt={alt} style={zoomImageStyle} />

@@ -269,7 +269,7 @@ function getSandboxResponse(inputText) {
       text: "Two formats available depending on what you need:\n\n- **Executive Profile:** Built for senior leadership conversations — leads with outcomes, platform breadth, and delivery scale. Good for C-suite or committee review.\n- **Resume (PDF):** His current 2-page resume — ATS-friendly, the same version he uses for job applications.",
       actions: [
         { label: "Download Executive Profile", type: "download_exec" },
-        { label: "Download Resume (PDF)", type: "download_ats" }
+        { label: "Download CV (PDF)", type: "download_ats" }
       ]
     };
   }
@@ -304,7 +304,7 @@ function getSandboxResponse(inputText) {
       actions: [
         { label: "Cloud certifications", query: "What cloud certifications does he have?" },
         { label: "AI projects", query: "What AI projects has he built?" },
-        { label: "Download Resume (PDF)", type: "download_ats" }
+        { label: "Download CV (PDF)", type: "download_ats" }
       ]
     };
   }
@@ -323,7 +323,7 @@ function getSandboxResponse(inputText) {
   // ── Certifications ────────────────────────────────────────────────────────
   if (intents.includes('certification')) {
     return {
-      text: "**93 credentials** — the flagship proctored certificates:\n\n- **Claude Certified Architect – Foundations** (Anthropic, Aug 2026 — the most recent)\n![Claude Certified Architect – Foundations](/media/certifications/Anthropic/Claude Certified Architect - Foundations.png)\n- **AWS Certified AI Practitioner** (May 2025)\n![AWS AI Practitioner](/media/certifications/AWS/AWS Certified AI Practitioner.png)\n- **AWS Certified Developer – Associate**\n![AWS Developer Associate](/media/certifications/AWS/AWS Certified Developer - Associate.png)\n- **Google Cloud Certified: Cloud Digital Leader**\n![GCP Cloud Digital Leader](/media/certifications/GCP/Google Cloud Certified Cloud Digital Leader.png)\n- **Microsoft Certified: Azure Fundamentals (AZ-900)**\n![Azure Fundamentals](/media/certifications/Azure/Microsoft-Certified-AZ-900.png.png)\n- **Certified Agile Leadership Essentials (Scrum Alliance)**\n![Certified Agile Leadership Essentials](/media/certifications/ScrumAlliance/Prawal Sharma-ScrumAlliance_CALESS_Certificate.png)\n\nAll three major cloud platforms covered. The Claude and AWS AI certifications reflect where his delivery focus sits now.",
+      text: "**93 credentials** — the flagship proctored certificates:\n\n- **Claude Certified Architect – Foundations** (Anthropic, Aug 2026 — the most recent)\n![Claude Certified Architect – Foundations](/media/certifications/Anthropic/Claude Certified Architect - Foundations.png)\n- **AWS Certified AI Practitioner** (May 2025)\n![AWS AI Practitioner](/media/certifications/AWS/AWS Certified AI Practitioner.png)\n- **AWS Certified Developer – Associate**\n![AWS Developer Associate](/media/certifications/AWS/AWS Certified Developer - Associate.png)\n- **Google Cloud Certified: Cloud Digital Leader**\n![GCP Cloud Digital Leader](/media/certifications/GCP/Google Cloud Certified Cloud Digital Leader.png)\n- **Microsoft Certified: Azure Fundamentals (AZ-900)**\n![Azure Fundamentals](/media/certifications/Azure/Microsoft Certified Azure Fundamentals.png)\n- **Certified Agile Leadership Essentials (Scrum Alliance)**\n![Certified Agile Leadership Essentials](/media/certifications/ScrumAlliance/Certified Agile Leadership Essentials.png)\n\nAll three major cloud platforms covered. The Claude and AWS AI certifications reflect where his delivery focus sits now.",
       actions: [
         { label: "View all 93 credentials", url: "/certifications" },
         { label: "Technical stack", query: "What is his technical stack?" }
@@ -440,7 +440,7 @@ function getSandboxResponse(inputText) {
     actions: [
       { label: "Executive summary", query: "Summarize Prawal's profile for a recruiter.", icon: "briefcase" },
       { label: "Technical stack", query: "What is his technical stack?", icon: "stack" },
-      { label: "Download resume", query: "Can I download his resume?" },
+      { label: "Download CV", query: "Can I download his CV?" },
       { label: "Connect on LinkedIn", url: "https://www.linkedin.com/in/sharma-prawal/" }
     ]
   };
@@ -516,7 +516,7 @@ export default function AIBrandChatbot({ downloadResume, generateExecutiveProfil
       actions: [
         { label: "Executive summary", query: "Summarize Prawal's engineering leadership and delivery experience.", icon: "briefcase" },
         { label: "AI and cloud projects", query: "Show Prawal's AI and cloud project proof.", icon: "sparkles" },
-        { label: "Download resume", type: "download_ats", icon: "file" },
+        { label: "Download CV", type: "download_ats", icon: "file" },
         { label: "Send a message", type: "email_form", icon: "mail" },
         { label: "LinkedIn profile", url: "https://www.linkedin.com/in/sharma-prawal/", icon: "linkedin" }
       ]
@@ -640,7 +640,7 @@ export default function AIBrandChatbot({ downloadResume, generateExecutiveProfil
         {
           id: Date.now().toString(),
           role: "model",
-          text: "Downloading Prawal's **resume** (2-page PDF) — it's the same version he uses for job applications."
+          text: "Downloading Prawal's **CV** (2-page PDF) — it's the same version he uses for job applications."
         }
       ]);
     } else if (action.url) {
@@ -744,9 +744,10 @@ export default function AIBrandChatbot({ downloadResume, generateExecutiveProfil
         {isOpen && (
           <motion.div
             className="chatbot-panel"
-            initial={{ y: 35, opacity: 0, scale: 0.94 }}
+            initial={{ y: -12, opacity: 0, scale: 0.97 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
-            exit={{ y: 30, opacity: 0, scale: 0.94 }}
+            exit={{ y: -10, opacity: 0, scale: 0.97 }}
+            style={{ transformOrigin: "top right" }}
             transition={{ duration: 0.36, ease: premiumEase }}
             ref={panelRef}
             role="dialog"
@@ -1015,7 +1016,7 @@ export default function AIBrandChatbot({ downloadResume, generateExecutiveProfil
                   ref={inputRef}
                   type="text"
                   aria-label="Ask the assistant a question"
-                  placeholder="Ask about my work…"
+                  placeholder="Ask about Prawal's work…"
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   disabled={isPending}

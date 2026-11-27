@@ -17,6 +17,7 @@ const credentialYears = {
   "Microsoft Certified: Security, Compliance, and Identity Fundamentals": "2022",
   "Microsoft Certified: Azure Data Fundamentals": "2021",
   "Microsoft Certified: Azure Fundamentals": "2021",
+  "Google Cloud Certified – Cloud Digital Leader": "2023",
   "Artificial Intelligence and Machine Learning Program": "2026",
   "Certified Agile Leadership Essentials (CAL-E)": "2023"
 };
@@ -65,13 +66,16 @@ const courseTopics = [
   { id: "skills", label: "Professional skills", match: /.*/, text: "Decision-making, listening, confidence and work habits." }
 ];
 
-// Only real course sources are shown; "Featured Courses" and "Miscellaneous" are folder names.
-const courseSources = { LinkedIn: "LinkedIn Learning", HackerRank: "HackerRank", MongoDB: "MongoDB University", GraphQL: "Apollo GraphQL" };
-
 function topicFor(course) {
-  const haystack = `${course.title} ${course.provider === "MongoDB" ? "MongoDB" : ""}`;
+  const haystack = `${course.title} ${course.provider === "MongoDB University" ? "MongoDB" : ""}`;
   return courseTopics.find((topic) => topic.match.test(haystack)).id;
 }
+
+// Natural order, with skill levels in progression: "(SAA-C01): 2" before ": 10",
+// "SQL (Basic)" before "SQL (Intermediate)" before "SQL (Advanced)".
+const levelRank = { Basic: 1, Intermediate: 2, Advanced: 3 };
+const sortKey = (title) => title.replace(/\((Basic|Intermediate|Advanced)\)/, (_, level) => `(${levelRank[level]})`);
+const byTitle = (a, b) => sortKey(a.title).localeCompare(sortKey(b.title), "en", { numeric: true, sensitivity: "base" });
 
 function CourseList({ courses, limit }) {
   return (
@@ -81,7 +85,7 @@ function CourseList({ courses, limit }) {
           <span className="ledger-rows__thumb course-list__thumb"><ProofImage thumb src={cert.src} alt={cert.alt} caption={cert.caption} /></span>
           <span className="course-list__text">
             <strong>{cert.title}</strong>
-            {courseSources[cert.provider] ? <span>{courseSources[cert.provider]}</span> : null}
+            <span>{cert.provider}</span>
           </span>
         </li>
       ))}
@@ -102,7 +106,7 @@ function CourseArchive({ courses }) {
 
   const q = query.trim().toLowerCase();
   const searchMatches = useMemo(
-    () => (q ? courses.filter((c) => `${c.title} ${courseSources[c.provider] || ""}`.toLowerCase().includes(q)) : []),
+    () => (q ? courses.filter((c) => `${c.title} ${c.provider}`.toLowerCase().includes(q)) : []),
     [courses, q]
   );
 
@@ -188,7 +192,7 @@ function CourseArchive({ courses }) {
 export default function CertificationsPage() {
   const flagship = flagshipTitles.map((t) => featuredCertificationAssets.find((c) => c.title === t)).filter(Boolean);
   const others = featuredCertificationAssets.filter((c) => !flagshipTitles.includes(c.title));
-  const courses = useMemo(() => certificationAssets.filter((cert) => !cert.proctored), []);
+  const courses = useMemo(() => certificationAssets.filter((cert) => !cert.proctored).sort(byTitle), []);
 
   const facts = [
     { value: String(featuredCertificationAssets.length), label: "Official certifications" },
@@ -250,7 +254,11 @@ export default function CertificationsPage() {
                 return (
                   <li key={cert.id}>
                     <div className="ledger-rows__row">
-                      <span className="ledger-rows__date">{cert.provider}{credentialYears[cert.title] ? ` · ${credentialYears[cert.title]}` : ""}</span>
+                      {/* Year on its own line, so "Scrum Alliance" never wraps with a stray "· 2023". */}
+                      <span className="ledger-rows__date">
+                        {cert.provider}
+                        {credentialYears[cert.title] ? <span className="ledger-rows__sub">{credentialYears[cert.title]}</span> : null}
+                      </span>
                       <span className="ledger-rows__main">
                         <strong>{cert.title}</strong>
                         <span>{signal.text}</span>

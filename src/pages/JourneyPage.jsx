@@ -5,7 +5,7 @@ import { profile } from "../data/profile.js";
 const journeyArc = [
   { label: "Foundation", title: "Built from implementation depth", text: "Started close to the code, delivery details, production constraints, and practical engineering habits." },
   { label: "Scale", title: "Moved into accountable systems ownership", text: "Grew into platform architecture, multi-pod delivery, client-facing execution, and enterprise reliability." },
-  { label: "Leadership", title: "Now leads through judgment and leverage", text: "Combines architecture, global stakeholders, team leadership, and AI-assisted engineering workflows." }
+  { label: "Leadership", title: "Leading through judgment and leverage", text: "Combines architecture, global stakeholders, team leadership, and AI-assisted engineering workflows." }
 ];
 
 const roleTags = [

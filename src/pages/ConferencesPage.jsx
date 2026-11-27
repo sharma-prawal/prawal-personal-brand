@@ -1,12 +1,16 @@
 import { motion } from "framer-motion";
 import { ImageCarousel, PageFrame, ProofImage, Reveal } from "../components/shared.jsx";
 import { imageAlt, imageCaption, imageSrc } from "../data/imageMetadata.js";
+import { describeImage } from "../data/imageDescriptions.js";
 import { projectSlug } from "../data/derived.js";
 import { conferenceAssets } from "../data/mediaAssets.js";
 
+// The hackathon has no event photos; its certificate is the proof.
+const dentsuCertificate = "/media/certifications/Building Generative AI Solutions within dentsu Connect Hackathon.jpeg";
+
 const whyIGo = [
   { title: "AI adoption judgment", text: "Separating what enterprises are really adopting from what only sounds good on stage." },
-  { title: "Platform modernisation", text: "Reading cloud, data and developer-ecosystem shifts before they turn into delivery pressure." },
+  { title: "Platform modernization", text: "Reading cloud, data and developer-ecosystem shifts before they turn into delivery pressure." },
   { title: "Business context", text: "Connecting technology choices to growth, operating models and stakeholder confidence." }
 ];
 
@@ -49,20 +53,13 @@ export default function ConferencesPage() {
   const others = conferenceAssets
     .filter((moment) => moment.title !== featuredMoment?.title)
     .sort((a, b) => yearOf(b) - yearOf(a));
-  const years = conferenceAssets.map((m) => Number(String(m.year || "").match(/\d{4}/)?.[0])).filter(Boolean);
-  const facts = [
-    { value: String(conferenceAssets.length), label: "Industry events" },
-    { value: years.length ? `${Math.min(...years)}–${Math.max(...years)}` : "", label: "Years attended" },
-    { value: "3", label: "Topics: AI, cloud and data, business" },
-    { value: "1", label: "GenAI hackathon (dentsu, 2023)" }
-  ].filter((fact) => fact.value);
 
   return (
     <div data-theme="conferences">
       <PageFrame
         eyebrow="Conferences"
         title="Industry events on AI, cloud and data."
-        intro="Forums I attend to keep up with AI adoption, cloud modernisation and data platforms, and the business decisions behind them."
+        intro="Forums I attend to keep up with AI adoption, cloud modernization and data platforms, and the business decisions behind them."
         className="conferences-page-hero event-index-hero"
       >
         <div className="ledger-page">
@@ -113,23 +110,24 @@ export default function ConferencesPage() {
                 </li>
               ))}
             </ol>
-            <p className="also-attended">
-              Also: dentsu&apos;s{" "}
-              <a href="https://www.linkedin.com/posts/sharma-prawal_chatgpt-generativeai-artificialintelligence-activity-7137813697678168065-F-03" target="_blank" rel="noreferrer">
-                “Building Generative AI Solutions” hackathon
-              </a>{" "}
-              (December 2023).
-            </p>
+            <div className="also-attended">
+              <span className="ledger-rows__thumb also-attended__proof">
+                <ProofImage
+                  thumb
+                  src={dentsuCertificate}
+                  alt={describeImage(dentsuCertificate)}
+                  caption={describeImage(dentsuCertificate)}
+                />
+              </span>
+              <p>
+                Also: dentsu&apos;s{" "}
+                <a href="https://www.linkedin.com/posts/sharma-prawal_chatgpt-generativeai-artificialintelligence-activity-7137813697678168065-F-03" target="_blank" rel="noreferrer">
+                  “Building Generative AI Solutions” hackathon
+                </a>{" "}
+                (November 2023), hosted by dentsu DevOps, Global Technology. Select the certificate to view it full size.
+              </p>
+            </div>
           </Reveal>
-          <dl className="home-facts" aria-label="Events at a glance">
-            {facts.map((fact) => (
-              <div className="home-facts__item" key={fact.label}>
-                <dt>{fact.label}</dt>
-                <dd>{fact.value}</dd>
-              </div>
-            ))}
-          </dl>
-
         </div>
       </PageFrame>
     </div>

@@ -154,7 +154,7 @@ function FieldStrip() {
           <li className={lead ? "home-field__lead" : "home-field__support"} key={label}>
             <Link to={to}>
               <figure>
-                <img src={encodeURI(image.src)} alt="" loading="lazy" decoding="async" />
+                <img src={encodeURI(image.src)} alt={image.alt} loading="lazy" decoding="async" />
                 <figcaption>
                   <span><strong>{label}</strong><span>{caption}</span></span>
                   <ArrowRight size={16} aria-hidden="true" />
@@ -219,7 +219,8 @@ function Writing() {
         </a>
       </header>
       <ul className="home-writing">
-        {profile.writing.map((post) => (
+        {/* Newest first, like Recognition and the Awards page. */}
+        {[...profile.writing].reverse().map((post) => (
           <li key={post.url}>
             <a href={post.url} target="_blank" rel="noreferrer">
               <span className="home-writing__date">{post.date}</span>
@@ -240,8 +241,8 @@ function Contact() {
       <p>Available for architecture reviews, AI adoption strategy and technology leadership work.</p>
       <div className="home-actions">
         <LinkedInButton />
-        <ExecutiveProfileDownloadButton />
         <ResumeDownloadButton />
+        <ExecutiveProfileDownloadButton />
       </div>
     </section>
   );

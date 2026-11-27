@@ -122,9 +122,22 @@ function FeaturedBuild({ project }) {
 function BuildCard({ project, priority }) {
   const isMobileApp = project.type === "Android app";
   return (
-    <li className={["projects-build", isMobileApp ? "projects-build--mobile" : "", project.thumbFit === "letterbox" ? "projects-build--letterbox" : ""].filter(Boolean).join(" ")}>
+    <li className={["projects-build", isMobileApp ? "projects-build--mobile" : "", project.thumbFit ? `projects-build--${project.thumbFit}` : ""].filter(Boolean).join(" ")}>
       <div className="projects-build__media">
-        <Media project={project} eager priority={priority} />
+        {isMobileApp ? (
+          // Phone screens are tall: three side by side fill the landscape card.
+          project.images.slice(0, 3).map((image, index) => (
+            <ProofImage
+              key={imageSrc(image)}
+              src={imageSrc(image)}
+              alt={imageAlt(image, `${project.name} screen ${index + 1}`)}
+              caption={imageCaption(image, project.summary)}
+              eager
+            />
+          ))
+        ) : (
+          <Media project={project} eager priority={priority} />
+        )}
       </div>
       <p className="projects-kicker">{project.type} · {project.stage}</p>
       <h3>{project.name}</h3>

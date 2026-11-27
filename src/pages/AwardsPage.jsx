@@ -40,7 +40,7 @@ function AwardProofViewer({ award, signal, onClose, returnFocusRef }) {
         </button>
         <div className="award-modal__stage">
           <div className="award-artifact-stage award-artifact-stage--modal">
-            {activeImage && <img src={imageSrc(activeImage)} alt={award.title} />}
+            {activeImage && <img key={imageSrc(activeImage)} src={imageSrc(activeImage)} alt={activeImage.alt || award.title} />}
           </div>
         </div>
 

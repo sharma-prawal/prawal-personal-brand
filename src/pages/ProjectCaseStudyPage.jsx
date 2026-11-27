@@ -115,7 +115,7 @@ export default function ProjectCaseStudyPage() {
           {galleryImages.length > 0 && (
             <Reveal as={motion.section} className="case-gallery-section" id="case-gallery" aria-labelledby="case-gallery-title">
               <h2 id="case-gallery-title">More screenshots</h2>
-              <ul className={`case-gallery${isMobileApp ? " case-gallery--mobile" : ""}`}>
+              <ul className={["case-gallery", isMobileApp && "case-gallery--mobile", !isMobileApp && galleryImages.length % 3 === 1 && galleryImages.length % 2 === 0 && "case-gallery--pairs"].filter(Boolean).join(" ")}>
                 {galleryImages.map((image, index) => (
                   <li key={imageSrc(image)}>
                     <ProofImage

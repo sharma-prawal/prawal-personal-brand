@@ -286,6 +286,20 @@ main:focus {
   transform: translateY(0) scale(1);
 }
 
+/* Touch screens have no hover: show the zoom cue at rest so images read as
+   tappable, and drop the "View proof" label, which a tap leaves stuck over
+   the image. */
+@media (hover: none) {
+  .proof-zoom-cue {
+    opacity: 0.86;
+    transform: none;
+  }
+
+  .proof-inspect-label {
+    display: none !important;
+  }
+}
+
 .proof-image-frame:hover::after,
 .proof-image-frame:focus-within::after {
   opacity: 0.92;
@@ -359,12 +373,20 @@ body:has(.proof-modal[open]) .brand-chatbot {
   cursor: default;
 }
 
+.image-lightbox__bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .image-lightbox__toolbar {
+  flex: 1;
+  min-width: 0;
   display: grid;
   grid-template-columns: auto auto minmax(160px, 1fr) auto auto;
   align-items: center;
   gap: 10px;
-  padding: 8px 54px 8px 10px;
+  padding: 8px 10px;
   border: 1px solid rgba(255, 255, 255, 0.13);
   border-radius: 4px;
   color: rgba(255, 255, 255, 0.72);
@@ -375,7 +397,6 @@ body:has(.proof-modal[open]) .brand-chatbot {
   .image-lightbox__toolbar {
     grid-template-columns: auto auto minmax(60px, 1fr) auto auto;
     gap: 6px;
-    padding: 8px 52px 8px 10px;
   }
 }
 
@@ -420,10 +441,7 @@ body:has(.proof-modal[open]) .brand-chatbot {
 
 .image-lightbox__close {
   appearance: none;
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  z-index: 3;
+  flex: none;
   width: 42px;
   height: 42px;
   display: grid;
@@ -1004,8 +1022,8 @@ li {
 }
 
 @media (max-width: 540px) {
-  .global-routes-svg text { display: none; }
-  .global-routes-svg .route-dot rect { display: none; }
+  /* The map renders at ~75% scale on a phone; enlarge labels to stay legible. */
+  .global-routes-svg text { font-size: 12.5px; letter-spacing: 0; }
 
   .global-routes-legend {
     grid-template-columns: minmax(0, 1fr);
@@ -1288,13 +1306,14 @@ main {
   pointer-events: auto;
 }
 
-/* Chatbot Panel Wrapper */
+/* Chatbot Panel Wrapper: opened from the header button, so it drops down
+   from just under the 64px top bar rather than rising from the corner. */
 .chatbot-panel {
-  position: absolute;
-  bottom: 0;
-  right: 0;
+  position: fixed;
+  top: 76px;
+  right: calc(18px + env(safe-area-inset-right));
   width: min(390px, calc(100vw - 36px - env(safe-area-inset-right) - env(safe-area-inset-left)));
-  height: min(580px, calc(100dvh - 94px - env(safe-area-inset-bottom)));
+  height: min(620px, calc(100dvh - 94px - env(safe-area-inset-bottom)));
   background: var(--raised);
   border: 1px solid rgba(var(--ink-soft-rgb), 0.26);
   border-radius: 8px;
@@ -1831,6 +1850,7 @@ main {
 @media (max-width: 480px), (max-height: 500px) {
   .chatbot-panel {
     position: fixed;
+    top: 0;
     bottom: 0;
     right: 0;
     width: 100%;
