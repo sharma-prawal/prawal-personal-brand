@@ -18,7 +18,7 @@ const portfolioOrder = [
   "Data Refinery Connectors MCP Server",
   "The Series",
   "Personal Branding Site",
-  "Sunrise Public School Website",
+  "Sun Rise Model Public School Website",
   "Anniversary RPG Web Game",
   "Android Notes App",
   "Published Visual Novel Game",

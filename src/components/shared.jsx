@@ -564,7 +564,7 @@ export function PageFrame({ eyebrow, title, intro, children, className = "", her
         <motion.div className="page-hero__inner" variants={fadeUp} transition={{ duration: 0.72, ease: premiumEase }}>
           <div className="page-hero__copy">
             {eyebrow && <motion.span className="eyebrow" variants={itemReveal}>{eyebrow}</motion.span>}
-            <motion.h1 variants={fadeUp} transition={{ duration: 0.82, ease: premiumEase, delay: 0.02 }}>{title}</motion.h1>
+            <motion.h1 variants={fadeUp} transition={{ duration: 0.82, ease: premiumEase, delay: 0.02 }}><KeepRanges text={title} /></motion.h1>
             {intro && <motion.p variants={itemReveal}>{intro}</motion.p>}
           </div>
           {heroAside}
@@ -941,5 +941,24 @@ export function ExecutiveProfileDownloadButton({ variant = "secondary" }) {
         <span>Download executive profile</span>
       </a>
     </Button>
+  );
+}
+
+// Closing call to action: one main button, the downloads as quiet text links.
+export function CtaActions() {
+  return (
+    <div className="cta-actions">
+      <LinkedInButton />
+      <div className="cta-actions__links">
+        <a className="home-link" href={RESUME_PDF} download="Prawal_Sharma_Resume.pdf">
+          <DocMark size={16} />
+          <span>Download CV</span>
+        </a>
+        <a className="home-link" href="/prawal-sharma-executive-profile.pdf" download>
+          <DownloadMark size={16} />
+          <span>Executive profile (PDF)</span>
+        </a>
+      </div>
+    </div>
   );
 }

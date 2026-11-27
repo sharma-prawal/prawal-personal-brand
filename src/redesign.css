@@ -289,6 +289,25 @@
   .hamburger-btn {
     display: grid;
   }
+
+  /* Phones and tablets: plain icon buttons, no boxes. The 44px tap area stays. */
+  .topbar-actions {
+    gap: 0;
+    margin-right: -10px;
+  }
+
+  .assistant-trigger,
+  .hamburger-btn {
+    border-color: transparent;
+    background: none;
+    border-radius: 50%;
+  }
+
+  .assistant-trigger:hover,
+  .hamburger-btn:hover {
+    border-color: transparent;
+    background: var(--surface-strong);
+  }
 }
 
 /* ─── Homepage ───────────────────────────────────────────────────────────── */
@@ -967,7 +986,7 @@
   grid-row: span 2;
   padding-top: 2px;
   color: rgb(var(--accent-text-rgb));
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: 0.95rem;
 }
 
@@ -996,12 +1015,14 @@
     margin-top: 16px;
   }
 
+  /* Square crop from the top of the photo: the whole head with headroom,
+     down to the waist, instead of a tight letterbox across the face. */
   .home-hero__portrait {
-    aspect-ratio: 2.12;
+    aspect-ratio: 1;
   }
 
   .home-hero__portrait img {
-    object-position: 50% 9%;
+    object-position: 50% 0%;
   }
 }
 
@@ -1352,7 +1373,7 @@
   display: block;
   margin-top: 2px;
   color: rgb(var(--accent-text-rgb));
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: 0.82rem;
 }
 
@@ -1391,7 +1412,7 @@
 .projects-case__no {
   margin-bottom: 6px;
   color: rgb(var(--accent-text-rgb));
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: 0.9rem;
 }
 
@@ -1809,6 +1830,55 @@
   line-height: 1.6;
 }
 
+/* Copy on the left, actions on the right, so the band spans the full measure
+   instead of leaving the right half empty. Used by the home "Get in touch" too. */
+.cta-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: clamp(32px, 6vw, 96px);
+  align-items: end;
+}
+
+.cta-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 14px;
+  justify-self: end;
+  padding-left: clamp(24px, 3vw, 40px);
+  border-left: 1px solid var(--line);
+}
+
+.cta-actions__links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 2px 24px;
+}
+
+.cta-actions__links .home-link {
+  min-height: 36px;
+}
+
+@media (max-width: 760px) {
+  .cta-split {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+
+  .cta-actions {
+    justify-self: stretch;
+    padding-left: 0;
+    border-left: 0;
+  }
+}
+
+@media (max-width: 520px) {
+  .cta-actions > a {
+    width: 100%;
+  }
+}
+
 /* ─── Floating chat button: keep it off primary actions ─────────────────── */
 .site-shell.nav-open .brand-chatbot {
   display: none;
@@ -1918,51 +1988,115 @@
   font-weight: 600;
 }
 
+/* Earlier client work: cards. Two wide cards, then three narrower ones, on a
+   six-column grid so every row is full. */
 .projects-earlier {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: clamp(28px, 3vw, 40px) clamp(20px, 2.4vw, 32px);
   margin: 0;
   padding: 0;
   list-style: none;
-  border-bottom: 1px solid var(--line);
 }
 
 .projects-earlier li {
-  border-top: 1px solid var(--line);
+  grid-column: span 2;
+  min-width: 0;
+}
+
+.projects-earlier li:nth-child(-n + 2) {
+  grid-column: span 3;
 }
 
 .projects-earlier a {
-  display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 2fr) auto;
-  align-items: baseline;
-  gap: 20px;
-  padding: 16px 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   color: var(--ink);
 }
 
-.projects-earlier__name {
-  font-family: var(--font-display);
-  font-size: 1.15rem;
+.projects-earlier__panel {
+  display: block;
+  margin-bottom: 16px;
+  padding: 6px;
+  border: 1px solid #cfdcd4;
+  border-radius: var(--radius);
+  background: #e9efe9;
+  transition: border-color 0.15s var(--ease);
 }
 
-.projects-earlier__meta,
+.projects-earlier__sketch {
+  display: block;
+  width: 100%;
+  height: auto;
+  font-family: var(--font-sans);
+}
+
+.projects-earlier__sketch--wide {
+  display: none;
+}
+
+@media (min-width: 961px) {
+  .projects-earlier__sketch--wide {
+    display: block;
+  }
+
+  .projects-earlier__sketch--wide + .projects-earlier__sketch--compact {
+    display: none;
+  }
+}
+
+.projects-earlier__meta {
+  color: var(--ink-muted);
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.projects-earlier__name {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 6px;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  line-height: 1.2;
+}
+
 .projects-earlier__outcome {
+  margin-top: 8px;
   color: var(--ink-soft);
   font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.projects-earlier__stack {
+  margin-top: auto;
+  padding-top: 12px;
+  color: var(--ink-muted);
+  font-size: 0.82rem;
   line-height: 1.5;
 }
 
 .projects-earlier svg {
-  align-self: center;
+  flex-shrink: 0;
   color: var(--ink-muted);
   transition: transform 0.15s var(--ease), color 0.15s var(--ease);
 }
 
 .projects-earlier a:hover .projects-earlier__name,
-.projects-earlier a:hover svg {
+.projects-earlier a:hover .projects-earlier__name svg {
   color: rgb(var(--accent-text-rgb));
 }
 
-.projects-earlier a:hover svg {
+.projects-earlier a:hover .projects-earlier__name svg {
   transform: translateX(2px);
+}
+
+.projects-earlier a:hover .projects-earlier__panel {
+  border-color: #8fb3a3;
 }
 
 .projects-section .projects-domains {
@@ -1972,7 +2106,7 @@
 .projects-featured__stack {
   margin: 14px 0 0;
   color: var(--ink-muted) !important;
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: 0.82rem !important;
 }
 
@@ -2039,7 +2173,7 @@
 
 .case-flow__no {
   color: rgb(var(--accent-text-rgb));
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: 0.8rem;
 }
 
@@ -2213,19 +2347,17 @@ p.case-modules--after-list {
 }
 
 @media (max-width: 960px) {
-  .projects-earlier a {
-    grid-template-columns: minmax(0, 1fr) auto;
-    row-gap: 4px;
+  .projects-earlier {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .projects-earlier__meta,
-  .projects-earlier__outcome {
-    grid-column: 1;
+  .projects-earlier li,
+  .projects-earlier li:nth-child(-n + 2) {
+    grid-column: span 1;
   }
 
-  .projects-earlier svg {
-    grid-column: 2;
-    grid-row: 1 / span 3;
+  .projects-earlier li:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
   }
 
   .case-section {
@@ -2371,7 +2503,7 @@ p.case-modules--after-list {
 
 .photo-pair__meta {
   color: var(--ink-muted);
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: 0.82rem;
 }
 
@@ -2425,7 +2557,7 @@ p.case-modules--after-list {
   align-self: start;
   padding-top: 4px;
   color: var(--ink-muted);
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: 0.85rem;
 }
 
@@ -2579,7 +2711,7 @@ p.case-modules--after-list {
   display: flex;
   gap: 12px;
   color: #b5afa4;
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: 0.82rem;
 }
 
@@ -2662,7 +2794,7 @@ p.case-modules--after-list {
 /* ─── Certifications: certificate grid and course archive ───────────────── */
 .cert-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: clamp(32px, 4vw, 48px) clamp(20px, 3vw, 40px);
   margin: 0;
   padding: 0;
@@ -2851,7 +2983,7 @@ p.case-modules--after-list {
 .course-topics__count {
   margin-top: 2px;
   color: rgb(var(--accent-text-rgb));
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: 0.82rem;
 }
 
@@ -3077,7 +3209,7 @@ p.case-modules--after-list {
 
 .quote-rows__date {
   color: var(--ink-muted);
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: 0.82rem;
 }
 
@@ -3201,7 +3333,7 @@ p.case-modules--after-list {
 
 .stage-cols__no {
   color: rgb(var(--accent-text-rgb));
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: 0.82rem;
 }
 
@@ -3254,6 +3386,61 @@ p.case-modules--after-list {
   border-top: 0;
 }
 
+/* Timeline rows get a third column for scope (team, clients), so the
+   right side of the page carries information instead of empty space. */
+.role-ledger--timeline > li {
+  grid-template-columns: 140px minmax(0, 1fr) minmax(200px, 260px);
+}
+
+.role-ledger__scope {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  margin: 0;
+  padding: 4px 0 4px clamp(18px, 2vw, 28px);
+  border-left: 1px solid var(--line);
+}
+
+.role-ledger__scope dt {
+  color: var(--ink-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.role-ledger__scope dd {
+  margin: 3px 0 0;
+  color: var(--ink);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 1024px) {
+  .role-ledger--timeline > li {
+    grid-template-columns: 140px minmax(0, 1fr);
+  }
+
+  .role-ledger--timeline .role-ledger__scope {
+    grid-column: 2;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    margin-top: 18px;
+    padding: 14px 0 0;
+    border-top: 1px solid var(--line);
+    border-left: 0;
+  }
+}
+
+@media (max-width: 760px) {
+  .role-ledger--timeline > li {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .role-ledger--timeline .role-ledger__scope {
+    grid-column: 1;
+  }
+}
+
 .role-ledger--timeline > li:not(:last-child)::after {
   content: "";
   position: absolute;
@@ -3296,7 +3483,7 @@ p.case-modules--after-list {
   align-content: start;
   gap: 6px;
   color: var(--ink-muted);
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: 0.88rem;
 }
 
@@ -3603,4 +3790,190 @@ p.case-modules--after-list {
 /* Keeps "Experimental · v0.12" style values from breaking at the dot. */
 .nowrap-part {
   white-space: nowrap;
+}
+
+/* ─── Use the full measure ──────────────────────────────────────────────────
+   Headings run the full width of the page and their intros sit directly
+   below, also full width, instead of a narrow column with the right half
+   empty. Intros are one or two sentences, so they stay one or two lines. */
+.page-hero:not(.project-case-hero) h1,
+.highlights-page-hero h1 {
+  max-width: none;
+}
+
+.page-hero:not(.project-case-hero) .page-hero__copy > p,
+.highlights-page-hero p {
+  max-width: none;
+}
+
+/* The Highlights hero reserved an empty right-hand column for an aside it
+   never had. */
+.highlights-page-hero .page-hero__inner {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.home-section__head {
+  max-width: none;
+}
+
+.home-section__head p {
+  max-width: none;
+}
+
+/* ─── Numbered and ruled lists as columns ───────────────────────────────────
+   "How each case is written", "Why I go", the recommendation themes and
+   "Working across borders" had the heading in a left column and the list in
+   a right one, leaving a tall empty block under the heading. The heading now
+   sits on top and the items run across the page in columns, the same way
+   the Career page's "How the work changed" does. */
+.home-section--split {
+  display: block;
+}
+
+.home-section--split .home-section__head {
+  margin-bottom: clamp(32px, 4vw, 48px);
+}
+
+.home-section--split .home-rules {
+  --rule-cols: 3;
+  display: grid;
+  grid-template-columns: repeat(var(--rule-cols), minmax(0, 1fr));
+  gap: clamp(20px, 3vw, 40px);
+  border-bottom: 0;
+}
+
+.home-section--split .home-rules:has(> li:nth-child(4)) {
+  --rule-cols: 4;
+}
+
+.home-section--split .home-rules li,
+.home-section--split .home-rules--numbered li {
+  display: block;
+  padding: 18px 0 0;
+  border-top: 2px solid var(--ink);
+}
+
+.home-section--split .home-rules__num {
+  display: block;
+  margin-bottom: 10px;
+  padding-top: 0;
+}
+
+.home-section--split .home-rules h3 {
+  margin-bottom: 8px;
+}
+
+@media (max-width: 1024px) {
+  .home-section--split .home-rules,
+  .home-section--split .home-rules:has(> li:nth-child(4)) {
+    --rule-cols: 2;
+  }
+}
+
+@media (max-width: 640px) {
+  .home-section--split .home-rules,
+  .home-section--split .home-rules:has(> li:nth-child(4)) {
+    --rule-cols: 1;
+  }
+}
+
+/* ─── Highlights map: legend beside the map, not under it ──────────────── */
+.global-map-section .global-map-card__body {
+  max-width: none;
+}
+
+@media (min-width: 861px) {
+  .global-map-section .global-routes-container {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(220px, 1fr);
+    align-items: center;
+    gap: clamp(24px, 4vw, 56px);
+  }
+
+  .global-map-section .global-routes-legend {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 22px;
+    padding: 4px 0 4px clamp(20px, 3vw, 36px);
+    border-top: 0;
+    border-left: 1px solid var(--line);
+  }
+}
+
+/* ─── Labels and dates: small caps instead of monospace ─────────────────────
+   Dates, counts and small labels were set in IBM Plex Mono, which read as a
+   developer portfolio. They now use the sans in spaced capitals with
+   tabular figures, so numbers still line up down a column. */
+.home-rules__num,
+.projects-domains__count,
+.projects-case__no,
+.case-flow__no,
+.photo-pair__meta,
+.ledger-rows__date,
+.award-metadata-row,
+.course-topics__count,
+.quote-rows__date,
+.stage-cols__no,
+.role-ledger__when > span:first-child {
+  font-size: 0.74rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* The tech-stack line keeps its own casing (pgvector, Next.js). */
+.projects-featured__stack {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Career, "Before that, and education": the two short rows sit side by side
+   on wide screens instead of two half-empty full-width rows. */
+@media (min-width: 1025px) {
+  .role-ledger--compact {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: clamp(32px, 4vw, 56px);
+  }
+
+  .role-ledger--compact > li {
+    grid-template-columns: 120px minmax(0, 1fr);
+  }
+}
+
+/* Highlights, book feature: the cover is a fixed-width portrait, so its column
+   is sized to the cover and the copy takes the rest of the row, instead of the
+   cover sitting at the far edge of a wide photo column with a gap beside it. */
+@media (min-width: 961px) {
+  .conf-feature:has(> .conf-feature__media--publication) {
+    grid-template-columns: minmax(280px, 420px) minmax(0, 1fr);
+    gap: clamp(40px, 5vw, 72px);
+  }
+
+  .conf-feature--reverse:has(> .conf-feature__media--publication) {
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 420px);
+  }
+
+  .conf-feature:has(> .conf-feature__media--publication) .conf-feature__theme {
+    max-width: 62ch;
+  }
+}
+
+/* Page headings fill the line toward the right edge instead of splitting
+   into two equal halves (the site-wide h1 rule is text-wrap: balance).
+   "pretty" still keeps a single word from sitting alone on the last line. */
+@media (min-width: 761px) {
+  .page-hero h1 {
+    text-wrap: pretty;
+  }
+}
+
+@media (max-width: 640px) {
+  .projects-earlier {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .projects-earlier li:last-child:nth-child(odd) {
+    grid-column: auto;
+  }
+
 }

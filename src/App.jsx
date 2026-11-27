@@ -2,7 +2,7 @@ import React, { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Link, NavLink, Navigate, Route, Routes, matchPath, useLocation } from "react-router-dom";
 import { Check, ChevronDown, ChevronRight, Copy, Linkedin, Menu, MessageSquare, X } from "lucide-react";
-import { ExecutiveProfileDownloadButton, LinkedInButton, RecoveryPage, ResumeDownloadButton, ScrollToTop, downloadResume, generateExecutiveProfile } from "./components/shared.jsx";
+import { CtaActions, LinkedInButton, RecoveryPage, ScrollToTop, downloadResume, generateExecutiveProfile } from "./components/shared.jsx";
 import OverlayDialog from "./components/OverlayDialog.jsx";
 // The homepage is where most visitors land, so it ships in the main bundle
 // instead of waiting on a second request; the other pages stay lazy.
@@ -82,7 +82,7 @@ const topNavItems = [
     path: "/awards",
     match: (path) => ["/awards", "/certifications", "/recommendations"].some((prefix) => path.startsWith(prefix)),
     children: [
-      { label: "Awards", path: "/awards", text: "Ten awards at Successive Digital" },
+      { label: "Awards", path: "/awards", text: "10 awards at Successive Digital" },
       { label: "Certifications", path: "/certifications", text: "Cloud, AI and architecture" },
       { label: "Recommendations", path: "/recommendations", text: "What colleagues say" }
     ]
@@ -145,14 +145,12 @@ function DirectContactPanel() {
 // Closing call to action for every page except the homepage, which has its own.
 function ContactBand() {
   return (
-    <section className="contact-band" aria-labelledby="contact-band-title">
-      <h2 id="contact-band-title">Want to talk about engineering leadership or AI adoption?</h2>
-      <p>LinkedIn is the quickest way to reach me. My CV and executive profile are here too.</p>
-      <div className="home-actions">
-        <LinkedInButton />
-        <ResumeDownloadButton />
-        <ExecutiveProfileDownloadButton />
+    <section className="contact-band cta-split" aria-labelledby="contact-band-title">
+      <div className="cta-split__copy">
+        <h2 id="contact-band-title">Want to talk about engineering leadership or AI adoption?</h2>
+        <p>LinkedIn is the quickest way to reach me. My CV and executive profile are here too.</p>
       </div>
+      <CtaActions />
     </section>
   );
 }

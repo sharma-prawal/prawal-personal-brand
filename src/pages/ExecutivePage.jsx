@@ -4,9 +4,8 @@ import { ArrowDown, ArrowRight, ArrowUpRight } from "lucide-react";
 import SystemFlowPreview from "../components/SystemFlowPreview.jsx";
 import { DownloadMark } from "../components/icons.jsx";
 import {
-  ExecutiveProfileDownloadButton,
+  CtaActions,
   KeepRanges,
-  LinkedInButton,
   ProofImage,
   ResumeDownloadButton
 } from "../components/shared.jsx";
@@ -62,7 +61,7 @@ function Hero() {
       <div className="home-hero__copy">
         <h1 id="home-hero-title">{profile.shortHeadline}</h1>
         <p className="home-hero__summary">
-          I’m an engineering manager with 10 years of experience delivering enterprise payment and advertising data platforms. I lead two client engagements across the US, UK and South Africa, from architecture and production releases to AI-assisted delivery.
+          I’m a Technology Manager with 10 years of experience delivering enterprise payment and advertising data platforms. I lead two client engagements across the US, UK and South Africa, from architecture and production releases to AI-assisted delivery.
         </p>
         <div className="home-actions home-hero__actions">
           <a className="primary-link" href="#selected-work">
@@ -236,14 +235,12 @@ function Writing() {
 
 function Contact() {
   return (
-    <section className="home-section home-contact" aria-labelledby="home-contact-title">
-      <h2 id="home-contact-title">Get in touch</h2>
-      <p>Available for architecture reviews, AI adoption strategy and technology leadership work.</p>
-      <div className="home-actions">
-        <LinkedInButton />
-        <ResumeDownloadButton />
-        <ExecutiveProfileDownloadButton />
+    <section className="home-section home-contact cta-split" aria-labelledby="home-contact-title">
+      <div className="cta-split__copy">
+        <h2 id="home-contact-title">Get in touch</h2>
+        <p>Available for architecture reviews, AI adoption strategy and technology leadership work.</p>
       </div>
+      <CtaActions />
     </section>
   );
 }

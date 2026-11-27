@@ -32,7 +32,7 @@ const professionalHighlightRecords = [
   {
     title: "Book Contributor",
     category: "Publication contribution",
-    context: "Contributor to The Subtle Art of Effective Communication, an organizational book on communication and listening skills.",
+    context: "Wrote the chapter “Listening: The Subtle Art of Effective Communication” for this organizational book. It separates hearing from active listening and turns listening into everyday habits: staying present, reading non-verbal cues, not interrupting, holding back judgment and not imposing solutions.",
     story:
       "A public professional artifact that demonstrates contribution beyond engineering delivery and reinforces communication as a leadership capability.",
     proofLabel: "3 book contribution pages",

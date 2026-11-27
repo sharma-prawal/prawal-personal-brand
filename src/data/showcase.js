@@ -203,7 +203,8 @@ const aiProjectRecords = [
     images: ["/media/projects/github/prawal-the-series.jpg"]
   },
   {
-    name: "Sunrise Public School Website",
+    name: "Sun Rise Model Public School Website",
+    slug: "sunrise-public-school-website",
     group: "product",
     type: "Education website",
     stage: "Live",
@@ -215,7 +216,7 @@ const aiProjectRecords = [
     stack: ["Web", "Responsive UI", "Content design"],
     link: "https://sunriseschoolkandi.org/",
     linkLabel: "Live school site",
-    previewCaption: "The school homepage introduces Sunrise and gives parents an admissions starting point.",
+    previewCaption: "The school homepage introduces Sun Rise and gives parents an admissions starting point.",
     images: [
       "/media/projects/Sun Rise School/01-home.png",
       "/media/projects/Sun Rise School/02-contact.png",

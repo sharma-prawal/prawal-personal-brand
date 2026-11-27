@@ -24,6 +24,33 @@ const roleResults = [
   "Built internal tools for meeting bookings and HR document automation."
 ];
 
+// Scope per role, from the role details above: team size, clients and the
+// titles clients use. Fills the timeline's right-hand column.
+const roleScope = [
+  [
+    { label: "Team", value: "Two engagements, 5–12 contributors each" },
+    { label: "Clients", value: "Global media agency · US bank" },
+    { label: "Client titles", value: "Technical Lead · Engineering Manager" },
+    { label: "Regions", value: "US, UK, South Africa" }
+  ],
+  [
+    { label: "Team", value: "Connectors team of 11, with PM, QA and BA" },
+    { label: "Clients", value: "Global media agency · US bank" },
+    { label: "Platforms", value: "Data Refinery, Data Serve, ACH payments" }
+  ],
+  [
+    { label: "Team", value: "Three application pods" },
+    { label: "Client", value: "Global media agency" }
+  ],
+  [
+    { label: "Team", value: "Four engineers" },
+    { label: "Stack", value: "Node.js, React, PHP, GraphQL" }
+  ],
+  [
+    { label: "Client", value: "Internal, Successive Digital" }
+  ]
+];
+
 function formatRoleYears(period) {
   const years = period.match(/\d{4}|Present/g);
   if (!years?.length) return period;
@@ -61,7 +88,7 @@ export default function JourneyPage() {
                   <div className="role-ledger__what">
                     <h3>{role.title}</h3>
                     {roleResults[idx] && <p className="role-ledger__summary">{roleResults[idx]}</p>}
-                    <details className="role-ledger__details">
+                    <details className="role-ledger__details" open={idx < 2}>
                       <summary><span className="summary-closed">Role details</span><span className="summary-open">Hide details</span></summary>
                       <ul>
                         {role.details.map((detail) => <li key={detail}>{detail}</li>)}
@@ -71,6 +98,16 @@ export default function JourneyPage() {
                       ) : null}
                     </details>
                   </div>
+                  {roleScope[idx]?.length ? (
+                    <dl className="role-ledger__scope">
+                      {roleScope[idx].map((item) => (
+                        <div key={item.label}>
+                          <dt>{item.label}</dt>
+                          <dd>{item.value}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  ) : null}
                 </li>
               ))}
             </ol>
