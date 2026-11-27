@@ -2,7 +2,7 @@
 
 > My portfolio: executive summary, career journey, projects and case studies, awards, conferences and certifications.
 
-**Live:** [prawal-personal-brand.vercel.app](https://prawal-personal-brand.vercel.app)
+**Live:** [prawalsharma.in](https://prawalsharma.in)
 
 <p align="center">
   <img src="docs/screenshots/desktop.jpg" width="38%" alt="Screenshot" />
