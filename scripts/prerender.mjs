@@ -12,7 +12,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const distDir = join(root, "dist");
 const ssrDir = join(root, "dist-ssr");
-const siteUrl = "https://prawal-personal-brand.vercel.app";
+const siteUrl = "https://prawalsharma.in";
 
 const template = readFileSync(join(distDir, "index.html"), "utf8");
 const { render, prerenderRoutes } = await import(pathToFileURL(join(ssrDir, "entry-server.js")).href);
