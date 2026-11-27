@@ -25,7 +25,7 @@ const professionalHighlightRecords = [
       "/media/usa_visit/553760021_24637343969229812_8881836766352855585_n.jpg",
       "/media/usa_visit/555056820_24637344292563113_300192269111598785_n.jpg",
       "/media/usa_visit/555218569_24637344249229784_3002671700096038778_n.jpg",
-      "/media/usa_visit/4003BE2D-7BD2-40C0-A013-BBC62CC819B6 (1).JPEG"
+      "/media/usa_visit/us-client-office-collage.jpeg"
     ],
     links: []
   },
@@ -56,7 +56,7 @@ export const professionalHighlights = professionalHighlightRecords.map((highligh
       date: "Professional proof archive",
       category: highlight.category,
       alt: describeImage(src) || `${highlight.title}, photo ${index + 1} of ${highlight.images.length}`,
-      caption: index === 0 ? highlight.context : describeImage(src) || `${highlight.title}, photo ${index + 1}.`,
+      caption: describeImage(src) || `${highlight.title}, photo ${index + 1}.`,
       featured: index === 0,
       priority: index === 0
     })
@@ -143,11 +143,11 @@ const awardRecords = [
     date: "March 2021",
     description: "Recognition for extra effort and commitment during lockdown work-from-home delivery.",
     images: [
-      "/media/awards/Extra Achiever’s Award/1614768213256.jpeg",
-      "/media/awards/Extra Achiever’s Award/1614768212327.jpeg",
-      "/media/awards/Extra Achiever’s Award/1614768212887.jpeg",
-      "/media/awards/Extra Achiever’s Award/1614768224497.jpeg",
-      "/media/awards/Extra Achiever’s Award/1614768225532.jpeg"
+      "/media/awards/Extra Achievers Award/1614768213256.jpeg",
+      "/media/awards/Extra Achievers Award/1614768212327.jpeg",
+      "/media/awards/Extra Achievers Award/1614768212887.jpeg",
+      "/media/awards/Extra Achievers Award/1614768224497.jpeg",
+      "/media/awards/Extra Achievers Award/1614768225532.jpeg"
     ]
   },
   {
@@ -155,21 +155,21 @@ const awardRecords = [
     issuer: "Successive Digital",
     date: "March 2019",
     description: "Recognition for building client trust, delivery confidence, and strong stakeholder satisfaction.",
-    images: ["/media/awards/Client Happiness Award/Screenshot 2026-05-20 at 12.56.11-PM.png"]
+    images: ["/media/awards/Client Happiness Award/client-happiness-award-stage.png"]
   },
   {
     title: "Star Performer of the Month",
     issuer: "Successive Digital",
     date: "February 2019",
     description: "Recognition as Star Performer of the Month.",
-    images: ["/media/awards/Star Performer of the Month - 2019/Screenshot 2026-05-20 at 12.57.00-PM.png"]
+    images: ["/media/awards/Star Performer of the Month - 2019/star-performer-2019.png"]
   },
   {
     title: "Star Performer of the Month",
     issuer: "Successive Digital",
     date: "July 2018",
     description: "First Star Performer of the Month recognition.",
-    images: ["/media/awards/Star Performer of the Month - 2018/Screenshot 2026-05-20 at 1.01.44-PM.png"]
+    images: ["/media/awards/Star Performer of the Month - 2018/star-performer-2018.png"]
   }
 ];
 
@@ -283,7 +283,7 @@ const conferenceRecords = [
       "/media/conferences/MongoDB local/2024/1694762207825.jpeg",
       "/media/conferences/MongoDB local/2024/1694762216252.jpeg",
       "/media/conferences/MongoDB local/2024/1694762220918.jpeg",
-      "/media/conferences/MongoDB local/2024/Screenshot 2026-05-21 at 11.53.08-AM.png"
+      "/media/conferences/MongoDB local/2024/mongodb-local-collage.png"
     ]
   },
   {
@@ -293,7 +293,7 @@ const conferenceRecords = [
     eventType: "Developer Event",
     theme: "Data modeling, developer workflows, and modern database platforms.",
     takeaway: "Continue building depth in data-backed application platforms.",
-    images: ["/media/conferences/MongoDB local/2025/unnamed (2).png"]
+    images: ["/media/conferences/MongoDB local/2025/love-your-developers-wall.png"]
   },
   {
     title: "Unicommerce",
@@ -321,7 +321,7 @@ export const conferenceAssets = conferenceRecords.map((conference) => ({
       date: "Event proof archive",
       category: "Conference presence",
       alt: describeImage(src) || `${conference.title}, photo ${index + 1} of ${conference.images.length}`,
-      caption: index === 0 ? conference.theme : describeImage(src) || `${conference.title}, photo ${index + 1}.`,
+      caption: describeImage(src) || `${conference.title}, photo ${index + 1}.`,
       featured: index === 0,
       priority: index === 0
     })

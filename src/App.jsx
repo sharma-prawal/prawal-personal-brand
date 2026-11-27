@@ -124,7 +124,7 @@ function DirectContactPanel() {
 
   return (
     <div className="direct-contact-panel">
-      <h2 className="direct-contact-panel__header">Get in touch</h2>
+      <h2 className="direct-contact-panel__header">Contact</h2>
       <div className="direct-contact-panel__row">
         <a href={`mailto:${email}`}>{email}</a>
         <button type="button" onClick={copyEmail} aria-label={copied ? "Email copied" : "Copy email address"} title={copied ? "Copied" : "Copy email"}>
@@ -453,14 +453,17 @@ function AppShell() {
               <Link to="/">Home</Link>
               <Link to="/journey">Career</Link>
               <Link to="/ai-projects">Projects</Link>
-              <Link to="/conferences">Conferences</Link>
-              <Link to="/highlights">Highlights</Link>
             </div>
             <div>
               <h2>Recognition</h2>
               <Link to="/awards">Awards</Link>
               <Link to="/certifications">Certifications</Link>
               <Link to="/recommendations">Recommendations</Link>
+            </div>
+            <div>
+              <h2>Events</h2>
+              <Link to="/conferences">Conferences</Link>
+              <Link to="/highlights">Highlights</Link>
             </div>
           </nav>
           <div className="footer-contact">

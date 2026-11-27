@@ -1157,8 +1157,14 @@
 
 .footer-nav {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(3, minmax(0, max-content));
+  gap: 24px clamp(24px, 3vw, 40px);
+}
+
+@media (max-width: 420px) {
+  .footer-nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .footer-nav h2,
@@ -1499,14 +1505,35 @@
   border-color: #cfdcd4;
 }
 
-.projects-build--mobile .projects-build__media .proof-image-button {
-  padding: 14px 0;
+.projects-build--mobile .projects-build__media {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(8px, 1.4vw, 16px);
+  padding: 14px clamp(14px, 2.4vw, 28px);
+}
+
+.projects-build--mobile .projects-build__media .proof-image-frame {
+  min-height: 0;
 }
 
 .projects-build--mobile .projects-build__media img {
   object-fit: contain;
   object-position: center;
   filter: drop-shadow(0 6px 14px rgba(23, 21, 15, 0.22));
+}
+
+/* Diagrams: show the whole drawing rather than cropping its edges. */
+.projects-build--contain .projects-build__media {
+  background: #fff;
+}
+
+.projects-build--contain .projects-build__media .proof-image-button {
+  padding: 8px;
+}
+
+.projects-build--contain .projects-build__media img {
+  object-fit: contain;
+  object-position: center;
 }
 
 /* Wide cover art with black edges: show it whole; the letterbox blends in. */
@@ -1631,6 +1658,24 @@
   width: min(100%, 420px);
   aspect-ratio: 3 / 4;
   justify-self: center;
+}
+
+/* Pages that are not 3:4 (the square collage) sit on a blurred copy of
+   themselves instead of flat beige bars. */
+.conf-feature__media--publication .proof-image-frame::before {
+  display: block;
+  opacity: 0.45;
+}
+
+/* On wide screens the cover lines up with the outer edge of its column. */
+@media (min-width: 961px) {
+  .conf-feature .conf-feature__media--publication {
+    justify-self: start;
+  }
+
+  .conf-feature--reverse .conf-feature__media--publication {
+    justify-self: end;
+  }
 }
 
 .event-index-hero {
@@ -2226,8 +2271,22 @@ p.case-modules--after-list {
 }
 
 .also-attended {
+  display: flex;
+  align-items: center;
+  gap: 16px;
   margin: 24px 0 0;
   font-size: 0.95rem;
+}
+
+.also-attended p {
+  margin: 0;
+}
+
+/* Landscape certificate: a little wider than the 4:3 event thumbnails. */
+.also-attended .also-attended__proof {
+  flex: none;
+  width: 112px;
+  aspect-ratio: 7 / 5;
 }
 
 .verify-links a,
@@ -2249,6 +2308,17 @@ p.case-modules--after-list {
 
 .ledger-page > .home-facts:first-child {
   margin-top: 48px;
+}
+
+/* The closing contact band draws its own top rule; a page's last list should
+   not add a second one just above it. */
+.ledger-page > .home-section:last-child {
+  padding-bottom: 0;
+}
+
+.ledger-page > .home-section:last-child > .ledger-rows:last-child,
+.ledger-page > .home-section:last-child > .role-ledger:last-child {
+  border-bottom: 0;
 }
 
 .ledger-page .home-section {
@@ -2749,6 +2819,14 @@ p.case-modules--after-list {
   list-style: none;
 }
 
+/* Seven areas: the first (AI) takes two columns so rows fill evenly,
+   2 + 1 + 1 then 4 on wide screens, 2 then 2 + 2 + 2 on tablets. */
+@media (min-width: 641px) {
+  .course-topics > li:first-child {
+    grid-column: span 2;
+  }
+}
+
 .course-topics > li > button {
   display: grid;
   align-content: start;
@@ -3072,7 +3150,8 @@ p.case-modules--after-list {
   }
 
   .ledger-rows--events .ledger-rows__date,
-  .ledger-rows--events .ledger-rows__main {
+  .ledger-rows--events .ledger-rows__main,
+  .ledger-rows--events .ledger-rows__strip .ledger-rows__thumb {
     grid-area: auto;
   }
 }
@@ -3384,18 +3463,19 @@ p.case-modules--after-list {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  /* One fact per row on phones: Type, Status, Built with. */
-  .case-facts--project {
+  /* One fact per row on phones (Type, Status, Built with; Role, Period,
+     Team, Domain), divided by rules instead of the desktop column borders. */
+  .case-facts {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .case-facts--project div,
-  .case-facts--project div + div {
+  .case-facts div,
+  .case-facts div + div {
     padding-left: 0;
     border-left: 0;
   }
 
-  .case-facts--project div + div {
+  .case-facts div + div {
     border-top: 1px solid var(--line);
   }
 }
@@ -3453,10 +3533,19 @@ p.case-modules--after-list {
   box-shadow: none;
 }
 
-.case-gallery .proof-image-frame::before,
 .case-gallery .proof-image-frame::after,
 .case-gallery .proof-inspect-label {
   display: none;
+}
+
+/* Screenshots are shown whole; a blurred copy fills the rest of the card. */
+.case-gallery .proof-image-frame::before {
+  opacity: 0.4;
+}
+
+/* Four screenshots read as two rows of two rather than three and one. */
+.case-gallery--pairs {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .case-gallery img {

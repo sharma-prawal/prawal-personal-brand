@@ -3,7 +3,7 @@ import { describeImage } from "./imageDescriptions.js";
 
 export const routes = [
   { path: "/", label: "Home" },
-  { path: "/journey", label: "Journey" },
+  { path: "/journey", label: "Career" },
   { path: "/awards", label: "Awards" },
   { path: "/certifications", label: "Certifications" },
   { path: "/ai-projects", label: "Projects" },
@@ -160,7 +160,7 @@ const aiProjectRecords = [
     type: "AI agent",
     stage: "Personal tool",
     summary: "A local daily-briefing dashboard: Playwright browser agents collect calendar and inbox signals, and an LLM writes the briefing, action items and follow-up answers.",
-    problem: "Work is spread across several Gmail, Outlook, Slack, Teams and calendar accounts, and many organisations don't allow personal API access to them.",
+    problem: "Work is spread across several Gmail, Outlook, Slack, Teams and calendar accounts, and many organizations don't allow personal API access to them.",
     solution: "Browser agents read each service through locally stored sessions instead of official APIs, keep the last good snapshot when a service fails, and label stale data clearly.",
     aiUsage: "An LLM on Groq writes the prose briefing and action items and answers follow-up questions.",
     outcome: "Runs locally with per-service health checks, retries and fixture tests that never touch live accounts.",
@@ -172,6 +172,7 @@ const aiProjectRecords = [
   {
     name: "Data Refinery Connectors MCP Server",
     group: "ai",
+    thumbFit: "contain", // architecture diagram: show it whole
     type: "MCP server",
     stage: "Hackathon POC",
     summary: "An MCP server that lets AI agents check, create, enable, disable and delete Data Refinery datastreams in plain language: 26 tools over five APIs, hosted as a Databricks App.",
@@ -206,7 +207,7 @@ const aiProjectRecords = [
     group: "product",
     type: "Education website",
     stage: "Live",
-    summary: "A public school website for Sunrise Public School, Kandi, designed to establish trust for parents and local visitors through a clearer digital presence.",
+    summary: "A website for Sun Rise Model Public School in Kandi, designed to establish trust for parents and local visitors through a clearer digital presence.",
     problem: "The school needed a credible digital presence that communicates identity, information, and legitimacy quickly.",
     solution: "Built a polished responsive website with clear navigation, institution context, and public-facing content.",
     aiUsage: "AI-assisted copy refinement, layout review, and content structuring during delivery.",
@@ -216,11 +217,11 @@ const aiProjectRecords = [
     linkLabel: "Live school site",
     previewCaption: "The school homepage introduces Sunrise and gives parents an admissions starting point.",
     images: [
-      "/media/projects/Sun Rise School/Screenshot 2026-05-25 at 7.35.43-PM.png",
-      "/media/projects/Sun Rise School/Screenshot 2026-05-25 at 7.36.08-PM.png",
-      "/media/projects/Sun Rise School/Screenshot 2026-05-25 at 7.36.24-PM.png",
-      "/media/projects/Sun Rise School/Screenshot 2026-05-25 at 7.36.41-PM.png",
-      "/media/projects/Sun Rise School/Screenshot 2026-05-25 at 7.45.39-PM.png"
+      "/media/projects/Sun Rise School/01-home.png",
+      "/media/projects/Sun Rise School/02-contact.png",
+      "/media/projects/Sun Rise School/03-gallery.png",
+      "/media/projects/Sun Rise School/04-academics.png",
+      "/media/projects/Sun Rise School/05-about.png"
     ]
   },
   {
@@ -238,10 +239,10 @@ const aiProjectRecords = [
     linkLabel: "Open lovebook",
     previewCaption: "The opening page of the interactive storybook.",
     images: [
-      "/media/projects/Lovebook/Screenshot 2026-05-25 at 7.37.25-PM.png",
-      "/media/projects/Lovebook/Screenshot 2026-05-25 at 7.37.39-PM.png",
-      "/media/projects/Lovebook/Screenshot 2026-05-25 at 7.38.04-PM.png",
-      "/media/projects/Lovebook/Screenshot 2026-05-25 at 7.39.16-PM.png"
+      "/media/projects/Lovebook/01-portrait.png",
+      "/media/projects/Lovebook/02-travel-grid.png",
+      "/media/projects/Lovebook/03-text-and-photo.png",
+      "/media/projects/Lovebook/04-closing-qr.png"
     ]
   },
   {
@@ -259,12 +260,12 @@ const aiProjectRecords = [
     linkLabel: "Play RPG",
     previewCaption: "The opening screen where players begin the anniversary story.",
     images: [
-      "/media/projects/Love RPG/Screenshot 2026-05-25 at 7.40.24-PM.png",
-      "/media/projects/Love RPG/Screenshot 2026-05-25 at 7.41.03-PM.png",
-      "/media/projects/Love RPG/Screenshot 2026-05-25 at 7.41.31-PM.png",
-      "/media/projects/Love RPG/Screenshot 2026-05-25 at 7.42.08-PM.png",
-      "/media/projects/Love RPG/Screenshot 2026-05-25 at 7.42.22-PM.png",
-      "/media/projects/Love RPG/Screenshot 2026-05-25 at 7.44.35-PM.png"
+      "/media/projects/Love RPG/01-title.png",
+      "/media/projects/Love RPG/02-night-scene.png",
+      "/media/projects/Love RPG/03-forest.png",
+      "/media/projects/Love RPG/04-room.png",
+      "/media/projects/Love RPG/05-hillside.png",
+      "/media/projects/Love RPG/06-living-room.png"
     ]
   },
   {
@@ -318,10 +319,10 @@ const aiProjectRecords = [
     name: "Personal Branding Site",
     group: "product",
     type: "Portfolio system",
-    stage: "In progress",
+    stage: "Live",
     summary: "This site: a short editorial homepage backed by detailed pages for projects, awards, certifications, conferences and recommendations.",
     problem: "A senior engineering profile needs an executive summary and deeper evidence without feeling like a resume dump.",
-    solution: "Built a multi-page proof system for journey, awards, certifications, projects, conferences, highlights, and recommendations.",
+    solution: "Built a multi-page proof system for career, awards, certifications, projects, conferences, highlights, and recommendations.",
     aiUsage: "AI-assisted UX planning, implementation, screenshot review, and iterative content organization.",
     outcome: "Live portfolio with automated screenshot review built into the workflow.",
     stack: ["React", "Vite", "Tailwind", "Framer Motion", "Visual QA"],
@@ -338,11 +339,12 @@ const aiProjectRecords = [
   {
     name: "AI-Driven Datastream Intelligence POC",
     group: "ai",
+    thumbFit: "contain", // architecture diagram: show it whole
     type: "AI + data",
     stage: "POC",
-    summary: "Schedule- and configuration-risk recommendations learned from historical pipeline behaviour (XGBoost, explainable ML), plus read-only API access through an MCP server. Experimental, not production.",
+    summary: "Schedule- and configuration-risk recommendations learned from historical pipeline behavior (XGBoost, explainable ML), plus read-only API access through an MCP server. Experimental, not production.",
     problem: "Data pipelines fail on schedule and configuration problems that only show up after the first run.",
-    solution: "Trained XGBoost models on historical pipeline behaviour to flag schedule and configuration risk before a run, explained each prediction, and exposed the platform's APIs read-only through an MCP server. Built with Amit Bora.",
+    solution: "Trained XGBoost models on historical pipeline behavior to flag schedule and configuration risk before a run, explained each prediction, and exposed the platform's APIs read-only through an MCP server. Built with Amit Bora.",
     aiUsage: "Machine-learning model experimentation, feature thinking, and AI-assisted documentation of insights.",
     outcome: "Visual POC proof showing the data intelligence workflow and model-driven outputs.",
     stack: ["XGBoost", "Explainable ML", "MCP", "POC"],

@@ -19,7 +19,7 @@ function LinkedInVerify({ url, compact = false }) {
       aria-label="Verify on LinkedIn"
     >
       <VerifyCircle size={14} />
-      <span>{compact ? "LinkedIn" : "Verify on LinkedIn"}</span>
+      <span>Verify on LinkedIn</span>
     </a>
   );
 }

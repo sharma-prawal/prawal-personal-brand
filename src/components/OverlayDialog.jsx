@@ -37,6 +37,9 @@ export default function OverlayDialog({ className, label, onDismiss, returnFocus
     <dialog
       ref={dialogRef}
       className={`overlay-dialog ${className}`}
+      // <dialog> already has this role; stated for tools that only read the attribute.
+      role="dialog"
+      aria-modal="true"
       aria-label={label}
       onCancel={(event) => {
         event.preventDefault();

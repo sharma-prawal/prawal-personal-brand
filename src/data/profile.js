@@ -143,9 +143,9 @@ export const profile = {
           period: "July 2021 - November 2024",
           details: [
             "Delivered end-to-end engineering for multiple large-scale applications with no formal client escalations; directly contributed to multi-year client retention and contract extensions.",
-            "Connectors Platform (Media | Team: 11): Architected and built a data integration platform connecting 90+ data sources including Facebook Ads and Google Campaign Manager; implemented OAuth flows, data ingestion pipelines, and enterprise reporting systems.",
+            "Data Refinery (Media | Team: 11): Architected and built the connectors platform, a data integration platform connecting 90+ data sources including Facebook Ads and Google Campaign Manager; implemented OAuth flows, data ingestion pipelines, and enterprise reporting systems.",
             "Data Serve (Media): Designed a centralized data platform integrating GCP, Azure ADLS, AWS S3, and Snowflake; enabled fully automated enterprise-grade data pipelines reducing manual data ops overhead.",
-            "Enrollment & Transactions (Banking): Built a white-labeled ACH debit payment solution with fraud detection workflows, transaction management, and compliance-grade reliability for a US banking client.",
+            "ACH Payments Platform (Banking): Built a white-labeled ACH debit payment solution with fraud detection workflows, transaction management, and compliance-grade reliability for a US banking client.",
             "Managed cross-functional teams (PM, QA, BA) across MERN, PHP, and GraphQL ecosystems; improved delivery efficiency through process automation and structured engineering practices."
           ]
         },
@@ -747,8 +747,8 @@ export const profile = {
   ],
   education: {
     school: "Maharshi Dayanand University",
-    degree: "Bachelor of Technology - BTech, Computer Science",
-    period: "2012 - 2016",
+    degree: "Bachelor of Technology (BTech), Computer Science",
+    period: "2012 – 2016",
     score: "78%"
   },
   languages: ["English - Native or bilingual proficiency", "Hindi - Native or bilingual proficiency", "Punjabi - Native or bilingual proficiency"],
@@ -756,7 +756,7 @@ export const profile = {
   writing: [
     {
       title: "Predicting data-pipeline risk before the first run",
-      note: "A proof of concept with Amit Bora: learning schedule and configuration risk from past pipeline behaviour.",
+      note: "A proof of concept with Amit Bora: learning schedule and configuration risk from past pipeline behavior.",
       date: "March 2026",
       url: "https://www.linkedin.com/posts/sharma-prawal_ai-machinelearning-dataengineering-activity-7439154736408285185-gSZG"
     },
