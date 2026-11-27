@@ -24,14 +24,12 @@ const credentialYears = {
 
 const flagshipTitles = [
   "Claude Certified Architect – Foundations",
-  "AWS Certified Solutions Architect – Associate",
   "AWS Certified AI Practitioner",
   "Microsoft Certified: Azure AI Fundamentals"
 ];
 
 const featuredCertificateDates = {
   "Claude Certified Architect – Foundations": "Issued Aug 4, 2026 · Printed expiry Aug 4, 2027",
-  "AWS Certified Solutions Architect – Associate": "Issued Sep 27, 2021 · Shown certificate expired Sep 27, 2024",
   "AWS Certified AI Practitioner": "Issued May 20, 2025 · Printed expiry May 20, 2028",
   "Microsoft Certified: Azure AI Fundamentals": "Earned Feb 10, 2022 · No expiry shown"
 };
@@ -195,7 +193,7 @@ export default function CertificationsPage() {
   const courses = useMemo(() => certificationAssets.filter((cert) => !cert.proctored).sort(byTitle), []);
 
   const facts = [
-    { value: String(featuredCertificationAssets.length), label: "Official certifications" },
+    { value: String(featuredCertificationAssets.length), label: "Professional certifications" },
     { value: "3", label: "Clouds: AWS, Azure and Google Cloud" },
     { value: "CCA-F", label: "Claude Certified Architect, 2026" },
     { value: String(courses.length), label: "Courses completed" }
@@ -225,8 +223,8 @@ export default function CertificationsPage() {
 
           <Reveal as={motion.section} className="home-section" id="featured-credentials" aria-labelledby="certs-featured-title">
             <header className="home-section__head">
-              <h2 id="certs-featured-title">Four key certifications</h2>
-              <p>AI solution architecture, cloud architecture, AI adoption and Azure AI. Select a certificate to view it full size.</p>
+              <h2 id="certs-featured-title">Three key certifications</h2>
+              <p>AI solution architecture, AI adoption and Azure AI. Select a certificate to view it full size.</p>
             </header>
             <ul className="cert-grid">
               {flagship.map((cert) => {

@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight, CalendarCheck, ClipboardList, Landmark, Layers, Tags, Truck } from "lucide-react";
 import { PageFrame, ProofImage, ProofIndex, Reveal } from "../components/shared.jsx";
 import { imageAlt, imageCaption, imageSrc } from "../data/imageMetadata.js";
 import { aiProjectsWithSlugs, professionalCasesWithSlugs } from "../data/derived.js";
@@ -75,14 +75,100 @@ function FlagshipCase({ project }) {
   );
 }
 
-function EarlierCase({ project }) {
+// These client systems are under NDA, so there are no screenshots. Each card
+// draws a small system sketch instead, in the same style as the featured
+// Data Refinery and ACH diagrams: the system in the middle, wired to each of
+// its modules (from the case data).
+const domainIcons = {
+  "Media advertising": Tags,
+  Transportation: Truck,
+  Banking: Landmark,
+  "Operations / services": ClipboardList,
+  "Internal automation": CalendarCheck
+};
+
+// Short labels for the centre box, where the full project name will not fit.
+const coreLabels = {
+  "ACL URL Shortener": "URL Shortener",
+  "Meeting Booking & HR Letter App": "HR & Booking"
+};
+
+// The last bullet of each earlier case is its stack, e.g. "React, Redux, Node.js and MongoDB."
+function stackOf(project) {
+  const last = project.points?.at(-1) || "";
+  return last.replace(/\.$/, "").split(/, | and /).join(" · ");
+}
+
+function ModuleSketch({ project, wide }) {
+  const Icon = domainIcons[project.domain] || Layers;
+  const modules = project.systems;
+  const W = wide ? 520 : 360;
+  const H = 168;
+  const pad = 14;
+  const hub = { x: pad, w: wide ? 150 : 118, h: 80, cy: 98 };
+  hub.y = hub.cy - hub.h / 2;
+  const boxW = wide ? 196 : 142;
+  const boxX = W - pad - boxW;
+  const slot = Math.min(26, 124 / modules.length);
+  const boxH = Math.min(20, slot - 5);
+  const top = hub.cy - (modules.length * slot) / 2;
+  const x0 = hub.x + hub.w;
+  const gap = boxX - x0;
+
+  return (
+    <svg className={`projects-earlier__sketch projects-earlier__sketch--${wide ? "wide" : "compact"}`} viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`${project.name} modules: ${modules.join(", ")}`}>
+      <g fill="#4a5a53" fontSize="9.5" fontWeight="700" letterSpacing="0.6">
+        <text x={pad} y="20">SYSTEM</text>
+        <text x={W - pad} y="20" textAnchor="end">{modules.length} MODULES</text>
+      </g>
+      <g fill="none" stroke="#1a6c5a" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round">
+        {modules.map((m, i) => {
+          const y = top + i * slot + slot / 2;
+          return (
+            <g key={m}>
+              <path d={`M${x0} ${hub.cy} C${x0 + gap * 0.55} ${hub.cy} ${boxX - gap * 0.55} ${y} ${boxX - 2} ${y}`} />
+              <path d={`M${boxX - 6} ${y - 3}l4 3-4 3`} />
+            </g>
+          );
+        })}
+      </g>
+      <circle cx={x0} cy={hub.cy} r="2.5" fill="#1a6c5a" />
+      <g fill="#fbfaf6" stroke="#b4c8be">
+        <rect x={hub.x} y={hub.y} width={hub.w} height={hub.h} rx="5" />
+        {modules.map((m, i) => (
+          <rect key={m} x={boxX} y={top + i * slot + (slot - boxH) / 2} width={boxW} height={boxH} rx="4" />
+        ))}
+      </g>
+      <Icon x={hub.x + hub.w / 2 - 10} y={hub.y + 14} width={20} height={20} strokeWidth={1.6} color="#1a6c5a" />
+      <text x={hub.x + hub.w / 2} y={hub.y + 58} textAnchor="middle" fill="#17150f" fontSize="11.5" fontWeight="600">
+        {coreLabels[project.name] || project.name}
+      </text>
+      <g fill="#17150f" fontSize="10" fontWeight="600">
+        {modules.map((m, i) => (
+          <text key={m} x={boxX + 9} y={top + i * slot + slot / 2 + 3.5}>{m}</text>
+        ))}
+      </g>
+    </svg>
+  );
+}
+
+function EarlierCase({ project, wide }) {
   return (
     <li>
       <Link to={`/ai-projects/professional/${project.slug}`}>
-        <span className="projects-earlier__name">{project.name}</span>
+        <span className="projects-earlier__panel">
+          {/* Wide cards get a wider sketch on desktop; below that every card
+              is narrow, so the compact sketch keeps the labels readable. */}
+          {wide ? <ModuleSketch project={project} wide /> : null}
+          <ModuleSketch project={project} wide={false} />
+        </span>
         <span className="projects-earlier__meta">{project.domain} · {project.role}</span>
+        <span className="projects-earlier__name">
+          {project.name}
+          <ArrowRight size={15} aria-hidden="true" />
+        </span>
         <span className="projects-earlier__outcome">{project.outcome}</span>
-        <ArrowRight size={15} aria-hidden="true" />
+        <span className="projects-earlier__stack">{stackOf(project)}</span>
       </Link>
     </li>
   );
@@ -191,7 +277,7 @@ export default function AIProjectsPage() {
 
             <h3 className="projects-subhead">Earlier client work</h3>
             <ul className="projects-earlier">
-              {earlier.map((project) => <EarlierCase project={project} key={project.name} />)}
+              {earlier.map((project, index) => <EarlierCase project={project} wide={index < 2} key={project.name} />)}
             </ul>
 
             <ul className="projects-domains" aria-label="Domains covered">

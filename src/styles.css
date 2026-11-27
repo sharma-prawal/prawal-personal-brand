@@ -1497,12 +1497,19 @@ main {
   line-height: 1.45;
 }
 
+/* The site sets text-wrap: pretty on paragraphs. Safari applies it to every
+   line, which pulled chat replies into a narrow, tall column on iPhones.
+   Chat text wraps normally and uses the bubble's full width. */
+.msg-bubble,
+.msg-bubble * {
+  text-wrap: wrap;
+}
+
 .user-msg .msg-bubble {
   background: var(--theme-accent);
   color: var(--theme-accent-contrast);
   border-bottom-right-radius: 6px;
   box-shadow: 0 4px 12px var(--theme-accent-glow-strong);
-  max-width: 85%;
   overflow-wrap: break-word;
   word-break: break-word;
 }
@@ -1863,6 +1870,11 @@ main {
     inset: 0;
     position: fixed;
     z-index: 10000;
+  }
+
+  /* Full-screen on phones: let messages use more of the narrow width. */
+  .chat-msg {
+    max-width: 92%;
   }
 }
 

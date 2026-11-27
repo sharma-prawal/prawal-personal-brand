@@ -219,7 +219,7 @@ export const profile = {
       name: "Data Refinery",
       domain: "Media advertising",
       meta: "Governed data activation platform",
-      role: "Technical Lead / Team Lead",
+      role: "Technical Lead",
       tenure: "2019 to present",
       team: "Connectors team of 11",
       featured: true,
@@ -229,7 +229,7 @@ export const profile = {
         diagram: "data-refinery"
       },
       context:
-        "Dentsu International's media teams pulled advertising data from dozens of platforms, and every new source meant manual engineering before anyone could report on it.",
+        "A global media agency's teams pulled advertising data from dozens of platforms, and every new source meant manual engineering before anyone could report on it.",
       systems: ["Connectors App", "Trifacta Recipes", "Data Serve UI"],
       flow: [
         { label: "90+ sources", detail: "Facebook Ads, Google Campaign Manager and more, via OAuth" },
@@ -239,7 +239,7 @@ export const profile = {
         { label: "Destinations", detail: "AWS S3, Google Cloud, Azure ADLS, Snowflake, BI tools" }
       ],
       points: [
-        "Built and ran a governed data platform serving 90+ sources with 1–2 day onboarding across Dentsu International's media advertising operations.",
+        "Built and ran a governed data platform serving 90+ sources with 1–2 day onboarding across a global media agency's advertising operations.",
         "Three apps: Connectors for automated source fetches, Trifacta for cleansing and enrichment, and Data Serve for delivery to S3, Google Cloud, Azure ADLS, Snowflake and analytics tools.",
         "Led the connectors team of 11; now drive platform upgrades and connector delivery with production-readiness reviews."
       ],
@@ -251,8 +251,8 @@ export const profile = {
       slug: "bim-enrollment-and-transactions",
       domain: "Fintech / banking",
       meta: "ACH payments, fraud workflows",
-      role: "Team Lead to Engineering Manager",
-      tenure: "2017 to present",
+      role: "Engineering Manager",
+      tenure: "2018 to present",
       team: "API, UI and QA teams",
       featured: true,
       headline: "White-label ACH payments for a US bank, from enrollment to settlement.",

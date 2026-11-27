@@ -103,7 +103,7 @@ export default function AwardsPage() {
     <div data-theme="awards">
       <PageFrame
         eyebrow="Awards"
-        title="Ten awards at Successive Digital since 2018."
+        title="10 awards at Successive Digital since 2018."
         intro="For delivery milestones, client work and long-term contribution. Select any award to see the certificate or photos."
       >
         <div className="ledger-page">
